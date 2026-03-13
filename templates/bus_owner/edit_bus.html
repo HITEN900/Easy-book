@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Bus - Easy Book{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Edit Bus: {{ bus.bus_name }}</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="bus_name" class="form-label">Bus Name</label>
+                                <input type="text" class="form-control" id="bus_name" name="bus_name" value="{{ bus.bus_name }}" required>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="bus_number" class="form-label">Bus Number</label>
+                                <input type="text" class="form-control" id="bus_number" name="bus_number" value="{{ bus.bus_number }}" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="bus_type" class="form-label">Bus Type</label>
+                                <select class="form-control" id="bus_type" name="bus_type" required>
+                                    <option value="ac" {% if bus.bus_type == 'ac' %}selected{% endif %}>AC</option>
+                                    <option value="non_ac" {% if bus.bus_type == 'non_ac' %}selected{% endif %}>Non AC</option>
+                                    <option value="sleeper" {% if bus.bus_type == 'sleeper' %}selected{% endif %}>Sleeper</option>
+                                    <option value="seater" {% if bus.bus_type == 'seater' %}selected{% endif %}>Seater</option>
+                                    <option value="ac_sleeper" {% if bus.bus_type == 'ac_sleeper' %}selected{% endif %}>AC Sleeper</option>
+                                    <option value="luxury" {% if bus.bus_type == 'luxury' %}selected{% endif %}>Luxury</option>
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="total_seats" class="form-label">Total Seats</label>
+                                <input type="number" class="form-control" id="total_seats" name="total_seats" value="{{ bus.total_seats }}" readonly>
+                                <small class="text-muted">Seats cannot be changed after creation</small>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="amenities" class="form-label">Amenities</label>
+                            <input type="text" class="form-control" id="amenities" name="amenities" value="{{ bus.amenities }}" placeholder="AC, WiFi, Charging point">
+                        </div>
+                        
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="is_active" name="is_active" {% if bus.is_active %}checked{% endif %}>
+                            <label class="form-check-label" for="is_active">Bus is Active</label>
+                        </div>
+                        
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary">Update Bus</button>
+                            <a href="{% url 'manage_buses' %}" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,201 @@
+{% extends 'base.html' %}
+
+{% block title %}Booking Statistics - Easy Book{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <i class="fas fa-bus fa-4x text-primary mb-3"></i>
+                    <h5>{{ user.get_full_name|default:user.username }}</h5>
+                    <p class="text-muted">Bus Owner</p>
+                    <hr>
+                    <a href="{% url 'add_bank_details' %}" class="btn btn-outline-primary btn-sm w-100 mb-2">
+                        <i class="fas fa-university"></i> Bank Details
+                    </a>
+                    <a href="{% url 'bus_owner_dashboard' %}" class="btn btn-outline-success btn-sm w-100">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-9">
+            <!-- Statistics Cards -->
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body">
+                            <h6>Total Bookings</h6>
+                            <h3>{{ total_bookings }}</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-success text-white">
+                        <div class="card-body">
+                            <h6>Confirmed</h6>
+                            <h3>{{ confirmed_bookings }}</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-warning text-white">
+                        <div class="card-body">
+                            <h6>Pending</h6>
+                            <h3>{{ pending_bookings }}</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-danger text-white">
+                        <div class="card-body">
+                            <h6>Cancelled</h6>
+                            <h3>{{ cancelled_bookings }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Earnings Card -->
+            <div class="card bg-gradient-success text-white mb-4">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <h5>Total Earnings</h5>
+                            <h2 class="display-4">₹{{ total_earnings|floatformat:0 }}</h2>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <i class="fas fa-rupee-sign fa-5x opacity-50"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Monthly Earnings Chart -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Monthly Earnings</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="earningsChart" height="100"></canvas>
+                </div>
+            </div>
+            
+            <!-- Recent Bookings -->
+            <div class="card">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Recent Bookings</h5>
+                    <span class="badge bg-light text-dark">{{ recent_bookings|length }} Bookings</span>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Booking Ref</th>
+                                    <th>Customer</th>
+                                    <th>Route</th>
+                                    <th>Seats</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for booking in recent_bookings %}
+                                <tr>
+                                    <td>{{ booking.booking_reference }}</td>
+                                    <td>{{ booking.user.username }}</td>
+                                    <td>{{ booking.route.source }} → {{ booking.route.destination }}</td>
+                                    <td>
+                                        {% for seat in booking.booked_seats.all %}
+                                            <span class="badge bg-primary">{{ seat.seat.seat_number }}</span>
+                                        {% endfor %}
+                                    </td>
+                                    <td>₹{{ booking.total_amount }}</td>
+                                    <td>
+                                        <span class="badge 
+                                            {% if booking.status == 'confirmed' %}bg-success
+                                            {% elif booking.status == 'pending' %}bg-warning
+                                            {% elif booking.status == 'cancelled' %}bg-danger
+                                            {% else %}bg-secondary{% endif %}">
+                                            {{ booking.status }}
+                                        </span>
+                                    </td>
+                                    <td>{{ booking.booking_date|date:"d M Y" }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="7" class="text-center">No bookings yet</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.bg-gradient-success {
+    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+}
+.opacity-50 {
+    opacity: 0.5;
+}
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Prepare monthly earnings data
+    const months = [];
+    const earnings = [];
+    
+    {% for month in monthly_earnings %}
+        months.push('{{ month.month }}');
+        earnings.push({{ month.total|floatformat:0 }});
+    {% endfor %}
+    
+    // Create chart
+    const ctx = document.getElementById('earningsChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: months,
+            datasets: [{
+                label: 'Monthly Earnings (₹)',
+                data: earnings,
+                borderColor: '#28a745',
+                backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return '₹' + value;
+                        }
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

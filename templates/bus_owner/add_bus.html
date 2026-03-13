@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Bus - Easy Book{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Add New Bus</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="bus_name" class="form-label">Bus Name</label>
+                                <input type="text" class="form-control" id="bus_name" name="bus_name" required>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="bus_number" class="form-label">Bus Number</label>
+                                <input type="text" class="form-control" id="bus_number" name="bus_number" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="bus_type" class="form-label">Bus Type</label>
+                                <select class="form-control" id="bus_type" name="bus_type" required>
+                                    <option value="">Select Type</option>
+                                    <option value="ac">AC</option>
+                                    <option value="non_ac">Non AC</option>
+                                    <option value="sleeper">Sleeper</option>
+                                    <option value="seater">Seater</option>
+                                    <option value="ac_sleeper">AC Sleeper</option>
+                                    <option value="luxury">Luxury</option>
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="total_seats" class="form-label">Total Seats</label>
+                                <input type="number" class="form-control" id="total_seats" name="total_seats" min="10" max="60" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="seat_layout" class="form-label">Seat Layout</label>
+                                <select class="form-control" id="seat_layout" name="seat_layout" required>
+                                    <option value="">Select Layout</option>
+                                    <option value="2x2">2 x 2 (4 seats per row)</option>
+                                    <option value="2x1">2 x 1 (3 seats per row)</option>
+                                    <option value="1x2">1 x 2 (3 seats per row)</option>
+                                    <option value="sleeper_2x1">Sleeper 2 x 1</option>
+                                    <option value="sleeper_1x1">Sleeper 1 x 1</option>
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="amenities" class="form-label">Amenities</label>
+                                <input type="text" class="form-control" id="amenities" name="amenities" placeholder="AC, WiFi, Charging point">
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="bus_image" class="form-label">Bus Image</label>
+                            <input type="file" class="form-control" id="bus_image" name="bus_image" accept="image/*">
+                        </div>
+                        
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary">Add Bus</button>
+                            <a href="{% url 'manage_buses' %}" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

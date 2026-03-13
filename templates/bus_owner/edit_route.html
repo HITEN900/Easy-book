@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Route - Easy Book{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Edit Route: {{ route.source }} to {{ route.destination }}</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="source" class="form-label">Source</label>
+                                <input type="text" class="form-control" id="source" name="source" value="{{ route.source }}" required>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="destination" class="form-label">Destination</label>
+                                <input type="text" class="form-control" id="destination" name="destination" value="{{ route.destination }}" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="departure_time" class="form-label">Departure Time</label>
+                                <input type="datetime-local" class="form-control" id="departure_time" name="departure_time" value="{{ route.departure_time|date:'Y-m-d\\TH:i' }}" required>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="arrival_time" class="form-label">Arrival Time</label>
+                                <input type="datetime-local" class="form-control" id="arrival_time" name="arrival_time" value="{{ route.arrival_time|date:'Y-m-d\\TH:i' }}" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="fare" class="form-label">Fare (₹)</label>
+                                <input type="number" class="form-control" id="fare" name="fare" value="{{ route.fare }}" min="1" step="0.01" required>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="operating_days" class="form-label">Operating Days</label>
+                                <input type="text" class="form-control" id="operating_days" name="operating_days" value="{{ route.operating_days }}" placeholder="Mon,Tue,Wed,Thu,Fri,Sat,Sun">
+                            </div>
+                        </div>
+                        
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary">Update Route</button>
+                            <a href="{% url 'manage_routes' route.bus.id %}" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

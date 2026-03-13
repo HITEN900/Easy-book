@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block title %}Earnings Report - Easy Book{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Earnings Report</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <div class="card bg-success text-white">
+                                <div class="card-body text-center">
+                                    <h5>Total Earnings</h5>
+                                    <h3>₹{{ total_earnings|floatformat:2 }}</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-info text-white">
+                                <div class="card-body text-center">
+                                    <h5>Total Bookings</h5>
+                                    <h3>{{ total_bookings }}</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-primary text-white">
+                                <div class="card-body text-center">
+                                    <h5>Average per Booking</h5>
+                                    <h3>₹{% widthratio total_earnings total_bookings 1 %}</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h5 class="mb-3">Monthly Earnings</h5>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Month</th>
+                                    <th>Bookings</th>
+                                    <th>Total Earnings</th>
+                                    <th>Average</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for month in monthly_earnings %}
+                                <tr>
+                                    <td>{{ month.month|date:"F Y" }}</td>
+                                    <td>{{ month.count }}</td>
+                                    <td>₹{{ month.total|floatformat:2 }}</td>
+                                    <td>₹{% widthratio month.total month.count 1 %}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center">No earnings data available</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <h5 class="mb-3 mt-4">Your Buses</h5>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Bus Name</th>
+                                    <th>Number</th>
+                                    <th>Type</th>
+                                    <th>Total Seats</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for bus in buses %}
+                                <tr>
+                                    <td>{{ bus.bus_name }}</td>
+                                    <td>{{ bus.bus_number }}</td>
+                                    <td>{{ bus.get_bus_type_display }}</td>
+                                    <td>{{ bus.total_seats }}</td>
+                                    <td>
+                                        {% if bus.is_active %}
+                                            <span class="badge bg-success">Active</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">Inactive</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="5" class="text-center">No buses added yet</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

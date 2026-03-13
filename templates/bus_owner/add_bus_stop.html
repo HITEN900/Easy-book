@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Bus Stop - Easy Book{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Add Stop for Route: {{ route.source }} to {{ route.destination }}</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="stop_name" class="form-label">Stop Name</label>
+                            <input type="text" class="form-control" id="stop_name" name="stop_name" required>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="stop_order" class="form-label">Stop Order</label>
+                                <input type="number" class="form-control" id="stop_order" name="stop_order" min="1" required>
+                                <small class="text-muted">Order of stop in the journey (1,2,3...)</small>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="stop_duration" class="form-label">Stop Duration (minutes)</label>
+                                <input type="number" class="form-control" id="stop_duration" name="stop_duration" value="5" min="1">
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="arrival_time" class="form-label">Arrival Time</label>
+                                <input type="time" class="form-control" id="arrival_time" name="arrival_time" required>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="departure_time" class="form-label">Departure Time</label>
+                                <input type="time" class="form-control" id="departure_time" name="departure_time" required>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary">Add Stop</button>
+                            <a href="{% url 'manage_routes' route.bus.id %}" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

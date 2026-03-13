@@ -1,0 +1,365 @@
+{% extends 'base.html' %}
+
+{% block title %}Bus Owner Dashboard - Easy Book{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-3">
+            <!-- Profile Card -->
+            <div class="card">
+                <div class="card-body text-center">
+                    <i class="fas fa-bus fa-4x text-primary mb-3"></i>
+                    <h5>{{ user.get_full_name|default:user.username }}</h5>
+                    <p class="text-muted">Bus Owner</p>
+                    <p><i class="fas fa-envelope"></i> {{ user.email }}</p>
+                    <p><i class="fas fa-phone"></i> {{ user.phone }}</p>
+                </div>
+            </div>
+            
+            <!-- Quick Actions Card -->
+            <div class="card mt-3">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <a href="{% url 'add_bus' %}" class="btn btn-primary btn-block mb-2 w-100">
+                        <i class="fas fa-plus-circle"></i> Add New Bus
+                    </a>
+                    <a href="{% url 'manage_buses' %}" class="btn btn-success btn-block mb-2 w-100">
+                        <i class="fas fa-edit"></i> Manage Buses
+                    </a>
+                    <a href="{% url 'bus_bookings' %}" class="btn btn-info btn-block mb-2 w-100">
+                        <i class="fas fa-calendar-check"></i> View Bookings
+                    </a>
+                    <a href="{% url 'earnings' %}" class="btn btn-warning btn-block mb-2 w-100">
+                        <i class="fas fa-rupee-sign"></i> Earnings Report
+                    </a>
+                    <a href="{% url 'owner_booking_stats' %}" class="btn btn-secondary btn-block mb-2 w-100">
+                        <i class="fas fa-chart-bar"></i> Booking Statistics
+                    </a>
+                    <a href="{% url 'add_bank_details' %}" class="btn btn-dark btn-block mb-2 w-100">
+                        <i class="fas fa-university"></i> Bank Details (for Payments)
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Bank Details Status Card -->
+            <div class="card mt-3">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Payment Status</h5>
+                </div>
+                <div class="card-body">
+                    {% if user.bank_details %}
+                        <div class="alert alert-success mb-0">
+                            <i class="fas fa-check-circle"></i> Bank details added
+                            <br>
+                            <small>UPI: {{ user.bank_details.upi_id }}</small>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-warning mb-0">
+                            <i class="fas fa-exclamation-triangle"></i> Bank details not added
+                            <br>
+                            <small>Customers cannot pay until you add bank details</small>
+                            <a href="{% url 'add_bank_details' %}" class="btn btn-sm btn-primary mt-2 w-100">
+                                Add Bank Details Now
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-9">
+            <!-- Statistics Cards Row 1 -->
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-0">Total Buses</h6>
+                                    <h2 class="mb-0">{{ total_buses|default:"0" }}</h2>
+                                </div>
+                                <i class="fas fa-bus fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-success text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-0">Active Buses</h6>
+                                    <h2 class="mb-0">{{ active_buses|default:"0" }}</h2>
+                                </div>
+                                <i class="fas fa-check-circle fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-info text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-0">Total Routes</h6>
+                                    <h2 class="mb-0">{{ total_routes|default:"0" }}</h2>
+                                </div>
+                                <i class="fas fa-route fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-warning text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-0">Total Bookings</h6>
+                                    <h2 class="mb-0">{{ total_bookings|default:"0" }}</h2>
+                                </div>
+                                <i class="fas fa-ticket-alt fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Statistics Cards Row 2 -->
+            <div class="row mt-2">
+                <div class="col-md-4 mb-3">
+                    <div class="card bg-secondary text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-0">Active Routes</h6>
+                                    <h2 class="mb-0">{{ active_routes|default:"0" }}</h2>
+                                </div>
+                                <i class="fas fa-road fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 mb-3">
+                    <div class="card bg-danger text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-0">Total Earnings</h6>
+                                    <h2 class="mb-0">₹{{ total_earnings|floatformat:"0"|default:"0" }}</h2>
+                                </div>
+                                <i class="fas fa-rupee-sign fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 mb-3">
+                    <div class="card bg-dark text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-0">Avg per Booking</h6>
+                                    <h2 class="mb-0">
+                                        {% if total_bookings and total_bookings > 0 %}
+                                            ₹{% widthratio total_earnings total_bookings 1 %}
+                                        {% else %}
+                                            ₹0
+                                        {% endif %}
+                                    </h2>
+                                </div>
+                                <i class="fas fa-chart-line fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recent Buses Section -->
+            <div class="card mt-3">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Recent Buses</h5>
+                    <a href="{% url 'manage_buses' %}" class="btn btn-light btn-sm">View All</a>
+                </div>
+                <div class="card-body">
+                    {% if recent_buses %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Bus Name</th>
+                                        <th>Number</th>
+                                        <th>Type</th>
+                                        <th>Seats</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for bus in recent_buses %}
+                                    <tr>
+                                        <td>{{ bus.bus_name }}</td>
+                                        <td>{{ bus.bus_number }}</td>
+                                        <td>
+                                            {% if bus.bus_type == 'ac' %}AC
+                                            {% elif bus.bus_type == 'non_ac' %}Non AC
+                                            {% elif bus.bus_type == 'sleeper' %}Sleeper
+                                            {% elif bus.bus_type == 'seater' %}Seater
+                                            {% elif bus.bus_type == 'ac_sleeper' %}AC Sleeper
+                                            {% elif bus.bus_type == 'luxury' %}Luxury
+                                            {% else %}{{ bus.bus_type }}
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ bus.total_seats }}</td>
+                                        <td>
+                                            {% if bus.is_active %}
+                                                <span class="badge bg-success">Active</span>
+                                            {% else %}
+                                                <span class="badge bg-danger">Inactive</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <a href="{% url 'manage_routes' bus.id %}" class="btn btn-sm btn-info">
+                                                <i class="fas fa-route"></i> Routes
+                                            </a>
+                                            <a href="{% url 'bus_seat_layout' bus.id %}" class="btn btn-sm btn-success">
+                                                <i class="fas fa-chair"></i> Seats
+                                            </a>
+                                            <a href="{% url 'edit_bus' bus.id %}" class="btn btn-sm btn-primary">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-bus fa-3x text-muted mb-3"></i>
+                            <p>You haven't added any buses yet.</p>
+                            <a href="{% url 'add_bus' %}" class="btn btn-primary">Add Your First Bus</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Recent Bookings Section -->
+            <div class="card mt-3">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Recent Bookings</h5>
+                    <a href="{% url 'bus_bookings' %}" class="btn btn-light btn-sm">View All</a>
+                </div>
+                <div class="card-body">
+                    {% if recent_bookings %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Booking Ref</th>
+                                        <th>Customer</th>
+                                        <th>Route</th>
+                                        <th>Seats</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for booking in recent_bookings %}
+                                    <tr>
+                                        <td>{{ booking.booking_reference }}</td>
+                                        <td>{{ booking.user.username }}</td>
+                                        <td>{{ booking.route.source }} → {{ booking.route.destination }}</td>
+                                        <td>
+                                            {% for seat in booking.booked_seats.all %}
+                                                <span class="badge bg-primary">{{ seat.seat.seat_number }}</span>
+                                            {% endfor %}
+                                        </td>
+                                        <td>₹{{ booking.total_amount }}</td>
+                                        <td>
+                                            <span class="badge 
+                                                {% if booking.status == 'confirmed' %}bg-success
+                                                {% elif booking.status == 'cancelled' %}bg-danger
+                                                {% elif booking.status == 'completed' %}bg-info
+                                                {% else %}bg-warning{% endif %}">
+                                                {{ booking.status|title }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-ticket-alt fa-3x text-muted mb-3"></i>
+                            <p>No bookings yet.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: none;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.btn-block {
+    display: block;
+    width: 100%;
+}
+
+.table td, .table th {
+    vertical-align: middle;
+}
+
+.badge {
+    font-size: 0.8rem;
+    padding: 5px 10px;
+}
+
+.bg-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+}
+
+.bg-success {
+    background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%) !important;
+}
+
+.bg-info {
+    background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%) !important;
+}
+
+.bg-warning {
+    background: linear-gradient(135deg, #f6d365 0%, #fda085 100%) !important;
+}
+
+.bg-danger {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) !important;
+}
+
+.bg-secondary {
+    background: linear-gradient(135deg, #757f9a 0%, #d7dde8 100%) !important;
+}
+
+.bg-dark {
+    background: linear-gradient(135deg, #2c3e50 0%, #4ca1af 100%) !important;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block title %}My Bookings - Easy Book{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">My Bookings</h4>
+                </div>
+                <div class="card-body">
+                    {% if bookings %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Booking Ref</th>
+                                        <th>Bus</th>
+                                        <th>Route</th>
+                                        <th>Journey Date</th>
+                                        <th>Seats</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for booking in bookings %}
+                                    <tr>
+                                        <td><strong>{{ booking.booking_reference }}</strong></td>
+                                        <td>{{ booking.route.bus.bus_name }}</td>
+                                        <td>{{ booking.route.source }} → {{ booking.route.destination }}</td>
+                                        <td>{{ booking.journey_date|date:"d M Y" }}<br>
+                                            <small class="text-muted">{{ booking.route.departure_time|date:"h:i A" }}</small>
+                                        </td>
+                                        <td>
+                                            {% for seat in booking.booked_seats.all %}
+                                                <span class="badge bg-primary">{{ seat.seat.seat_number }}</span>
+                                            {% endfor %}
+                                        </td>
+                                        <td>₹{{ booking.total_amount }}</td>
+                                        <td>
+                                            <span class="badge 
+                                                {% if booking.status == 'confirmed' %}bg-success
+                                                {% elif booking.status == 'cancelled' %}bg-danger
+                                                {% elif booking.status == 'completed' %}bg-info
+                                                {% else %}bg-warning{% endif %}">
+                                                {{ booking.status|title }}
+                                            </span>
+                                        </td>
+                                        <td>
+    <a href="{% url 'booking_confirmation' booking.id %}" class="btn btn-sm btn-info">
+        <i class="fas fa-eye"></i> View
+    </a>
+    <a href="{% url 'download_ticket' booking.id %}" class="btn btn-sm btn-success">
+        <i class="fas fa-download"></i> PDF
+    </a>
+    {% if booking.status == 'confirmed' or booking.status == 'pending' %}
+        <a href="{% url 'cancel_booking' booking.id %}" 
+           class="btn btn-sm btn-danger"
+           onclick="return confirm('Are you sure you want to cancel this booking?')">
+            <i class="fas fa-times"></i> Cancel
+        </a>
+    {% endif %}
+</td>
+                                        <td>
+                                            <a href="{% url 'booking_confirmation' booking.id %}" class="btn btn-sm btn-info">
+                                                <i class="fas fa-eye"></i> View
+                                            </a>
+                                            {% if booking.status == 'confirmed' or booking.status == 'pending' %}
+                                                <a href="{% url 'cancel_booking' booking.id %}" 
+                                                   class="btn btn-sm btn-danger"
+                                                   onclick="return confirm('Are you sure you want to cancel this booking?')">
+                                                    <i class="fas fa-times"></i> Cancel
+                                                </a>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-ticket-alt fa-4x text-muted mb-3"></i>
+                            <h5>No bookings found</h5>
+                            <p>You haven't made any bookings yet.</p>
+                            <a href="{% url 'home' %}" class="btn btn-primary">Search Buses</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

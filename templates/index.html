@@ -1,0 +1,1306 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Easy Book - India's Best Bus Booking Platform{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary: #4361ee;
+        --secondary: #3f37c9;
+        --accent: #4cc9f0;
+        --success: #28a745;
+        --danger: #f72585;
+        --warning: #f8961e;
+        --dark: #1a1a2e;
+        --light: #f8f9fa;
+    }
+
+    /* Hero Slider */
+    .hero-slider {
+        position: relative;
+        height: 600px;
+        overflow: hidden;
+    }
+
+    .slide {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        transition: opacity 0.8s ease-in-out;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+
+    .slide.active {
+        opacity: 1;
+    }
+
+    .slide-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 100%);
+    }
+
+    .slide-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        color: white;
+        z-index: 2;
+        width: 80%;
+        max-width: 800px;
+    }
+
+    .slide-content h1 {
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin-bottom: 20px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        animation: fadeInUp 1s ease;
+    }
+
+    .slide-content p {
+        font-size: 1.3rem;
+        margin-bottom: 30px;
+        opacity: 0.95;
+        animation: fadeInUp 1s ease 0.2s both;
+    }
+
+    .slide-badge {
+        display: inline-block;
+        background: var(--primary);
+        color: white;
+        padding: 8px 20px;
+        border-radius: 50px;
+        font-weight: 600;
+        margin-bottom: 20px;
+        animation: fadeInUp 1s ease;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .slider-nav {
+        position: absolute;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 10px;
+        z-index: 10;
+    }
+
+    .slider-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.5);
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .slider-dot.active {
+        background: white;
+        transform: scale(1.3);
+    }
+
+    .slider-arrow {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 50px;
+        height: 50px;
+        background: rgba(255,255,255,0.2);
+        border: 2px solid white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+        transition: all 0.3s;
+        z-index: 10;
+    }
+
+    .slider-arrow:hover {
+        background: var(--primary);
+        border-color: var(--primary);
+    }
+
+    .slider-arrow.prev {
+        left: 30px;
+    }
+
+    .slider-arrow.next {
+        right: 30px;
+    }
+
+    /* Search Section */
+    .search-section {
+        margin-top: -80px;
+        position: relative;
+        z-index: 20;
+        padding: 0 20px;
+    }
+
+    .search-card {
+        background: white;
+        border-radius: 30px;
+        padding: 40px;
+        box-shadow: 0 30px 60px rgba(0,0,0,0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .search-title {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .search-title h2 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--dark);
+        margin-bottom: 10px;
+    }
+
+    .search-title p {
+        color: #6c757d;
+    }
+
+    .search-form {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr auto;
+        gap: 15px;
+    }
+
+    .search-input-group {
+        position: relative;
+    }
+
+    .search-input-group i {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--primary);
+        font-size: 1.2rem;
+    }
+
+    .search-input-group input {
+        width: 100%;
+        padding: 15px 15px 15px 45px;
+        border: 2px solid #e9ecef;
+        border-radius: 15px;
+        font-size: 1rem;
+        transition: all 0.3s;
+    }
+
+    .search-input-group input:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.1);
+        outline: none;
+    }
+
+    .search-btn {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        border: none;
+        padding: 15px 40px;
+        border-radius: 15px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        white-space: nowrap;
+    }
+
+    .search-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 30px rgba(67, 97, 238, 0.3);
+    }
+
+    /* Features Section */
+    .features-section {
+        padding: 80px 0;
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    }
+
+    .section-title {
+        text-align: center;
+        margin-bottom: 50px;
+    }
+
+    .section-title h2 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--dark);
+        margin-bottom: 15px;
+    }
+
+    .section-title p {
+        color: #6c757d;
+        font-size: 1.1rem;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 30px;
+    }
+
+    .feature-card {
+        background: white;
+        border-radius: 30px;
+        padding: 40px 30px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        transition: all 0.3s;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(67, 97, 238, 0.15);
+    }
+
+    .feature-card:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+    }
+
+    .feature-icon {
+        width: 100px;
+        height: 100px;
+        background: linear-gradient(135deg, rgba(67, 97, 238, 0.1), rgba(63, 55, 201, 0.1));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 25px;
+        font-size: 2.5rem;
+        color: var(--primary);
+        transition: all 0.3s;
+    }
+
+    .feature-card:hover .feature-icon {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        transform: scale(1.1) rotate(360deg);
+    }
+
+    .feature-card h3 {
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin-bottom: 15px;
+        color: var(--dark);
+    }
+
+    .feature-card p {
+        color: #6c757d;
+        line-height: 1.6;
+    }
+
+    /* Popular Routes */
+    .routes-section {
+        padding: 80px 0;
+    }
+
+    .routes-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 25px;
+    }
+
+    .route-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        transition: all 0.3s;
+        text-decoration: none;
+        color: inherit;
+        display: block;
+    }
+
+    .route-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(67, 97, 238, 0.15);
+    }
+
+    .route-image {
+        height: 160px;
+        background-size: cover;
+        background-position: center;
+        position: relative;
+    }
+
+    .route-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: var(--primary);
+        color: white;
+        padding: 5px 15px;
+        border-radius: 30px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .route-content {
+        padding: 20px;
+    }
+
+    .route-cities {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 15px;
+    }
+
+    .city {
+        text-align: center;
+    }
+
+    .city .name {
+        font-weight: 700;
+        font-size: 1.2rem;
+        color: var(--dark);
+    }
+
+    .city .code {
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+
+    .route-arrow {
+        color: var(--primary);
+        font-size: 1.2rem;
+    }
+
+    .route-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 15px;
+        border-top: 2px dashed #e9ecef;
+    }
+
+    .price {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary);
+    }
+
+    .price small {
+        font-size: 0.9rem;
+        font-weight: 400;
+        color: #6c757d;
+    }
+
+    .duration {
+        color: #6c757d;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    /* Offers Section */
+    .offers-section {
+        padding: 60px 0;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+    }
+
+    .offers-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 25px;
+        margin-top: 40px;
+    }
+
+    .offer-card {
+        background: rgba(255,255,255,0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 20px;
+        padding: 30px;
+        transition: all 0.3s;
+    }
+
+    .offer-card:hover {
+        transform: translateY(-5px);
+        background: rgba(255,255,255,0.2);
+    }
+
+    .offer-icon {
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+    }
+
+    .offer-card h3 {
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+
+    .offer-card p {
+        opacity: 0.9;
+        margin-bottom: 20px;
+    }
+
+    .offer-code {
+        background: rgba(0,0,0,0.3);
+        padding: 8px 15px;
+        border-radius: 30px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        display: inline-block;
+    }
+
+    /* App Download */
+    .app-section {
+        padding: 80px 0;
+    }
+
+    .app-card {
+        background: linear-gradient(135deg, #1a1a2e, #16213e);
+        border-radius: 40px;
+        padding: 60px;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .app-card:before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 300px;
+        height: 300px;
+        background: rgba(255,255,255,0.05);
+        border-radius: 50%;
+    }
+
+    .app-card:after {
+        content: '';
+        position: absolute;
+        bottom: -50%;
+        left: -50%;
+        width: 400px;
+        height: 400px;
+        background: rgba(255,255,255,0.05);
+        border-radius: 50%;
+    }
+
+    .app-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .app-content h2 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+    }
+
+    .app-content p {
+        font-size: 1.2rem;
+        opacity: 0.9;
+        margin-bottom: 30px;
+        max-width: 500px;
+    }
+
+    .app-buttons {
+        display: flex;
+        gap: 15px;
+    }
+
+    .app-btn {
+        background: rgba(255,255,255,0.2);
+        border: 1px solid rgba(255,255,255,0.3);
+        color: white;
+        padding: 12px 30px;
+        border-radius: 50px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.3s;
+    }
+
+    .app-btn:hover {
+        background: white;
+        color: var(--dark);
+        transform: translateY(-3px);
+    }
+
+    .qr-code {
+        text-align: center;
+        padding: 20px;
+        background: white;
+        border-radius: 20px;
+        display: inline-block;
+    }
+
+    .qr-code img {
+        width: 120px;
+        height: 120px;
+    }
+
+    /* Testimonials */
+    .testimonials-section {
+        padding: 80px 0;
+        background: #f8f9fa;
+    }
+
+    .testimonials-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 25px;
+        margin-top: 40px;
+    }
+
+    .testimonial-card {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    }
+
+    .testimonial-rating {
+        color: #ffc107;
+        margin-bottom: 15px;
+    }
+
+    .testimonial-text {
+        font-size: 1rem;
+        line-height: 1.6;
+        color: #4a5568;
+        margin-bottom: 20px;
+        font-style: italic;
+    }
+
+    .testimonial-author {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .author-avatar {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+    }
+
+    .author-info h4 {
+        font-weight: 700;
+        margin-bottom: 5px;
+        color: var(--dark);
+    }
+
+    .author-info p {
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+
+    /* CTA Section */
+    .cta-section {
+        padding: 60px 0;
+    }
+
+    .cta-card {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border-radius: 40px;
+        padding: 60px;
+        color: white;
+        text-align: center;
+    }
+
+    .cta-card h2 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+    }
+
+    .cta-card p {
+        font-size: 1.2rem;
+        opacity: 0.95;
+        margin-bottom: 30px;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .cta-btn {
+        background: white;
+        color: var(--primary);
+        border: none;
+        padding: 15px 50px;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+    }
+
+    .cta-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .hero-slider {
+            height: 500px;
+        }
+
+        .slide-content h1 {
+            font-size: 2.2rem;
+        }
+
+        .search-form {
+            grid-template-columns: 1fr;
+        }
+
+        .slider-arrow {
+            width: 40px;
+            height: 40px;
+            font-size: 1rem;
+        }
+
+        .slider-arrow.prev {
+            left: 10px;
+        }
+
+        .slider-arrow.next {
+            right: 10px;
+        }
+
+        .app-card {
+            padding: 30px;
+        }
+
+        .app-buttons {
+            flex-direction: column;
+        }
+
+        .cta-card {
+            padding: 30px;
+        }
+
+        .cta-card h2 {
+            font-size: 2rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Slider -->
+<div class="hero-slider" id="heroSlider">
+    <!-- Slide 1 - Delhi to Jaipur -->
+    <div class="slide active" style="background-image: url('https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?ixlib=rb-4.0.3&auto=format&fit=crop&w=2069&q=80');">
+        <div class="slide-overlay"></div>
+        <div class="slide-content">
+            <span class="slide-badge">🇮🇳 India's Best Bus Service</span>
+            <h1>Safe & Comfortable Journey</h1>
+            <p>Book buses from Delhi to Jaipur starting at just ₹399</p>
+        </div>
+    </div>
+    
+    <!-- Slide 2 - Mumbai to Pune -->
+    <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1570125909232-eb263c188f7e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2071&q=80');">
+        <div class="slide-overlay"></div>
+        <div class="slide-content">
+            <span class="slide-badge">⚡ Lightning Fast Booking</span>
+            <h1>Explore Beautiful Destinations</h1>
+            <p>Mumbai to Pune in just 3 hours • AC Buses available</p>
+        </div>
+    </div>
+    
+    <!-- Slide 3 - Bangalore to Mysore - FIXED IMAGE URL -->
+    <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1548013146-72479768bada?ixlib=rb-4.0.3&auto=format&fit=crop&w=2076&q=80');">
+        <div class="slide-overlay"></div>
+        <div class="slide-content">
+            <span class="slide-badge">✨ Luxury Travel Experience</span>
+            <h1>Modern Fleet of Buses</h1>
+            <p>Bangalore to Mysore • Volvo AC • Starting ₹299</p>
+        </div>
+    </div>
+    
+    <!-- Slide 4 - Chennai to Pondicherry -->
+    <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1522932462653-658cb4a6e6a4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2071&q=80');">
+        <div class="slide-overlay"></div>
+        <div class="slide-content">
+            <span class="slide-badge">🌊 Coastal Routes</span>
+            <h1>Scenic Coastal Journeys</h1>
+            <p>Chennai to Pondicherry • Starting ₹249</p>
+        </div>
+    </div>
+    
+    <!-- Navigation Arrows -->
+    <div class="slider-arrow prev" onclick="changeSlide(-1)">
+        <i class="fas fa-chevron-left"></i>
+    </div>
+    <div class="slider-arrow next" onclick="changeSlide(1)">
+        <i class="fas fa-chevron-right"></i>
+    </div>
+    
+    <!-- Navigation Dots -->
+    <div class="slider-nav" id="sliderNav">
+        <span class="slider-dot active" onclick="goToSlide(0)"></span>
+        <span class="slider-dot" onclick="goToSlide(1)"></span>
+        <span class="slider-dot" onclick="goToSlide(2)"></span>
+        <span class="slider-dot" onclick="goToSlide(3)"></span>
+    </div>
+</div>
+
+<!-- Search Section -->
+<div class="container search-section">
+    <div class="search-card">
+        <div class="search-title">
+            <h2>Find Your Perfect Journey</h2>
+            <p>Search among 1000+ buses across India</p>
+        </div>
+        
+        <form class="search-form" id="searchForm" action="{% url 'search_buses' %}" method="GET">
+            <div class="search-input-group">
+                <i class="fas fa-map-marker-alt"></i>
+                <input type="text" name="from" placeholder="From (e.g., Mumbai)" required value="{{ request.GET.from|default:'' }}">
+            </div>
+            
+            <div class="search-input-group">
+                <i class="fas fa-map-marker-alt"></i>
+                <input type="text" name="to" placeholder="To (e.g., Pune)" required value="{{ request.GET.to|default:'' }}">
+            </div>
+            
+            <div class="search-input-group">
+                <i class="fas fa-calendar"></i>
+                <input type="date" name="date" id="journeyDate" required value="{{ request.GET.date|default:'' }}">
+            </div>
+            
+            <button type="submit" class="search-btn">
+                <i class="fas fa-search"></i>
+                Search Buses
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- Features Section -->
+<section class="features-section">
+    <div class="container">
+        <div class="section-title">
+            <h2>Why Choose Easy Book?</h2>
+            <p>We provide the best bus booking experience in India</p>
+        </div>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-bus"></i>
+                </div>
+                <h3>Wide Network</h3>
+                <p>1000+ bus routes across India with the best operators</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3>Safe Travel</h3>
+                <p>Verified buses, trained drivers, and COVID-safe protocols</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <h3>24/7 Support</h3>
+                <p>Round-the-clock customer service for all your needs</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-wallet"></i>
+                </div>
+                <h3>Best Prices</h3>
+                <p>Guaranteed lowest fares with no hidden charges</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <h3>Easy Booking</h3>
+                <p>Book tickets in just 3 simple steps</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-ticket-alt"></i>
+                </div>
+                <h3>Instant Refunds</h3>
+                <p>Fast refunds to your original payment method</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Popular Routes -->
+<section class="routes-section">
+    <div class="container">
+        <div class="section-title">
+            <h2>Popular Bus Routes</h2>
+            <p>Most booked routes by our customers</p>
+        </div>
+        
+        <div class="routes-grid">
+            <a href="{% url 'search_buses' %}?from=Mumbai&to=Pune&date={{ today|date:'Y-m-d' }}" class="route-card">
+                <div class="route-image" style="background-image: url('https://images.unsplash.com/photo-1565019011515-64dbaee0a10e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');">
+                    <span class="route-badge">Most Booked</span>
+                </div>
+                <div class="route-content">
+                    <div class="route-cities">
+                        <div class="city">
+                            <div class="name">Mumbai</div>
+                            <div class="code">BOM</div>
+                        </div>
+                        <div class="route-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                        <div class="city">
+                            <div class="name">Pune</div>
+                            <div class="code">PNQ</div>
+                        </div>
+                    </div>
+                    <div class="route-info">
+                        <div class="price">₹299 <small>onwards</small></div>
+                        <div class="duration"><i class="far fa-clock"></i> 3h 30m</div>
+                    </div>
+                </div>
+            </a>
+            
+            <a href="{% url 'search_buses' %}?from=Delhi&to=Jaipur&date={{ today|date:'Y-m-d' }}" class="route-card">
+                <div class="route-image" style="background-image: url('https://images.unsplash.com/photo-1587474260584-136574528ed5?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');">
+                    <span class="route-badge">Popular</span>
+                </div>
+                <div class="route-content">
+                    <div class="route-cities">
+                        <div class="city">
+                            <div class="name">Delhi</div>
+                            <div class="code">DEL</div>
+                        </div>
+                        <div class="route-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                        <div class="city">
+                            <div class="name">Jaipur</div>
+                            <div class="code">JAI</div>
+                        </div>
+                    </div>
+                    <div class="route-info">
+                        <div class="price">₹399 <small>onwards</small></div>
+                        <div class="duration"><i class="far fa-clock"></i> 5h 30m</div>
+                    </div>
+                </div>
+            </a>
+            
+            <a href="{% url 'search_buses' %}?from=Bangalore&to=Mysore&date={{ today|date:'Y-m-d' }}" class="route-card">
+                <div class="route-image" style="background-image: url('https://images.unsplash.com/photo-1596178065887-1198b6148b2b?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');">
+                    <span class="route-badge">Weekend Special</span>
+                </div>
+                <div class="route-content">
+                    <div class="route-cities">
+                        <div class="city">
+                            <div class="name">Bangalore</div>
+                            <div class="code">BLR</div>
+                        </div>
+                        <div class="route-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                        <div class="city">
+                            <div class="name">Mysore</div>
+                            <div class="code">MYS</div>
+                        </div>
+                    </div>
+                    <div class="route-info">
+                        <div class="price">₹199 <small>onwards</small></div>
+                        <div class="duration"><i class="far fa-clock"></i> 3h 15m</div>
+                    </div>
+                </div>
+            </a>
+            
+            <a href="{% url 'search_buses' %}?from=Chennai&to=Pondicherry&date={{ today|date:'Y-m-d' }}" class="route-card">
+                <div class="route-image" style="background-image: url('https://images.unsplash.com/photo-1589802829985-817e51171b92?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');">
+                    <span class="route-badge">Scenic</span>
+                </div>
+                <div class="route-content">
+                    <div class="route-cities">
+                        <div class="city">
+                            <div class="name">Chennai</div>
+                            <div class="code">MAA</div>
+                        </div>
+                        <div class="route-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                        <div class="city">
+                            <div class="name">Pondicherry</div>
+                            <div class="code">PNY</div>
+                        </div>
+                    </div>
+                    <div class="route-info">
+                        <div class="price">₹249 <small>onwards</small></div>
+                        <div class="duration"><i class="far fa-clock"></i> 4h 00m</div>
+                    </div>
+                </div>
+            </a>
+            
+            <a href="{% url 'search_buses' %}?from=Hyderabad&to=Bangalore&date={{ today|date:'Y-m-d' }}" class="route-card">
+                <div class="route-image" style="background-image: url('https://images.unsplash.com/photo-1565619624096-9f0c68ceb8a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');">
+                    <span class="route-badge">Night Buses</span>
+                </div>
+                <div class="route-content">
+                    <div class="route-cities">
+                        <div class="city">
+                            <div class="name">Hyderabad</div>
+                            <div class="code">HYD</div>
+                        </div>
+                        <div class="route-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                        <div class="city">
+                            <div class="name">Bangalore</div>
+                            <div class="code">BLR</div>
+                        </div>
+                    </div>
+                    <div class="route-info">
+                        <div class="price">₹599 <small>onwards</small></div>
+                        <div class="duration"><i class="far fa-clock"></i> 8h 00m</div>
+                    </div>
+                </div>
+            </a>
+            
+            <a href="{% url 'search_buses' %}?from=Ahmedabad&to=Surat&date={{ today|date:'Y-m-d' }}" class="route-card">
+                <div class="route-image" style="background-image: url('https://images.unsplash.com/photo-1570168007204-dfb528c6958f?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');">
+                    <span class="route-badge">Frequent</span>
+                </div>
+                <div class="route-content">
+                    <div class="route-cities">
+                        <div class="city">
+                            <div class="name">Ahmedabad</div>
+                            <div class="code">AMD</div>
+                        </div>
+                        <div class="route-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                        <div class="city">
+                            <div class="name">Surat</div>
+                            <div class="code">STV</div>
+                        </div>
+                    </div>
+                    <div class="route-info">
+                        <div class="price">₹199 <small>onwards</small></div>
+                        <div class="duration"><i class="far fa-clock"></i> 4h 30m</div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Offers Section -->
+<section class="offers-section">
+    <div class="container">
+        <div class="section-title text-white">
+            <h2 class="text-white">Special Offers</h2>
+            <p class="text-white-50">Grab exciting discounts on your bus bookings</p>
+        </div>
+        
+        <div class="offers-grid">
+            <div class="offer-card">
+                <div class="offer-icon">🎉</div>
+                <h3>First Booking Offer</h3>
+                <p>Get 20% off on your first bus booking</p>
+                <span class="offer-code">FIRST20</span>
+            </div>
+            
+            <div class="offer-card">
+                <div class="offer-icon">🚀</div>
+                <h3>Weekend Special</h3>
+                <p>15% off on all weekend journeys</p>
+                <span class="offer-code">WEEKEND15</span>
+            </div>
+            
+            <div class="offer-card">
+                <div class="offer-icon">👥</div>
+                <h3>Group Booking</h3>
+                <p>Book 4+ tickets & get 25% off</p>
+                <span class="offer-code">GROUP25</span>
+            </div>
+            
+            <div class="offer-card">
+                <div class="offer-icon">⭐</div>
+                <h3>Student Discount</h3>
+                <p>10% off for students with valid ID</p>
+                <span class="offer-code">STUDENT10</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- App Download Section -->
+<section class="app-section">
+    <div class="container">
+        <div class="app-card">
+            <div class="row align-items-center">
+                <div class="col-md-7">
+                    <div class="app-content">
+                        <h2>Download the Easy Book App</h2>
+                        <p>Get the best bus booking experience on your mobile. Book tickets, track your bus, and get exclusive app-only offers.</p>
+                        
+                        <div class="app-buttons">
+                            <a href="#" class="app-btn">
+                                <i class="fab fa-google-play fa-2x"></i>
+                                <div>
+                                    <small>Get it on</small>
+                                    <strong>Google Play</strong>
+                                </div>
+                            </a>
+                            
+                            <a href="#" class="app-btn">
+                                <i class="fab fa-apple fa-2x"></i>
+                                <div>
+                                    <small>Download on</small>
+                                    <strong>App Store</strong>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-5 text-center">
+                    <div class="qr-code">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://easybook.com/download" alt="Download App">
+                        <p class="mt-2 mb-0 text-dark">Scan to download</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials -->
+<section class="testimonials-section">
+    <div class="container">
+        <div class="section-title">
+            <h2>What Our Customers Say</h2>
+            <p>Real stories from happy travelers</p>
+        </div>
+        
+        <div class="testimonials-grid">
+            <div class="testimonial-card">
+                <div class="testimonial-rating">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                </div>
+                <p class="testimonial-text">"Excellent service! Booked Mumbai to Pune bus and the journey was very comfortable. Will definitely use Easy Book again."</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">R</div>
+                    <div class="author-info">
+                        <h4>Rahul Sharma</h4>
+                        <p>Mumbai</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="testimonial-card">
+                <div class="testimonial-rating">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                </div>
+                <p class="testimonial-text">"The booking process was so smooth! Got great discounts on Delhi-Jaipur route. The bus was on time and very clean."</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">P</div>
+                    <div class="author-info">
+                        <h4>Priya Singh</h4>
+                        <p>Delhi</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="testimonial-card">
+                <div class="testimonial-rating">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                </div>
+                <p class="testimonial-text">"Amazing customer support! Had to change my booking date and they helped me instantly. Highly recommended!"</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">A</div>
+                    <div class="author-info">
+                        <h4>Arjun Kumar</h4>
+                        <p>Bangalore</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Bus Owner CTA -->
+<section class="cta-section">
+    <div class="container">
+        <div class="cta-card">
+            <h2>Are you a Bus Operator?</h2>
+            <p>Join Easy Book and reach thousands of customers daily. List your buses for free and grow your business!</p>
+            <a href="{% url 'bus_owner_registration' %}" class="cta-btn">
+                <i class="fas fa-bus"></i>
+                Register Your Bus Now
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="features-section" style="padding: 60px 0;">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-3 col-6 mb-4">
+                <h2 class="display-4 fw-bold text-primary">1000+</h2>
+                <p class="text-muted">Daily Buses</p>
+            </div>
+            <div class="col-md-3 col-6 mb-4">
+                <h2 class="display-4 fw-bold text-primary">500+</h2>
+                <p class="text-muted">Cities Covered</p>
+            </div>
+            <div class="col-md-3 col-6 mb-4">
+                <h2 class="display-4 fw-bold text-primary">2M+</h2>
+                <p class="text-muted">Happy Customers</p>
+            </div>
+            <div class="col-md-3 col-6 mb-4">
+                <h2 class="display-4 fw-bold text-primary">4.5★</h2>
+                <p class="text-muted">App Store Rating</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+// Image Slider Functionality
+let currentSlide = 0;
+const slides = document.querySelectorAll('.slide');
+const dots = document.querySelectorAll('.slider-dot');
+let slideInterval;
+
+function showSlide(index) {
+    if (index >= slides.length) currentSlide = 0;
+    else if (index < 0) currentSlide = slides.length - 1;
+    else currentSlide = index;
+    
+    slides.forEach(slide => slide.classList.remove('active'));
+    dots.forEach(dot => dot.classList.remove('active'));
+    
+    slides[currentSlide].classList.add('active');
+    dots[currentSlide].classList.add('active');
+}
+
+function changeSlide(direction) {
+    showSlide(currentSlide + direction);
+    resetTimer();
+}
+
+function goToSlide(index) {
+    showSlide(index);
+    resetTimer();
+}
+
+function nextSlide() {
+    showSlide(currentSlide + 1);
+}
+
+function resetTimer() {
+    clearInterval(slideInterval);
+    slideInterval = setInterval(nextSlide, 5000);
+}
+
+// Start automatic sliding
+slideInterval = setInterval(nextSlide, 5000);
+
+// Set minimum date for journey date
+const today = new Date().toISOString().split('T')[0];
+document.getElementById('journeyDate').min = today;
+document.getElementById('journeyDate').value = today;
+
+// Handle search form submission with validation
+document.getElementById('searchForm').addEventListener('submit', function(e) {
+    const from = document.querySelector('input[name="from"]').value.trim();
+    const to = document.querySelector('input[name="to"]').value.trim();
+    
+    if (from.toLowerCase() === to.toLowerCase()) {
+        e.preventDefault();
+        alert('Source and destination cannot be the same!');
+    }
+});
+
+// Pause slider on hover
+const slider = document.querySelector('.hero-slider');
+slider.addEventListener('mouseenter', () => clearInterval(slideInterval));
+slider.addEventListener('mouseleave', () => {
+    slideInterval = setInterval(nextSlide, 5000);
+});
+
+// Initialize first slide
+showSlide(0);
+</script>
+{% endblock %}

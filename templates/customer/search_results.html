@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+
+{% block title %}Search Buses - Easy Book{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Search Form -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Search Buses</h4>
+                </div>
+                <div class="card-body">
+                    <form method="GET" action="{% url 'search_buses' %}" class="row g-3">
+                        <div class="col-md-4">
+                            <label for="from" class="form-label">From</label>
+                            <input type="text" class="form-control" id="from" name="from" value="{{ source|default:'' }}" placeholder="Enter source city" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="to" class="form-label">To</label>
+                            <input type="text" class="form-control" id="to" name="to" value="{{ destination|default:'' }}" placeholder="Enter destination city" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="date" class="form-label">Journey Date</label>
+                            <input type="date" class="form-control" id="date" name="date" value="{{ journey_date|default:'' }}" min="{{ current_date|date:'Y-m-d' }}" required>
+                        </div>
+                        <div class="col-md-1 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Results -->
+    {% if search_performed %}
+    <div class="row mt-4">
+        <div class="col-12">
+            <h4>Available Buses from {{ source }} to {{ destination }} on {{ journey_date }}</h4>
+            <p class="text-muted">{{ routes.count }} buses found</p>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        {% if routes %}
+            {% for route in routes %}
+            <div class="col-md-6 mb-4">
+                <div class="card bus-card h-100">
+                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">{{ route.bus.bus_name }}</h5>
+                        <span class="badge bg-light text-dark">{{ route.bus.bus_number }}</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 text-center">
+                                <i class="fas fa-bus fa-2x text-primary mb-2"></i>
+                                <h6>{{ route.bus.get_bus_type_display }}</h6>
+                                <p class="text-muted small">{{ route.bus.total_seats }} Seats</p>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="row">
+                                    <div class="col-5 text-center">
+                                        <strong>{{ route.departure_time|date:"h:i A" }}</strong>
+                                        <p class="text-muted small">{{ route.source }}</p>
+                                    </div>
+                                    <div class="col-2 text-center">
+                                        <i class="fas fa-arrow-right text-primary"></i>
+                                    </div>
+                                    <div class="col-5 text-center">
+                                        <strong>{{ route.arrival_time|date:"h:i A" }}</strong>
+                                        <p class="text-muted small">{{ route.destination }}</p>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <p class="mb-1"><i class="fas fa-clock text-primary"></i> {{ route.duration }}</p>
+                                        <p class="mb-1"><i class="fas fa-chair text-primary"></i> Available: {{ route.available_seats }}</p>
+                                    </div>
+                                    <div class="col-6">
+                                        <p class="mb-1"><i class="fas fa-tag text-primary"></i> Fare: <strong>₹{{ route.fare }}</strong></p>
+                                        <p class="mb-1"><i class="fas fa-calendar text-primary"></i> {{ route.operating_days }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-white">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <small class="text-muted">{{ route.bus.amenities|truncatechars:50 }}</small>
+                            </div>
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'bus_details' route.id %}" class="btn btn-primary">
+                                    <i class="fas fa-ticket-alt"></i> View Seats
+                                </a>
+                            {% else %}
+                                <a href="{% url 'login' %}?next={% url 'bus_details' route.id %}" class="btn btn-primary">
+                                    <i class="fas fa-sign-in-alt"></i> Login to Book
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12">
+                <div class="alert alert-info text-center">
+                    <i class="fas fa-info-circle fa-2x mb-3"></i>
+                    <h5>No buses available for this route on the selected date.</h5>
+                    <p>Please try different dates or cities.</p>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+
+<style>
+.bus-card {
+    border: none;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+.bus-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+}
+.card-header {
+    border-bottom: none;
+}
+</style>
+
+<script>
+document.getElementById('date').min = new Date().toISOString().split('T')[0];
+</script>
+{% endblock %}

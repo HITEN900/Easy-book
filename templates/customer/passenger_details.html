@@ -1,0 +1,621 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Passenger Details - Easy Book{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary-color: #4361ee;
+        --secondary-color: #3f37c9;
+        --success-color: #4cc9f0;
+        --danger-color: #f72585;
+        --warning-color: #f8961e;
+        --light-bg: #f8f9fa;
+        --dark-text: #2b2d42;
+        --border-radius: 16px;
+        --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        --hover-shadow: 0 15px 40px rgba(67, 97, 238, 0.15);
+    }
+
+    body {
+        background-color: #f5f7fa;
+    }
+
+    .page-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 40px 0;
+        margin-bottom: 40px;
+        border-radius: 0 0 50px 50px;
+        color: white;
+        text-align: center;
+    }
+
+    .page-header h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .page-header p {
+        font-size: 1.1rem;
+        opacity: 0.95;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .progress-steps {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 40px;
+        padding: 0 20px;
+    }
+
+    .step {
+        display: flex;
+        align-items: center;
+        position: relative;
+    }
+
+    .step-circle {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: white;
+        border: 2px solid #dee2e6;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        color: #6c757d;
+        z-index: 1;
+    }
+
+    .step.completed .step-circle {
+        background: var(--success-color);
+        border-color: var(--success-color);
+        color: white;
+    }
+
+    .step.active .step-circle {
+        background: var(--primary-color);
+        border-color: var(--primary-color);
+        color: white;
+        box-shadow: 0 0 0 5px rgba(67, 97, 238, 0.2);
+    }
+
+    .step-label {
+        margin-left: 10px;
+        font-weight: 500;
+        color: var(--dark-text);
+    }
+
+    .step-line {
+        width: 100px;
+        height: 2px;
+        background: #dee2e6;
+        margin: 0 15px;
+    }
+
+    .passenger-card {
+        background: white;
+        border: none;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        transition: all 0.3s ease;
+        margin-bottom: 25px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .passenger-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--hover-shadow);
+    }
+
+    .passenger-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    }
+
+    .passenger-header {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        padding: 15px 20px;
+        border-bottom: 2px solid rgba(67, 97, 238, 0.1);
+    }
+
+    .passenger-header h5 {
+        margin: 0;
+        font-weight: 600;
+        color: var(--dark-text);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .passenger-header i {
+        color: var(--primary-color);
+        font-size: 1.2rem;
+    }
+
+    .passenger-body {
+        padding: 25px;
+    }
+
+    .form-label {
+        font-weight: 500;
+        color: var(--dark-text);
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .form-label i {
+        color: var(--primary-color);
+    }
+
+    .form-control, .form-select {
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        padding: 12px 15px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.1);
+        outline: none;
+    }
+
+    .summary-card {
+        background: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        position: sticky;
+        top: 20px;
+        overflow: hidden;
+    }
+
+    .summary-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .summary-header h4 {
+        margin: 0;
+        font-weight: 600;
+    }
+
+    .summary-body {
+        padding: 25px;
+    }
+
+    .journey-card {
+        background: var(--light-bg);
+        border-radius: 12px;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+    .route-points {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 15px;
+    }
+
+    .point {
+        text-align: center;
+        flex: 1;
+    }
+
+    .point .city {
+        font-weight: 700;
+        font-size: 1.2rem;
+        color: var(--dark-text);
+        margin-bottom: 5px;
+    }
+
+    .point .time {
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+
+    .arrow {
+        color: var(--primary-color);
+        font-size: 1.5rem;
+        margin: 0 15px;
+    }
+
+    .bus-info {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 15px 0;
+        border-top: 2px dashed #dee2e6;
+        border-bottom: 2px dashed #dee2e6;
+        margin: 15px 0;
+    }
+
+    .bus-icon {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+    }
+
+    .bus-name {
+        font-weight: 600;
+        color: var(--dark-text);
+        margin-bottom: 3px;
+    }
+
+    .bus-number {
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+
+    .seat-badge {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        padding: 8px 15px;
+        border-radius: 30px;
+        font-weight: 500;
+        display: inline-block;
+        margin: 3px;
+        font-size: 0.9rem;
+        box-shadow: 0 2px 5px rgba(67, 97, 238, 0.2);
+    }
+
+    .fare-breakdown {
+        background: var(--light-bg);
+        border-radius: 12px;
+        padding: 15px;
+        margin-top: 20px;
+    }
+
+    .fare-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        padding: 5px 0;
+    }
+
+    .fare-item.total {
+        border-top: 2px solid #dee2e6;
+        margin-top: 10px;
+        padding-top: 15px;
+        font-weight: 700;
+        font-size: 1.1rem;
+    }
+
+    .total-amount {
+        color: var(--primary-color);
+        font-size: 1.4rem;
+        font-weight: 700;
+    }
+
+    .btn-proceed {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 15px 30px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        width: 100%;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .btn-proceed:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(67, 97, 238, 0.4);
+    }
+
+    .btn-back {
+        background: white;
+        color: var(--dark-text);
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        padding: 15px 30px;
+        font-size: 1.1rem;
+        font-weight: 500;
+        width: 100%;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 15px;
+    }
+
+    .btn-back:hover {
+        background: var(--light-bg);
+        border-color: var(--primary-color);
+    }
+
+    @media (max-width: 768px) {
+        .step-label {
+            display: none;
+        }
+        .step-line {
+            width: 40px;
+        }
+        .page-header h1 {
+            font-size: 2rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header">
+    <div class="container">
+        <h1><i class="fas fa-users me-3"></i>Passenger Details</h1>
+        <p>Please provide information for all passengers</p>
+    </div>
+</div>
+
+<div class="container mb-5">
+    <!-- Progress Steps -->
+    <div class="progress-steps">
+        <div class="step completed">
+            <div class="step-circle">1</div>
+            <span class="step-label">Select Seats</span>
+        </div>
+        <div class="step-line"></div>
+        <div class="step active">
+            <div class="step-circle">2</div>
+            <span class="step-label">Passenger Details</span>
+        </div>
+        <div class="step-line"></div>
+        <div class="step">
+            <div class="step-circle">3</div>
+            <span class="step-label">Payment</span>
+        </div>
+        <div class="step-line"></div>
+        <div class="step">
+            <div class="step-circle">4</div>
+            <span class="step-label">Confirmation</span>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <form method="POST" id="passengerForm">
+                {% csrf_token %}
+                
+                {% for seat in seats %}
+                <div class="passenger-card">
+                    <div class="passenger-header">
+                        <h5>
+                            <i class="fas fa-chair"></i>
+                            Passenger for Seat {{ seat.seat_number }}
+                            <span class="badge bg-primary ms-2">{{ seat.get_seat_type_display }}</span>
+                        </h5>
+                    </div>
+                    <div class="passenger-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">
+                                    <i class="fas fa-user"></i> Full Name <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" class="form-control" name="passenger_name[]" 
+                                       placeholder="Enter passenger's full name" required>
+                            </div>
+                            
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label">
+                                    <i class="fas fa-calendar-alt"></i> Age <span class="text-danger">*</span>
+                                </label>
+                                <input type="number" class="form-control" name="passenger_age[]" 
+                                       min="1" max="120" placeholder="Age" required>
+                            </div>
+                            
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label">
+                                    <i class="fas fa-venus-mars"></i> Gender <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-select" name="passenger_gender[]" required>
+                                    <option value="">Select</option>
+                                    <option value="M">Male</option>
+                                    <option value="F">Female</option>
+                                    <option value="O">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">
+                                    <i class="fas fa-id-card"></i> Aadhar Number (Optional)
+                                </label>
+                                <input type="text" class="form-control" name="passenger_adhar[]" 
+                                       placeholder="1234 5678 9012" maxlength="12"
+                                       oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                <small class="text-muted">12-digit Aadhar number</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                
+                <div class="d-flex gap-3 mt-4">
+                    <a href="{% url 'bus_details' route.id %}" class="btn-back">
+                        <i class="fas fa-arrow-left"></i> Back to Seats
+                    </a>
+                    <button type="submit" class="btn-proceed">
+                        <i class="fas fa-arrow-right"></i> Proceed to Payment
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="summary-card">
+                <div class="summary-header">
+                    <h4><i class="fas fa-receipt me-2"></i>Booking Summary</h4>
+                </div>
+                <div class="summary-body">
+                    <div class="journey-card">
+                        <div class="route-points">
+                            <div class="point">
+                                <div class="city">{{ route.source }}</div>
+                                <div class="time">{{ route.departure_time|date:"h:i A" }}</div>
+                            </div>
+                            <div class="arrow">
+                                <i class="fas fa-arrow-right"></i>
+                            </div>
+                            <div class="point">
+                                <div class="city">{{ route.destination }}</div>
+                                <div class="time">{{ route.arrival_time|date:"h:i A" }}</div>
+                            </div>
+                        </div>
+                        <div class="text-center text-muted">
+                            <i class="fas fa-calendar-alt me-2"></i>{{ route.departure_time|date:"d M Y" }}
+                        </div>
+                    </div>
+                    
+                    <div class="bus-info">
+                        <div class="bus-icon">
+                            <i class="fas fa-bus"></i>
+                        </div>
+                        <div class="bus-details">
+                            <div class="bus-name">{{ route.bus.bus_name }}</div>
+                            <div class="bus-number">{{ route.bus.bus_number }} • {{ route.bus.get_bus_type_display }}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="selected-seats">
+                        <h6 class="mb-3"><i class="fas fa-chair me-2 text-primary"></i>Selected Seats</h6>
+                        <div>
+                            {% for seat in seats %}
+                                <span class="seat-badge">
+                                    <i class="fas fa-chair me-1"></i>{{ seat.seat_number }}
+                                </span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <div class="fare-breakdown">
+                        <h6 class="mb-3"><i class="fas fa-calculator me-2 text-primary"></i>Fare Details</h6>
+                        <div class="fare-item">
+                            <span>Fare per seat:</span>
+                            <span class="fw-bold">₹{{ fare_per_seat|floatformat:2 }}</span>
+                        </div>
+                        <div class="fare-item">
+                            <span>Number of seats:</span>
+                            <span class="fw-bold">{{ seat_count }}</span>
+                        </div>
+                        <div class="fare-item total">
+                            <span>Total Amount:</span>
+                            <span class="total-amount">₹{{ total_amount|floatformat:2 }}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-3 p-3 bg-light rounded-3">
+                        <small class="text-muted d-block">
+                            <i class="fas fa-shield-alt me-2 text-primary"></i>
+                            Your information is secure and encrypted
+                        </small>
+                        <small class="text-muted d-block mt-2">
+                            <i class="fas fa-clock me-2 text-primary"></i>
+                            Seats are on hold for 10 minutes
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('passengerForm').addEventListener('submit', function(e) {
+    const cards = document.querySelectorAll('.passenger-card');
+    let valid = true;
+    
+    cards.forEach((card, index) => {
+        const name = card.querySelector('input[name="passenger_name[]"]');
+        const age = card.querySelector('input[name="passenger_age[]"]');
+        const gender = card.querySelector('select[name="passenger_gender[]"]');
+        
+        if (!name.value.trim()) {
+            name.classList.add('is-invalid');
+            valid = false;
+        } else {
+            name.classList.remove('is-invalid');
+        }
+        
+        if (!age.value || age.value < 1 || age.value > 120) {
+            age.classList.add('is-invalid');
+            valid = false;
+        } else {
+            age.classList.remove('is-invalid');
+        }
+        
+        if (!gender.value) {
+            gender.classList.add('is-invalid');
+            valid = false;
+        } else {
+            gender.classList.remove('is-invalid');
+        }
+    });
+    
+    if (!valid) {
+        e.preventDefault();
+        alert('Please fill all passenger details correctly');
+        
+        // Scroll to first invalid field
+        const firstInvalid = document.querySelector('.is-invalid');
+        if (firstInvalid) {
+            firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }
+});
+
+// Real-time validation
+document.querySelectorAll('input[name="passenger_name[]"]').forEach(input => {
+    input.addEventListener('input', function() {
+        if (this.value.trim()) {
+            this.classList.remove('is-invalid');
+        }
+    });
+});
+
+document.querySelectorAll('input[name="passenger_age[]"]').forEach(input => {
+    input.addEventListener('input', function() {
+        if (this.value && this.value >= 1 && this.value <= 120) {
+            this.classList.remove('is-invalid');
+        }
+    });
+});
+
+document.querySelectorAll('select[name="passenger_gender[]"]').forEach(select => {
+    select.addEventListener('change', function() {
+        if (this.value) {
+            this.classList.remove('is-invalid');
+        }
+    });
+});
+</script>
+{% endblock %}

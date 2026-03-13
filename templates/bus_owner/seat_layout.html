@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}Seat Layout - Easy Book{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Seat Layout - {{ bus.bus_name }} ({{ bus.bus_number }})</h4>
+                </div>
+                <div class="card-body">
+                    <div class="bus-layout">
+                        <div class="text-center mb-4">
+                            <div class="driver-seat bg-secondary text-white p-2 d-inline-block">
+                                <i class="fas fa-steering-wheel"></i> Driver
+                            </div>
+                        </div>
+                        
+                        {% for row_num, seats in seat_rows.items %}
+                        <div class="seat-row d-flex justify-content-center mb-3">
+                            <span class="row-label me-3 fw-bold">Row {{ row_num }}</span>
+                            {% for seat in seats %}
+                            <div class="seat mx-1 p-2 text-center 
+                                {% if seat.seat_type == 'window' %}bg-info
+                                {% elif seat.seat_type == 'aisle' %}bg-success
+                                {% else %}bg-warning{% endif %} 
+                                text-white rounded" style="width: 60px;">
+                                {{ seat.seat_number }}
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="seat-legend mt-4">
+                        <h5>Legend:</h5>
+                        <div class="d-flex gap-3">
+                            <div><span class="badge bg-info">Window Seat</span></div>
+                            <div><span class="badge bg-success">Aisle Seat</span></div>
+                            <div><span class="badge bg-warning">Middle Seat</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.seat {
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+.seat:hover {
+    transform: scale(1.1);
+}
+.driver-seat {
+    width: 100px;
+    border-radius: 10px;
+}
+</style>
+{% endblock %}
