@@ -29,5 +29,4 @@ urlpatterns = [
     path('bus-owner/', include('apps.bus_owners.urls')),
     path('bookings/', include('apps.bookings.urls')),
     path('support/', include('apps.support.urls')),
-    path('accounts/', include('allauth.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
