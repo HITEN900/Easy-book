@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}Request OTP - Easy Book{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h2>Verify Your Phone</h2>
+            <p>We'll send you a verification code</p>
+        </div>
+        
+        <div class="auth-body">
+            <form method="POST">
+                {% csrf_token %}
+                
+                <div class="phone-input-group">
+                    <select class="country-code" name="country_code" required>
+                        <option value="+91">+91 (India)</option>
+                        <option value="+1">+1 (USA)</option>
+                        <option value="+44">+44 (UK)</option>
+                    </select>
+                    <input type="tel" class="phone-input" name="phone" placeholder="Phone Number" required>
+                </div>
+                
+                <input type="hidden" name="purpose" value="{{ purpose|default:'login' }}">
+                
+                <button type="submit" class="send-otp-btn">
+                    <i class="fas fa-paper-plane"></i>
+                    Send OTP
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

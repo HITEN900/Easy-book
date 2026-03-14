@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+
+{% block title %}Verify OTP - Easy Book{% endblock %}
+
+{% block extra_css %}
+<style>
+    .otp-container {
+        max-width: 400px;
+        margin: 0 auto;
+        text-align: center;
+    }
+    
+    .otp-inputs {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin: 30px 0;
+    }
+    
+    .otp-field {
+        width: 50px;
+        height: 60px;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 1.5rem;
+        text-align: center;
+        font-weight: 600;
+    }
+    
+    .otp-field:focus {
+        border-color: var(--primary-color);
+        outline: none;
+    }
+    
+    .timer {
+        font-size: 1.1rem;
+        margin: 20px 0;
+    }
+    
+    .resend {
+        color: var(--primary-color);
+        cursor: pointer;
+        text-decoration: underline;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h2>Enter OTP</h2>
+            <p>We've sent a code to your phone</p>
+        </div>
+        
+        <div class="auth-body">
+            <div class="otp-container">
+                <form method="POST" id="otpForm">
+                    {% csrf_token %}
+                    
+                    <div class="otp-inputs">
+                        <input type="text" class="otp-field" maxlength="1" onkeyup="moveToNext(this, 1)">
+                        <input type="text" class="otp-field" maxlength="1" onkeyup="moveToNext(this, 2)">
+                        <input type="text" class="otp-field" maxlength="1" onkeyup="moveToNext(this, 3)">
+                        <input type="text" class="otp-field" maxlength="1" onkeyup="moveToNext(this, 4)">
+                        <input type="text" class="otp-field" maxlength="1" onkeyup="moveToNext(this, 5)">
+                        <input type="text" class="otp-field" maxlength="1" onkeyup="moveToNext(this, 6)">
+                    </div>
+                    
+                    <input type="hidden" name="otp" id="otpHidden">
+                    
+                    <div class="timer" id="timer">Time remaining: <span id="time">05:00</span></div>
+                    
+                    <button type="submit" class="signup-btn" id="verifyBtn" disabled>
+                        Verify OTP
+                    </button>
+                </form>
+                
+                <p class="mt-3">
+                    Didn't receive code? 
+                    <span class="resend" onclick="resendOTP()">Resend</span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let timerInterval;
+let timeLeft = 300;
+
+function startTimer() {
+    updateTimer();
+    timerInterval = setInterval(() => {
+        timeLeft--;
+        updateTimer();
+        
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            document.getElementById('time').innerHTML = '00:00';
+            alert('OTP expired. Please request again.');
+            window.location.href = "{% url 'request_otp' %}";
+        }
+    }, 1000);
+}
+
+function updateTimer() {
+    const minutes = Math.floor(timeLeft / 60);
+    const seconds = timeLeft % 60;
+    document.getElementById('time').innerHTML = 
+        `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+}
+
+function moveToNext(current, next) {
+    if (current.value.length >= 1) {
+        if (next < 7) {
+            document.querySelectorAll('.otp-field')[next-1].focus();
+        }
+        
+        // Check if all fields are filled
+        const allFilled = Array.from(document.querySelectorAll('.otp-field'))
+            .every(field => field.value.length === 1);
+        
+        document.getElementById('verifyBtn').disabled = !allFilled;
+        
+        if (allFilled) {
+            const otp = Array.from(document.querySelectorAll('.otp-field'))
+                .map(field => field.value)
+                .join('');
+            document.getElementById('otpHidden').value = otp;
+        }
+    }
+}
+
+function resendOTP() {
+    window.location.href = "{% url 'request_otp' %}";
+}
+
+startTimer();
+</script>
+{% endblock %}

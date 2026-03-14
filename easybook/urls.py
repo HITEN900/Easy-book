@@ -23,9 +23,11 @@ from django.views.generic import TemplateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', TemplateView.as_view(template_name='index.html'), name='home'),
+    path('', TemplateView.as_view(template_name='welcome.html'), name='welcome'),
+    path('home/', TemplateView.as_view(template_name='index.html'), name='home'),
     path('accounts/', include('apps.accounts.urls')),
     path('bus-owner/', include('apps.bus_owners.urls')),
     path('bookings/', include('apps.bookings.urls')),
     path('support/', include('apps.support.urls')),
+    path('accounts/', include('allauth.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

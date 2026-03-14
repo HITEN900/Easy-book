@@ -1,0 +1,673 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load socialaccount %}
+
+{% block title %}Sign Up - Easy Book{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary-color: #4361ee;
+        --secondary-color: #3f37c9;
+        --google-color: #DB4437;
+        --facebook-color: #4267B2;
+    }
+
+    .auth-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 20px;
+    }
+
+    .auth-card {
+        background: white;
+        border-radius: 30px;
+        box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+        overflow: hidden;
+        width: 100%;
+        max-width: 500px;
+        animation: slideUp 0.5s ease;
+    }
+
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .auth-header {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        padding: 40px 30px;
+        text-align: center;
+    }
+
+    .auth-header h2 {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+
+    .auth-header p {
+        opacity: 0.9;
+        font-size: 1rem;
+    }
+
+    .auth-body {
+        padding: 40px 30px;
+    }
+
+    /* Social Login Buttons */
+    .social-login {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 30px;
+    }
+
+    .social-btn {
+        flex: 1;
+        padding: 12px;
+        border: none;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        color: white;
+        text-decoration: none;
+    }
+
+    .google-btn {
+        background: var(--google-color);
+        box-shadow: 0 5px 15px rgba(219, 68, 55, 0.3);
+    }
+
+    .facebook-btn {
+        background: var(--facebook-color);
+        box-shadow: 0 5px 15px rgba(66, 103, 178, 0.3);
+    }
+
+    .social-btn:hover {
+        transform: translateY(-3px);
+        filter: brightness(1.1);
+    }
+
+    /* Divider */
+    .divider {
+        position: relative;
+        text-align: center;
+        margin: 30px 0;
+    }
+
+    .divider::before,
+    .divider::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        width: calc(50% - 30px);
+        height: 1px;
+        background: #e0e0e0;
+    }
+
+    .divider::before {
+        left: 0;
+    }
+
+    .divider::after {
+        right: 0;
+    }
+
+    .divider span {
+        background: white;
+        padding: 0 15px;
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+
+    /* Phone Input */
+    .phone-input-group {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    .country-code {
+        width: 100px;
+        padding: 12px;
+        border: 2px solid #e0e0e0;
+        border-radius: 12px;
+        font-size: 1rem;
+        background: #f8f9fa;
+        cursor: pointer;
+    }
+
+    .phone-input {
+        flex: 1;
+        padding: 12px;
+        border: 2px solid #e0e0e0;
+        border-radius: 12px;
+        font-size: 1rem;
+        transition: all 0.3s;
+    }
+
+    .phone-input:focus {
+        border-color: var(--primary-color);
+        outline: none;
+        box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.1);
+    }
+
+    /* Send OTP Button */
+    .send-otp-btn {
+        width: 100%;
+        padding: 14px;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .send-otp-btn:hover:not(:disabled) {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 30px rgba(67, 97, 238, 0.3);
+    }
+
+    .send-otp-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    /* OTP Section */
+    .otp-section {
+        display: none;
+        animation: fadeIn 0.5s ease;
+        margin-bottom: 20px;
+    }
+
+    .otp-section.show {
+        display: block;
+    }
+
+    .otp-inputs {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+
+    .otp-input {
+        width: 50px;
+        height: 60px;
+        border: 2px solid #e0e0e0;
+        border-radius: 12px;
+        font-size: 1.5rem;
+        font-weight: 700;
+        text-align: center;
+        transition: all 0.3s;
+    }
+
+    .otp-input:focus {
+        border-color: var(--primary-color);
+        outline: none;
+        box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.1);
+    }
+
+    /* Timer */
+    .timer {
+        text-align: center;
+        margin: 15px 0;
+        font-size: 0.9rem;
+        color: #6c757d;
+    }
+
+    .timer span {
+        color: var(--primary-color);
+        font-weight: 700;
+    }
+
+    .resend-link {
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .resend-link:hover {
+        text-decoration: underline;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Signup Form */
+    .signup-form {
+        display: none;
+        animation: fadeIn 0.5s ease;
+    }
+
+    .signup-form.show {
+        display: block;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #e0e0e0;
+        border-radius: 12px;
+        font-size: 1rem;
+        transition: all 0.3s;
+    }
+
+    .form-control:focus {
+        border-color: var(--primary-color);
+        outline: none;
+        box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.1);
+    }
+
+    .signup-btn {
+        width: 100%;
+        padding: 14px;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .signup-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 30px rgba(67, 97, 238, 0.3);
+    }
+
+    .login-link {
+        text-align: center;
+        margin-top: 20px;
+        color: #6c757d;
+    }
+
+    .login-link a {
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .login-link a:hover {
+        text-decoration: underline;
+    }
+
+    .error-message {
+        color: #dc3545;
+        font-size: 0.9rem;
+        margin-top: 5px;
+        display: none;
+    }
+
+    .success-message {
+        color: #28a745;
+        font-size: 0.9rem;
+        margin-top: 5px;
+        display: none;
+    }
+
+    @media (max-width: 768px) {
+        .auth-body {
+            padding: 30px 20px;
+        }
+        
+        .social-login {
+            flex-direction: column;
+        }
+        
+        .otp-input {
+            width: 40px;
+            height: 50px;
+            font-size: 1.2rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h2>Create Account</h2>
+            <p>Join Easy Book for amazing journeys</p>
+        </div>
+        
+        <div class="auth-body">
+            <!-- Social Login Buttons -->
+            <div class="social-login">
+                <a href="{% provider_login_url 'google' %}" class="social-btn google-btn">
+                    <i class="fab fa-google"></i>
+                    Google
+                </a>
+                <a href="{% provider_login_url 'facebook' %}" class="social-btn facebook-btn">
+                    <i class="fab fa-facebook-f"></i>
+                    Facebook
+                </a>
+            </div>
+            
+            <!-- Divider -->
+            <div class="divider">
+                <span>or sign up with phone</span>
+            </div>
+            
+            <!-- Phone Number Input -->
+            <div class="phone-input-group">
+                <select class="country-code" id="countryCode">
+                    <option value="+91" selected>🇮🇳 +91 (India)</option>
+                    <option value="+1">🇺🇸 +1 (USA)</option>
+                    <option value="+44">🇬🇧 +44 (UK)</option>
+                    <option value="+61">🇦🇺 +61 (Australia)</option>
+                    <option value="+971">🇦🇪 +971 (UAE)</option>
+                    <option value="+65">🇸🇬 +65 (Singapore)</option>
+                </select>
+                <input type="tel" class="phone-input" id="phone" placeholder="Phone Number" maxlength="10">
+            </div>
+            
+            <div class="error-message" id="phoneError">Please enter a valid phone number</div>
+            <div class="success-message" id="phoneSuccess">OTP sent successfully!</div>
+            
+            <button class="send-otp-btn" id="sendOtpBtn" onclick="sendOTP()">
+                <i class="fas fa-paper-plane"></i>
+                Send OTP
+            </button>
+            
+            <!-- OTP Section -->
+            <div class="otp-section" id="otpSection">
+                <div class="otp-inputs">
+                    <input type="text" class="otp-input" maxlength="1" onkeyup="moveToNext(this, 1)" id="otp1">
+                    <input type="text" class="otp-input" maxlength="1" onkeyup="moveToNext(this, 2)" id="otp2">
+                    <input type="text" class="otp-input" maxlength="1" onkeyup="moveToNext(this, 3)" id="otp3">
+                    <input type="text" class="otp-input" maxlength="1" onkeyup="moveToNext(this, 4)" id="otp4">
+                    <input type="text" class="otp-input" maxlength="1" onkeyup="moveToNext(this, 5)" id="otp5">
+                    <input type="text" class="otp-input" maxlength="1" onkeyup="moveToNext(this, 6)" id="otp6">
+                </div>
+                
+                <div class="timer" id="timer">Time remaining: <span id="time">05:00</span></div>
+                
+                <div class="text-center">
+                    <span class="resend-link" onclick="resendOTP()">Resend OTP</span>
+                </div>
+            </div>
+            
+            <!-- Signup Form -->
+            <div class="signup-form" id="signupForm">
+                <form method="POST" action="{% url 'complete_signup' %}">
+                    {% csrf_token %}
+                    
+                    <div class="form-group">
+                        <label class="form-label">Username</label>
+                        <input type="text" class="form-control" name="username" id="username" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" class="form-control" name="email" id="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-control" name="password" id="password" required>
+                        <small class="text-muted">Minimum 6 characters</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">I am a</label>
+                        <select class="form-control" name="user_type" id="userType" required>
+                            <option value="customer">Customer</option>
+                            <option value="bus_owner">Bus Owner</option>
+                        </select>
+                    </div>
+                    
+                    <input type="hidden" name="phone" id="hiddenPhone">
+                    
+                    <button type="submit" class="signup-btn">
+                        <i class="fas fa-user-plus"></i>
+                        Create Account
+                    </button>
+                </form>
+            </div>
+            
+            <div class="login-link">
+                Already have an account? <a href="{% url 'login' %}">Login here</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let timerInterval;
+let timeLeft = 300; // 5 minutes in seconds
+let phoneNumber = '';
+let countryCode = '';
+let isOTPVerified = false;
+
+function sendOTP() {
+    countryCode = document.getElementById('countryCode').value;
+    phoneNumber = document.getElementById('phone').value;
+    
+    // Validate phone number
+    if (!phoneNumber || phoneNumber.length < 10) {
+        document.getElementById('phoneError').style.display = 'block';
+        document.getElementById('phoneError').textContent = 'Please enter a valid 10-digit phone number';
+        return;
+    }
+    
+    // Hide error if previously shown
+    document.getElementById('phoneError').style.display = 'none';
+    
+    const fullPhone = countryCode + phoneNumber;
+    
+    // Disable button and show loading
+    const btn = document.getElementById('sendOtpBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+    
+    // Simulate API call to send OTP
+    setTimeout(() => {
+        // In production, this would be an AJAX call to your backend
+        console.log('Sending OTP to:', fullPhone);
+        
+        // Show success message
+        document.getElementById('phoneSuccess').style.display = 'block';
+        document.getElementById('phoneSuccess').textContent = 'OTP sent to ' + fullPhone;
+        
+        btn.style.display = 'none';
+        document.getElementById('otpSection').classList.add('show');
+        document.getElementById('hiddenPhone').value = fullPhone;
+        
+        startTimer();
+        
+        // Focus first OTP input
+        document.getElementById('otp1').focus();
+    }, 1500);
+}
+
+function startTimer() {
+    timeLeft = 300;
+    updateTimer();
+    
+    timerInterval = setInterval(() => {
+        timeLeft--;
+        updateTimer();
+        
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            document.getElementById('time').innerHTML = '00:00';
+            alert('OTP expired. Please request again.');
+            resetOTP();
+        }
+    }, 1000);
+}
+
+function updateTimer() {
+    const minutes = Math.floor(timeLeft / 60);
+    const seconds = timeLeft % 60;
+    document.getElementById('time').innerHTML = 
+        `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+}
+
+function resetOTP() {
+    clearInterval(timerInterval);
+    document.getElementById('otpSection').classList.remove('show');
+    document.getElementById('sendOtpBtn').style.display = 'block';
+    document.getElementById('sendOtpBtn').disabled = false;
+    document.getElementById('sendOtpBtn').innerHTML = '<i class="fas fa-paper-plane"></i> Send OTP';
+    document.getElementById('phoneSuccess').style.display = 'none';
+    
+    // Clear OTP inputs
+    for (let i = 1; i <= 6; i++) {
+        document.getElementById(`otp${i}`).value = '';
+    }
+}
+
+function moveToNext(current, nextField) {
+    if (current.value.length >= 1) {
+        if (nextField < 7) {
+            document.getElementById(`otp${nextField}`).focus();
+        }
+        
+        // Check if all OTP fields are filled
+        const allFilled = true;
+        for (let i = 1; i <= 6; i++) {
+            if (!document.getElementById(`otp${i}`).value) {
+                allFilled = false;
+                break;
+            }
+        }
+        
+        if (allFilled) {
+            verifyOTP();
+        }
+    }
+}
+
+function verifyOTP() {
+    const otp = [];
+    for (let i = 1; i <= 6; i++) {
+        otp.push(document.getElementById(`otp${i}`).value);
+    }
+    const otpString = otp.join('');
+    
+    console.log('Verifying OTP:', otpString);
+    
+    // Show verification in progress
+    document.getElementById('phoneSuccess').style.display = 'block';
+    document.getElementById('phoneSuccess').textContent = 'Verifying OTP...';
+    
+    // Simulate OTP verification
+    setTimeout(() => {
+        // In production, this would verify with backend
+        if (otpString.length === 6) {
+            // Hide OTP section and show signup form
+            document.getElementById('phoneSuccess').style.display = 'none';
+            document.getElementById('otpSection').classList.remove('show');
+            document.getElementById('signupForm').classList.add('show');
+            clearInterval(timerInterval);
+            isOTPVerified = true;
+            
+            // Scroll to form
+            document.getElementById('signupForm').scrollIntoView({ behavior: 'smooth' });
+        } else {
+            document.getElementById('phoneSuccess').style.display = 'block';
+            document.getElementById('phoneSuccess').textContent = 'Invalid OTP. Please try again.';
+            document.getElementById('phoneSuccess').style.color = '#dc3545';
+            
+            // Clear OTP inputs
+            for (let i = 1; i <= 6; i++) {
+                document.getElementById(`otp${i}`).value = '';
+            }
+            document.getElementById('otp1').focus();
+        }
+    }, 1000);
+}
+
+function resendOTP() {
+    resetOTP();
+    sendOTP();
+}
+
+// Form validation
+document.querySelector('form').addEventListener('submit', function(e) {
+    if (!isOTPVerified) {
+        e.preventDefault();
+        alert('Please verify your phone number first with OTP');
+        return;
+    }
+    
+    const password = document.getElementById('password').value;
+    if (password.length < 6) {
+        e.preventDefault();
+        alert('Password must be at least 6 characters long');
+        return;
+    }
+});
+
+// Phone number input validation
+document.getElementById('phone').addEventListener('input', function(e) {
+    this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);
+});
+
+// Allow only numbers in OTP inputs
+for (let i = 1; i <= 6; i++) {
+    document.getElementById(`otp${i}`).addEventListener('input', function(e) {
+        this.value = this.value.replace(/[^0-9]/g, '').slice(0, 1);
+    });
+}
+
+// Auto-focus first OTP input when section appears
+const observer = new MutationObserver(function(mutations) {
+    mutations.forEach(function(mutation) {
+        if (mutation.target.classList.contains('show')) {
+            document.getElementById('otp1').focus();
+        }
+    });
+});
+
+observer.observe(document.getElementById('otpSection'), { attributes: true, attributeFilter: ['class'] });
+</script>
+{% endblock %}
