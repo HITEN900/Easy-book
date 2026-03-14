@@ -237,13 +237,26 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-# Account settings
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_USERNAME_REQUIRED = True
-ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
+# ===== FIXED: Account settings for Django 6.0.3 =====
+# These replace the deprecated settings that were causing warnings
+
+# 1. Replaces ACCOUNT_AUTHENTICATION_METHOD
+ACCOUNT_LOGIN_METHODS = {'email', 'username'}
+
+# 2 & 3. Replaces ACCOUNT_EMAIL_REQUIRED and ACCOUNT_USERNAME_REQUIRED
+ACCOUNT_SIGNUP_FIELDS = [
+    'email*',      # * means required field
+    'username*',
+    'password1*',
+    'password2*'
+]
+
+# Additional account settings (these are still valid)
 ACCOUNT_EMAIL_VERIFICATION = 'optional'
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_SESSION_REMEMBER = True
+ACCOUNT_SIGNUP_REDIRECT_URL = '/'
+ACCOUNT_LOGOUT_ON_GET = True  # Logout with GET request
 
 # OTP Settings
 OTP_EXPIRY_MINUTES = 5
