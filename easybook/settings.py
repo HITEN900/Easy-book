@@ -12,13 +12,23 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Add the easybook directory to Python path
 sys.path.insert(0, str(BASE_DIR / 'easybook'))
 
+# ===== PRODUCTION SETTINGS WITH ENVIRONMENT VARIABLES =====
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-l^4rw+3_-xv_1=jqyomcx8+lpo@w!@pac@!epz2au_3!+sr6h+"
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-fallback-dev-key-only')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+
+# Add Render hostname automatically if detected
+if 'RENDER' in os.environ:
+    RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+    if RENDER_EXTERNAL_HOSTNAME:
+        ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+
+# CSRF Trusted Origins - Important for security
+CSRF_TRUSTED_ORIGINS = os.environ.get('CSRF_TRUSTED_ORIGINS', 'http://localhost:8000').split(',')
 
 # Application definition
 INSTALLED_APPS = [
@@ -55,6 +65,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # For serving static files
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -119,12 +130,14 @@ TIME_ZONE = "Asia/Kolkata"
 USE_I18N = True
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
+# ===== STATIC & MEDIA FILES CONFIGURATION FOR RENDER =====
 STATIC_URL = "static/"
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# Media files
+# Enable WhiteNoise compression and caching
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
@@ -134,18 +147,24 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Custom user model
 AUTH_USER_MODEL = 'accounts.User'
 
-# CORS settings
-CORS_ALLOW_ALL_ORIGINS = True
+# ===== CORS SETTINGS =====
+CORS_ALLOW_ALL_ORIGINS = True  # Set to False in production with specific origins
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8000",
     "http://127.0.0.1:8000",
 ]
 
+# Add Render URL to CORS if available
+if 'RENDER' in os.environ:
+    RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+    if RENDER_EXTERNAL_HOSTNAME:
+        CORS_ALLOWED_ORIGINS.append(f"https://{RENDER_EXTERNAL_HOSTNAME}")
+
 # Crispy Forms
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
-# REST Framework settings
+# ===== REST FRAMEWORK SETTINGS =====
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -165,7 +184,7 @@ REST_FRAMEWORK = {
     ],
 }
 
-# JWT Settings
+# ===== JWT SETTINGS =====
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
@@ -186,15 +205,24 @@ SIMPLE_JWT = {
     'JTI_CLAIM': 'jti',
 }
 
-# Email settings (for development)
+# ===== EMAIL SETTINGS =====
+# For development - prints emails to console
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-# Login/Logout URLs
+# For production, uncomment and configure:
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
+# EMAIL_PORT = int(os.environ.get('EMAIL_PORT', 587))
+# EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True') == 'True'
+# EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+# EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+
+# ===== LOGIN/LOGOUT URLS =====
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
-# Django AllAuth Settings
+# ===== DJANGO ALLAUTH SETTINGS =====
 SITE_ID = 1
 
 AUTHENTICATION_BACKENDS = [
@@ -237,44 +265,38 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-# ===== FIXED: Account settings for Django 6.0.3 =====
-# These replace the deprecated settings that were causing warnings
-
-# 1. Replaces ACCOUNT_AUTHENTICATION_METHOD
+# ===== ACCOUNT SETTINGS (Django 6.0.3 Compatible) =====
 ACCOUNT_LOGIN_METHODS = {'email', 'username'}
-
-# 2 & 3. Replaces ACCOUNT_EMAIL_REQUIRED and ACCOUNT_USERNAME_REQUIRED
 ACCOUNT_SIGNUP_FIELDS = [
     'email*',      # * means required field
     'username*',
     'password1*',
     'password2*'
 ]
-
-# Additional account settings (these are still valid)
 ACCOUNT_EMAIL_VERIFICATION = 'optional'
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_SESSION_REMEMBER = True
 ACCOUNT_SIGNUP_REDIRECT_URL = '/'
-ACCOUNT_LOGOUT_ON_GET = True  # Logout with GET request
+ACCOUNT_LOGOUT_ON_GET = True
 
-# OTP Settings
+# ===== OTP SETTINGS =====
 OTP_EXPIRY_MINUTES = 5
 
-# Session settings
+# ===== SESSION SETTINGS =====
 SESSION_COOKIE_AGE = 1209600  # 2 weeks in seconds
 SESSION_SAVE_EVERY_REQUEST = True
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+SESSION_COOKIE_SECURE = not DEBUG  # Send only over HTTPS in production
+CSRF_COOKIE_SECURE = not DEBUG     # Send only over HTTPS in production
 
-# Security settings for production (uncomment when deploying)
-# if not DEBUG:
-#     SECURE_SSL_REDIRECT = True
-#     SESSION_COOKIE_SECURE = True
-#     CSRF_COOKIE_SECURE = True
-#     SECURE_BROWSER_XSS_FILTER = True
-#     SECURE_CONTENT_TYPE_NOSNIFF = True
-#     X_FRAME_OPTIONS = 'DENY'
-#     SECURE_HSTS_SECONDS = 31536000
-#     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-#     SECURE_HSTS_PRELOAD = True
-#     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+# ===== SECURITY SETTINGS FOR PRODUCTION =====
+if not DEBUG:
+    # Security settings for production
+    SECURE_SSL_REDIRECT = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    X_FRAME_OPTIONS = 'DENY'
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
