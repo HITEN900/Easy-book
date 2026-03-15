@@ -3,5 +3,3 @@ djangorestframework==3.14.0
 gunicorn==25.1.0
 djangorestframework-simplejwt==5.5.1
 whitenoise==6.7.0
-whitenoise==6.7.0
-whitenoise==6.7.0
