@@ -14,12 +14,18 @@
         --warning: #f8961e;
         --dark: #1a1a2e;
         --light: #f8f9fa;
+        --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    body {
+        overflow-x: hidden;
+        font-family: 'Poppins', sans-serif;
     }
 
     /* Hero Slider */
     .hero-slider {
         position: relative;
-        height: 600px;
+        height: 700px;
         overflow: hidden;
     }
 
@@ -30,10 +36,9 @@
         width: 100%;
         height: 100%;
         opacity: 0;
-        transition: opacity 0.8s ease-in-out;
+        transition: opacity 1s ease-in-out;
         background-size: cover;
         background-position: center;
-        background-repeat: no-repeat;
     }
 
     .slide.active {
@@ -46,7 +51,7 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 100%);
+        background: linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 100%);
     }
 
     .slide-content {
@@ -58,11 +63,11 @@
         color: white;
         z-index: 2;
         width: 80%;
-        max-width: 800px;
+        max-width: 900px;
     }
 
     .slide-content h1 {
-        font-size: 3.5rem;
+        font-size: 4rem;
         font-weight: 800;
         margin-bottom: 20px;
         text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
@@ -70,20 +75,20 @@
     }
 
     .slide-content p {
-        font-size: 1.3rem;
+        font-size: 1.5rem;
         margin-bottom: 30px;
-        opacity: 0.95;
         animation: fadeInUp 1s ease 0.2s both;
+        font-weight: 300;
     }
 
     .slide-badge {
         display: inline-block;
         background: var(--primary);
         color: white;
-        padding: 8px 20px;
+        padding: 10px 30px;
         border-radius: 50px;
         font-weight: 600;
-        margin-bottom: 20px;
+        margin-bottom: 30px;
         animation: fadeInUp 1s ease;
     }
 
@@ -104,13 +109,13 @@
         left: 50%;
         transform: translateX(-50%);
         display: flex;
-        gap: 10px;
+        gap: 15px;
         z-index: 10;
     }
 
     .slider-dot {
-        width: 12px;
-        height: 12px;
+        width: 14px;
+        height: 14px;
         border-radius: 50%;
         background: rgba(255,255,255,0.5);
         cursor: pointer;
@@ -118,7 +123,7 @@
     }
 
     .slider-dot.active {
-        background: white;
+        background: var(--primary);
         transform: scale(1.3);
     }
 
@@ -126,8 +131,8 @@
         position: absolute;
         top: 50%;
         transform: translateY(-50%);
-        width: 50px;
-        height: 50px;
+        width: 60px;
+        height: 60px;
         background: rgba(255,255,255,0.2);
         border: 2px solid white;
         border-radius: 50%;
@@ -135,7 +140,7 @@
         align-items: center;
         justify-content: center;
         color: white;
-        font-size: 1.5rem;
+        font-size: 1.8rem;
         cursor: pointer;
         transition: all 0.3s;
         z-index: 10;
@@ -144,15 +149,11 @@
     .slider-arrow:hover {
         background: var(--primary);
         border-color: var(--primary);
+        transform: translateY(-50%) scale(1.1);
     }
 
-    .slider-arrow.prev {
-        left: 30px;
-    }
-
-    .slider-arrow.next {
-        right: 30px;
-    }
+    .slider-arrow.prev { left: 30px; }
+    .slider-arrow.next { right: 30px; }
 
     /* Search Section */
     .search-section {
@@ -165,26 +166,31 @@
     .search-card {
         background: white;
         border-radius: 30px;
-        padding: 40px;
-        box-shadow: 0 30px 60px rgba(0,0,0,0.1);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255,255,255,0.2);
+        padding: 50px;
+        box-shadow: 0 50px 100px rgba(0,0,0,0.1);
+        transition: all 0.3s;
+    }
+
+    .search-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 60px 120px rgba(67, 97, 238, 0.2);
     }
 
     .search-title {
         text-align: center;
-        margin-bottom: 30px;
+        margin-bottom: 40px;
     }
 
     .search-title h2 {
-        font-size: 2rem;
-        font-weight: 700;
+        font-size: 2.5rem;
+        font-weight: 800;
         color: var(--dark);
-        margin-bottom: 10px;
+        margin-bottom: 15px;
     }
 
     .search-title p {
         color: #6c757d;
+        font-size: 1.2rem;
     }
 
     .search-form {
@@ -199,35 +205,36 @@
 
     .search-input-group i {
         position: absolute;
-        left: 15px;
+        left: 20px;
         top: 50%;
         transform: translateY(-50%);
         color: var(--primary);
-        font-size: 1.2rem;
+        font-size: 1.3rem;
     }
 
     .search-input-group input {
         width: 100%;
-        padding: 15px 15px 15px 45px;
+        padding: 18px 20px 18px 55px;
         border: 2px solid #e9ecef;
         border-radius: 15px;
         font-size: 1rem;
         transition: all 0.3s;
+        background: white;
     }
 
     .search-input-group input:focus {
         border-color: var(--primary);
-        box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.1);
+        box-shadow: 0 0 0 5px rgba(67, 97, 238, 0.1);
         outline: none;
     }
 
     .search-btn {
-        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        background: var(--gradient-1);
         color: white;
         border: none;
-        padding: 15px 40px;
+        padding: 18px 50px;
         border-radius: 15px;
-        font-weight: 600;
+        font-weight: 700;
         font-size: 1.1rem;
         cursor: pointer;
         transition: all 0.3s;
@@ -239,88 +246,92 @@
 
     .search-btn:hover {
         transform: translateY(-3px);
-        box-shadow: 0 15px 30px rgba(67, 97, 238, 0.3);
+        box-shadow: 0 15px 30px rgba(67, 97, 238, 0.4);
     }
 
     /* Features Section */
     .features-section {
-        padding: 80px 0;
-        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        padding: 100px 0;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     }
 
     .section-title {
         text-align: center;
-        margin-bottom: 50px;
+        margin-bottom: 60px;
     }
 
     .section-title h2 {
-        font-size: 2.5rem;
-        font-weight: 700;
+        font-size: 3rem;
+        font-weight: 800;
         color: var(--dark);
-        margin-bottom: 15px;
+        margin-bottom: 20px;
+        position: relative;
+        display: inline-block;
+    }
+
+    .section-title h2::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background: var(--gradient-1);
+        border-radius: 2px;
     }
 
     .section-title p {
         color: #6c757d;
-        font-size: 1.1rem;
-        max-width: 600px;
+        font-size: 1.2rem;
+        max-width: 700px;
         margin: 0 auto;
     }
 
     .features-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         gap: 30px;
     }
 
     .feature-card {
         background: white;
         border-radius: 30px;
-        padding: 40px 30px;
+        padding: 50px 30px;
         text-align: center;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-        transition: all 0.3s;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+        transition: all 0.4s;
         position: relative;
         overflow: hidden;
     }
 
     .feature-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 20px 40px rgba(67, 97, 238, 0.15);
-    }
-
-    .feature-card:before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 5px;
-        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        transform: translateY(-15px);
+        box-shadow: 0 30px 60px rgba(67, 97, 238, 0.2);
     }
 
     .feature-icon {
-        width: 100px;
-        height: 100px;
+        width: 120px;
+        height: 120px;
         background: linear-gradient(135deg, rgba(67, 97, 238, 0.1), rgba(63, 55, 201, 0.1));
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        margin: 0 auto 25px;
-        font-size: 2.5rem;
+        margin: 0 auto 30px;
+        font-size: 3rem;
         color: var(--primary);
         transition: all 0.3s;
     }
 
     .feature-card:hover .feature-icon {
-        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        background: var(--gradient-1);
         color: white;
-        transform: scale(1.1) rotate(360deg);
+        transform: scale(1.1);
     }
 
     .feature-card h3 {
-        font-size: 1.3rem;
+        font-size: 1.5rem;
         font-weight: 700;
         margin-bottom: 15px;
         color: var(--dark);
@@ -328,38 +339,52 @@
 
     .feature-card p {
         color: #6c757d;
-        line-height: 1.6;
+        line-height: 1.8;
     }
 
-    /* Popular Routes */
+    /* Popular Routes Slider */
     .routes-section {
-        padding: 80px 0;
+        padding: 100px 0;
+        background: white;
     }
 
-    .routes-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    .routes-slider-container {
+        position: relative;
+        padding: 20px 0 60px;
+        overflow: hidden;
+    }
+
+    .routes-slider {
+        display: flex;
         gap: 25px;
+        transition: transform 0.5s ease;
+        padding: 20px 0;
+    }
+
+    .route-slide {
+        flex: 0 0 calc(33.333% - 17px);
+        min-width: 300px;
     }
 
     .route-card {
         background: white;
-        border-radius: 20px;
+        border-radius: 30px;
         overflow: hidden;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-        transition: all 0.3s;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+        transition: all 0.4s;
         text-decoration: none;
         color: inherit;
         display: block;
+        height: 100%;
     }
 
     .route-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 20px 40px rgba(67, 97, 238, 0.15);
+        transform: translateY(-15px);
+        box-shadow: 0 30px 60px rgba(67, 97, 238, 0.2);
     }
 
     .route-image {
-        height: 160px;
+        height: 200px;
         background-size: cover;
         background-position: center;
         position: relative;
@@ -369,159 +394,202 @@
         position: absolute;
         top: 15px;
         right: 15px;
-        background: var(--primary);
+        background: var(--gradient-1);
         color: white;
-        padding: 5px 15px;
-        border-radius: 30px;
-        font-size: 0.8rem;
+        padding: 8px 20px;
+        border-radius: 50px;
+        font-size: 0.9rem;
         font-weight: 600;
+        z-index: 2;
     }
 
     .route-content {
-        padding: 20px;
+        padding: 25px;
+        background: white;
     }
 
     .route-cities {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-bottom: 15px;
+        margin-bottom: 20px;
     }
 
     .city {
         text-align: center;
+        flex: 1;
     }
 
     .city .name {
-        font-weight: 700;
-        font-size: 1.2rem;
+        font-weight: 800;
+        font-size: 1.3rem;
         color: var(--dark);
+        margin-bottom: 5px;
     }
 
     .city .code {
         color: #6c757d;
         font-size: 0.9rem;
+        text-transform: uppercase;
     }
 
     .route-arrow {
         color: var(--primary);
-        font-size: 1.2rem;
+        font-size: 1.5rem;
+        margin: 0 15px;
     }
 
     .route-info {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding-top: 15px;
+        padding-top: 20px;
         border-top: 2px dashed #e9ecef;
     }
 
     .price {
-        font-size: 1.5rem;
-        font-weight: 700;
+        font-size: 1.8rem;
+        font-weight: 800;
         color: var(--primary);
+        line-height: 1;
     }
 
     .price small {
         font-size: 0.9rem;
         font-weight: 400;
         color: #6c757d;
+        display: block;
+        margin-top: 5px;
     }
 
     .duration {
         color: #6c757d;
         display: flex;
         align-items: center;
-        gap: 5px;
+        gap: 8px;
+    }
+
+    .duration i {
+        color: var(--primary);
+    }
+
+    .slider-controls {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+        margin-top: 50px;
+    }
+
+    .slider-control-btn {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: white;
+        border: 2px solid var(--primary);
+        color: var(--primary);
+        font-size: 1.5rem;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .slider-control-btn:hover {
+        background: var(--gradient-1);
+        color: white;
+        transform: scale(1.1);
+        border-color: transparent;
+    }
+
+    .slider-dots {
+        display: flex;
+        gap: 10px;
+    }
+
+    .slider-dot-slide {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: #dee2e6;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .slider-dot-slide.active {
+        background: var(--primary);
+        transform: scale(1.3);
     }
 
     /* Offers Section */
     .offers-section {
-        padding: 60px 0;
-        background: linear-gradient(135deg, #667eea, #764ba2);
+        padding: 80px 0;
+        background: var(--gradient-1);
         color: white;
     }
 
     .offers-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 25px;
-        margin-top: 40px;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 30px;
+        margin-top: 50px;
     }
 
     .offer-card {
         background: rgba(255,255,255,0.1);
         backdrop-filter: blur(10px);
         border: 1px solid rgba(255,255,255,0.2);
-        border-radius: 20px;
-        padding: 30px;
-        transition: all 0.3s;
+        border-radius: 30px;
+        padding: 40px 30px;
+        transition: all 0.4s;
+        text-align: center;
     }
 
     .offer-card:hover {
-        transform: translateY(-5px);
+        transform: translateY(-15px);
         background: rgba(255,255,255,0.2);
     }
 
     .offer-icon {
-        font-size: 2.5rem;
-        margin-bottom: 20px;
+        font-size: 4rem;
+        margin-bottom: 25px;
     }
 
     .offer-card h3 {
-        font-size: 1.3rem;
+        font-size: 1.5rem;
         font-weight: 700;
-        margin-bottom: 10px;
+        margin-bottom: 15px;
     }
 
     .offer-card p {
         opacity: 0.9;
-        margin-bottom: 20px;
+        margin-bottom: 25px;
+        line-height: 1.6;
     }
 
     .offer-code {
         background: rgba(0,0,0,0.3);
-        padding: 8px 15px;
-        border-radius: 30px;
-        font-weight: 600;
-        letter-spacing: 1px;
+        padding: 12px 25px;
+        border-radius: 50px;
+        font-weight: 700;
+        letter-spacing: 2px;
         display: inline-block;
+        font-size: 1.1rem;
     }
 
-    /* App Download */
+    /* App Section */
     .app-section {
-        padding: 80px 0;
+        padding: 100px 0;
     }
 
     .app-card {
         background: linear-gradient(135deg, #1a1a2e, #16213e);
-        border-radius: 40px;
-        padding: 60px;
+        border-radius: 60px;
+        padding: 80px;
         color: white;
         position: relative;
         overflow: hidden;
-    }
-
-    .app-card:before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        right: -50%;
-        width: 300px;
-        height: 300px;
-        background: rgba(255,255,255,0.05);
-        border-radius: 50%;
-    }
-
-    .app-card:after {
-        content: '';
-        position: absolute;
-        bottom: -50%;
-        left: -50%;
-        width: 400px;
-        height: 400px;
-        background: rgba(255,255,255,0.05);
-        border-radius: 50%;
     }
 
     .app-content {
@@ -530,167 +598,233 @@
     }
 
     .app-content h2 {
-        font-size: 2.5rem;
-        font-weight: 700;
-        margin-bottom: 20px;
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin-bottom: 25px;
     }
 
     .app-content p {
-        font-size: 1.2rem;
+        font-size: 1.3rem;
         opacity: 0.9;
-        margin-bottom: 30px;
-        max-width: 500px;
+        margin-bottom: 40px;
+        max-width: 600px;
+        line-height: 1.8;
     }
 
     .app-buttons {
         display: flex;
-        gap: 15px;
+        gap: 20px;
     }
 
     .app-btn {
-        background: rgba(255,255,255,0.2);
+        background: rgba(255,255,255,0.15);
         border: 1px solid rgba(255,255,255,0.3);
         color: white;
-        padding: 12px 30px;
-        border-radius: 50px;
+        padding: 15px 40px;
+        border-radius: 60px;
         text-decoration: none;
         display: inline-flex;
         align-items: center;
-        gap: 10px;
-        transition: all 0.3s;
+        gap: 15px;
+        transition: all 0.4s;
+        font-weight: 600;
     }
 
     .app-btn:hover {
         background: white;
         color: var(--dark);
-        transform: translateY(-3px);
+        transform: translateY(-5px);
+    }
+
+    .app-btn i {
+        font-size: 2.2rem;
     }
 
     .qr-code {
         text-align: center;
-        padding: 20px;
+        padding: 30px;
         background: white;
-        border-radius: 20px;
+        border-radius: 30px;
         display: inline-block;
+        box-shadow: 0 30px 60px rgba(0,0,0,0.2);
     }
 
     .qr-code img {
-        width: 120px;
-        height: 120px;
+        width: 150px;
+        height: 150px;
+        border-radius: 15px;
     }
 
     /* Testimonials */
     .testimonials-section {
-        padding: 80px 0;
-        background: #f8f9fa;
+        padding: 100px 0;
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
     }
 
     .testimonials-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 25px;
-        margin-top: 40px;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 30px;
+        margin-top: 50px;
     }
 
     .testimonial-card {
         background: white;
-        border-radius: 20px;
-        padding: 30px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        border-radius: 30px;
+        padding: 40px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+        transition: all 0.4s;
+        position: relative;
+    }
+
+    .testimonial-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 30px 60px rgba(67, 97, 238, 0.15);
     }
 
     .testimonial-rating {
         color: #ffc107;
-        margin-bottom: 15px;
+        margin-bottom: 25px;
     }
 
     .testimonial-text {
-        font-size: 1rem;
-        line-height: 1.6;
+        font-size: 1.1rem;
+        line-height: 1.8;
         color: #4a5568;
-        margin-bottom: 20px;
+        margin-bottom: 30px;
         font-style: italic;
     }
 
     .testimonial-author {
         display: flex;
         align-items: center;
-        gap: 15px;
+        gap: 20px;
     }
 
     .author-avatar {
-        width: 50px;
-        height: 50px;
-        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        width: 70px;
+        height: 70px;
+        background: var(--gradient-1);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         color: white;
-        font-weight: 600;
+        font-weight: 700;
+        font-size: 1.5rem;
     }
 
     .author-info h4 {
         font-weight: 700;
         margin-bottom: 5px;
         color: var(--dark);
+        font-size: 1.2rem;
     }
 
     .author-info p {
         color: #6c757d;
-        font-size: 0.9rem;
     }
 
     /* CTA Section */
     .cta-section {
-        padding: 60px 0;
+        padding: 80px 0;
     }
 
     .cta-card {
-        background: linear-gradient(135deg, var(--primary), var(--secondary));
-        border-radius: 40px;
-        padding: 60px;
+        background: var(--gradient-1);
+        border-radius: 60px;
+        padding: 80px;
         color: white;
         text-align: center;
     }
 
     .cta-card h2 {
-        font-size: 2.5rem;
-        font-weight: 700;
-        margin-bottom: 20px;
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin-bottom: 25px;
     }
 
     .cta-card p {
-        font-size: 1.2rem;
+        font-size: 1.3rem;
         opacity: 0.95;
-        margin-bottom: 30px;
-        max-width: 600px;
+        margin-bottom: 40px;
+        max-width: 700px;
         margin-left: auto;
         margin-right: auto;
+        line-height: 1.8;
     }
 
     .cta-btn {
         background: white;
         color: var(--primary);
         border: none;
-        padding: 15px 50px;
-        border-radius: 50px;
-        font-weight: 700;
-        font-size: 1.2rem;
+        padding: 20px 70px;
+        border-radius: 60px;
+        font-weight: 800;
+        font-size: 1.3rem;
         cursor: pointer;
-        transition: all 0.3s;
+        transition: all 0.4s;
         display: inline-flex;
         align-items: center;
-        gap: 10px;
+        gap: 15px;
         text-decoration: none;
-    }
-
-    .cta-btn:hover {
-        transform: translateY(-3px);
         box-shadow: 0 20px 40px rgba(0,0,0,0.2);
     }
 
+    .cta-btn:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+    }
+
+    /* Stats Section */
+    .stats-section {
+        padding: 80px 0;
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    }
+
+    .stat-item {
+        text-align: center;
+        padding: 30px;
+    }
+
+    .stat-item h2 {
+        font-size: 4rem;
+        font-weight: 800;
+        color: var(--primary);
+        margin-bottom: 10px;
+    }
+
+    .stat-item p {
+        color: #6c757d;
+        font-size: 1.2rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
     /* Responsive */
+    @media (max-width: 992px) {
+        .search-form {
+            grid-template-columns: 1fr;
+        }
+        
+        .app-card {
+            padding: 40px;
+        }
+        
+        .app-content h2 {
+            font-size: 2.5rem;
+        }
+        
+        .cta-card {
+            padding: 50px;
+        }
+        
+        .cta-card h2 {
+            font-size: 2.5rem;
+        }
+    }
+
     @media (max-width: 768px) {
         .hero-slider {
             height: 500px;
@@ -700,23 +834,18 @@
             font-size: 2.2rem;
         }
 
-        .search-form {
-            grid-template-columns: 1fr;
+        .slide-content p {
+            font-size: 1.1rem;
         }
 
         .slider-arrow {
             width: 40px;
             height: 40px;
-            font-size: 1rem;
+            font-size: 1.2rem;
         }
 
-        .slider-arrow.prev {
-            left: 10px;
-        }
-
-        .slider-arrow.next {
-            right: 10px;
-        }
+        .slider-arrow.prev { left: 10px; }
+        .slider-arrow.next { right: 10px; }
 
         .app-card {
             padding: 30px;
@@ -740,47 +869,42 @@
 {% block content %}
 <!-- Hero Slider -->
 <div class="hero-slider" id="heroSlider">
-    <!-- Slide 1 - Delhi to Jaipur -->
     <div class="slide active" style="background-image: url('https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?ixlib=rb-4.0.3&auto=format&fit=crop&w=2069&q=80');">
         <div class="slide-overlay"></div>
         <div class="slide-content">
-            <span class="slide-badge">🇮🇳 India's Best Bus Service</span>
-            <h1>Safe & Comfortable Journey</h1>
-            <p>Book buses from Delhi to Jaipur starting at just ₹399</p>
+            <span class="slide-badge">🇮🇳 India's Most Trusted</span>
+            <h1>Your Journey, Our Priority</h1>
+            <p>Experience luxury travel with India's largest bus network</p>
         </div>
     </div>
     
-    <!-- Slide 2 - Mumbai to Pune -->
     <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1570125909232-eb263c188f7e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2071&q=80');">
         <div class="slide-overlay"></div>
         <div class="slide-content">
             <span class="slide-badge">⚡ Lightning Fast Booking</span>
-            <h1>Explore Beautiful Destinations</h1>
-            <p>Mumbai to Pune in just 3 hours • AC Buses available</p>
+            <h1>Book in Under 60 Seconds</h1>
+            <p>Instant confirmation • Safe & Secure Payments</p>
         </div>
     </div>
     
-    <!-- Slide 3 - Bangalore to Mysore - FIXED IMAGE URL -->
     <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1548013146-72479768bada?ixlib=rb-4.0.3&auto=format&fit=crop&w=2076&q=80');">
         <div class="slide-overlay"></div>
         <div class="slide-content">
-            <span class="slide-badge">✨ Luxury Travel Experience</span>
-            <h1>Modern Fleet of Buses</h1>
-            <p>Bangalore to Mysore • Volvo AC • Starting ₹299</p>
+            <span class="slide-badge">✨ Luxury Fleet</span>
+            <h1>Travel in Style & Comfort</h1>
+            <p>Volvo AC • Sleeper • Luxury Coaches Available</p>
         </div>
     </div>
     
-    <!-- Slide 4 - Chennai to Pondicherry -->
     <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1522932462653-658cb4a6e6a4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2071&q=80');">
         <div class="slide-overlay"></div>
         <div class="slide-content">
-            <span class="slide-badge">🌊 Coastal Routes</span>
-            <h1>Scenic Coastal Journeys</h1>
-            <p>Chennai to Pondicherry • Starting ₹249</p>
+            <span class="slide-badge">🌊 Scenic Routes</span>
+            <h1>Explore Beautiful Destinations</h1>
+            <p>Coastal routes • Hill stations • Cultural cities</p>
         </div>
     </div>
     
-    <!-- Navigation Arrows -->
     <div class="slider-arrow prev" onclick="changeSlide(-1)">
         <i class="fas fa-chevron-left"></i>
     </div>
@@ -788,7 +912,6 @@
         <i class="fas fa-chevron-right"></i>
     </div>
     
-    <!-- Navigation Dots -->
     <div class="slider-nav" id="sliderNav">
         <span class="slider-dot active" onclick="goToSlide(0)"></span>
         <span class="slider-dot" onclick="goToSlide(1)"></span>
@@ -802,28 +925,27 @@
     <div class="search-card">
         <div class="search-title">
             <h2>Find Your Perfect Journey</h2>
-            <p>Search among 1000+ buses across India</p>
+            <p>Search among 5000+ buses across 1000+ cities</p>
         </div>
         
         <form class="search-form" id="searchForm" action="{% url 'search_buses' %}" method="GET">
             <div class="search-input-group">
                 <i class="fas fa-map-marker-alt"></i>
-                <input type="text" name="from" placeholder="From (e.g., Mumbai)" required value="{{ request.GET.from|default:'' }}">
+                <input type="text" name="from" placeholder="From (e.g., Mumbai)" required>
             </div>
             
             <div class="search-input-group">
                 <i class="fas fa-map-marker-alt"></i>
-                <input type="text" name="to" placeholder="To (e.g., Pune)" required value="{{ request.GET.to|default:'' }}">
+                <input type="text" name="to" placeholder="To (e.g., Pune)" required>
             </div>
             
             <div class="search-input-group">
-                <i class="fas fa-calendar"></i>
-                <input type="date" name="date" id="journeyDate" required value="{{ request.GET.date|default:'' }}">
+                <i class="fas fa-calendar-alt"></i>
+                <input type="date" name="date" id="journeyDate" required>
             </div>
             
             <button type="submit" class="search-btn">
-                <i class="fas fa-search"></i>
-                Search Buses
+                <i class="fas fa-search"></i> Search Buses
             </button>
         </form>
     </div>
@@ -833,220 +955,185 @@
 <section class="features-section">
     <div class="container">
         <div class="section-title">
-            <h2>Why Choose Easy Book?</h2>
-            <p>We provide the best bus booking experience in India</p>
+            <h2>Why Travel with EasyBook?</h2>
+            <p>Experience the difference with India's most loved bus booking platform</p>
         </div>
         
         <div class="features-grid">
             <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="fas fa-bus"></i>
-                </div>
+                <div class="feature-icon"><i class="fas fa-bus"></i></div>
                 <h3>Wide Network</h3>
-                <p>1000+ bus routes across India with the best operators</p>
+                <p>5000+ buses • 1000+ routes • 500+ cities</p>
             </div>
-            
             <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="fas fa-shield-alt"></i>
-                </div>
+                <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
                 <h3>Safe Travel</h3>
-                <p>Verified buses, trained drivers, and COVID-safe protocols</p>
+                <p>Verified operators • Sanitized buses</p>
             </div>
-            
             <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="fas fa-clock"></i>
-                </div>
+                <div class="feature-icon"><i class="fas fa-headset"></i></div>
                 <h3>24/7 Support</h3>
-                <p>Round-the-clock customer service for all your needs</p>
+                <p>Round-the-clock customer care</p>
             </div>
-            
             <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="fas fa-wallet"></i>
-                </div>
+                <div class="feature-icon"><i class="fas fa-wallet"></i></div>
                 <h3>Best Prices</h3>
-                <p>Guaranteed lowest fares with no hidden charges</p>
+                <p>No hidden charges • Exclusive offers</p>
             </div>
-            
             <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="fas fa-mobile-alt"></i>
-                </div>
+                <div class="feature-icon"><i class="fas fa-mobile-alt"></i></div>
                 <h3>Easy Booking</h3>
-                <p>Book tickets in just 3 simple steps</p>
+                <p>3-step booking • Instant confirmation</p>
             </div>
-            
             <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="fas fa-ticket-alt"></i>
-                </div>
+                <div class="feature-icon"><i class="fas fa-ticket-alt"></i></div>
                 <h3>Instant Refunds</h3>
-                <p>Fast refunds to your original payment method</p>
+                <p>Free cancellation • Instant refund</p>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Popular Routes -->
+<!-- Popular Routes Slider -->
 <section class="routes-section">
     <div class="container">
         <div class="section-title">
             <h2>Popular Bus Routes</h2>
-            <p>Most booked routes by our customers</p>
+            <p>Most booked routes by our happy customers</p>
         </div>
         
-        <div class="routes-grid">
-            <a href="{% url 'search_buses' %}?from=Mumbai&to=Pune&date={{ today|date:'Y-m-d' }}" class="route-card">
-                <div class="route-image" style="background-image: url('https://images.unsplash.com/photo-1565019011515-64dbaee0a10e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');">
-                    <span class="route-badge">Most Booked</span>
+        <div class="routes-slider-container">
+            <div class="routes-slider" id="routesSlider">
+                {% with date=today|date:'Y-m-d' %}
+                <div class="route-slide">
+                    <a href="{% url 'search_buses' %}?from=Mumbai&to=Pune&date={{ date }}" class="route-card">
+                        <div class="route-image" style="background-image: url('https://images.unsplash.com/photo-1565019011515-64dbaee0a10e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');">
+                            <span class="route-badge">⭐ Most Booked</span>
+                        </div>
+                        <div class="route-content">
+                            <div class="route-cities">
+                                <div class="city"><div class="name">Mumbai</div><div class="code">BOM</div></div>
+                                <div class="route-arrow"><i class="fas fa-long-arrow-alt-right"></i></div>
+                                <div class="city"><div class="name">Pune</div><div class="code">PNQ</div></div>
+                            </div>
+                            <div class="route-info">
+                                <div class="price">₹299 <small>onwards</small></div>
+                                <div class="duration"><i class="far fa-clock"></i> 3h 30m</div>
+                            </div>
+                        </div>
+                    </a>
                 </div>
-                <div class="route-content">
-                    <div class="route-cities">
-                        <div class="city">
-                            <div class="name">Mumbai</div>
-                            <div class="code">BOM</div>
+                
+                <div class="route-slide">
+                    <a href="{% url 'search_buses' %}?from=Delhi&to=Jaipur&date={{ date }}" class="route-card">
+                        <div class="route-image" style="background-image: url('https://images.unsplash.com/photo-1587474260584-136574528ed5?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');">
+                            <span class="route-badge">👑 Royal Route</span>
                         </div>
-                        <div class="route-arrow">
-                            <i class="fas fa-arrow-right"></i>
+                        <div class="route-content">
+                            <div class="route-cities">
+                                <div class="city"><div class="name">Delhi</div><div class="code">DEL</div></div>
+                                <div class="route-arrow"><i class="fas fa-long-arrow-alt-right"></i></div>
+                                <div class="city"><div class="name">Jaipur</div><div class="code">JAI</div></div>
+                            </div>
+                            <div class="route-info">
+                                <div class="price">₹399 <small>onwards</small></div>
+                                <div class="duration"><i class="far fa-clock"></i> 5h 30m</div>
+                            </div>
                         </div>
-                        <div class="city">
-                            <div class="name">Pune</div>
-                            <div class="code">PNQ</div>
-                        </div>
-                    </div>
-                    <div class="route-info">
-                        <div class="price">₹299 <small>onwards</small></div>
-                        <div class="duration"><i class="far fa-clock"></i> 3h 30m</div>
-                    </div>
+                    </a>
                 </div>
-            </a>
+                
+                <div class="route-slide">
+                    <a href="{% url 'search_buses' %}?from=Bangalore&to=Mysore&date={{ date }}" class="route-card">
+                        <div class="route-image" style="background-image: url('https://images.unsplash.com/photo-1596178065887-1198b6148b2b?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');">
+                            <span class="route-badge">🌿 Weekend Special</span>
+                        </div>
+                        <div class="route-content">
+                            <div class="route-cities">
+                                <div class="city"><div class="name">Bangalore</div><div class="code">BLR</div></div>
+                                <div class="route-arrow"><i class="fas fa-long-arrow-alt-right"></i></div>
+                                <div class="city"><div class="name">Mysore</div><div class="code">MYS</div></div>
+                            </div>
+                            <div class="route-info">
+                                <div class="price">₹199 <small>onwards</small></div>
+                                <div class="duration"><i class="far fa-clock"></i> 3h 15m</div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                
+                <div class="route-slide">
+                    <a href="{% url 'search_buses' %}?from=Chennai&to=Pondicherry&date={{ date }}" class="route-card">
+                        <div class="route-image" style="background-image: url('https://images.unsplash.com/photo-1589802829985-817e51171b92?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');">
+                            <span class="route-badge">🌊 Coastal Route</span>
+                        </div>
+                        <div class="route-content">
+                            <div class="route-cities">
+                                <div class="city"><div class="name">Chennai</div><div class="code">MAA</div></div>
+                                <div class="route-arrow"><i class="fas fa-long-arrow-alt-right"></i></div>
+                                <div class="city"><div class="name">Pondicherry</div><div class="code">PNY</div></div>
+                            </div>
+                            <div class="route-info">
+                                <div class="price">₹249 <small>onwards</small></div>
+                                <div class="duration"><i class="far fa-clock"></i> 4h 00m</div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                
+                <div class="route-slide">
+                    <a href="{% url 'search_buses' %}?from=Hyderabad&to=Bangalore&date={{ date }}" class="route-card">
+                        <div class="route-image" style="background-image: url('https://images.unsplash.com/photo-1565619624096-9f0c68ceb8a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');">
+                            <span class="route-badge">🌙 Night Bus</span>
+                        </div>
+                        <div class="route-content">
+                            <div class="route-cities">
+                                <div class="city"><div class="name">Hyderabad</div><div class="code">HYD</div></div>
+                                <div class="route-arrow"><i class="fas fa-long-arrow-alt-right"></i></div>
+                                <div class="city"><div class="name">Bangalore</div><div class="code">BLR</div></div>
+                            </div>
+                            <div class="route-info">
+                                <div class="price">₹599 <small>onwards</small></div>
+                                <div class="duration"><i class="far fa-clock"></i> 8h 00m</div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                
+                <div class="route-slide">
+                    <a href="{% url 'search_buses' %}?from=Ahmedabad&to=Surat&date={{ date }}" class="route-card">
+                        <div class="route-image" style="background-image: url('https://images.unsplash.com/photo-1570168007204-dfb528c6958f?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');">
+                            <span class="route-badge">⚡ Frequent</span>
+                        </div>
+                        <div class="route-content">
+                            <div class="route-cities">
+                                <div class="city"><div class="name">Ahmedabad</div><div class="code">AMD</div></div>
+                                <div class="route-arrow"><i class="fas fa-long-arrow-alt-right"></i></div>
+                                <div class="city"><div class="name">Surat</div><div class="code">STV</div></div>
+                            </div>
+                            <div class="route-info">
+                                <div class="price">₹199 <small>onwards</small></div>
+                                <div class="duration"><i class="far fa-clock"></i> 4h 30m</div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                {% endwith %}
+            </div>
             
-            <a href="{% url 'search_buses' %}?from=Delhi&to=Jaipur&date={{ today|date:'Y-m-d' }}" class="route-card">
-                <div class="route-image" style="background-image: url('https://images.unsplash.com/photo-1587474260584-136574528ed5?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');">
-                    <span class="route-badge">Popular</span>
+            <div class="slider-controls">
+                <button class="slider-control-btn" onclick="slideRoutes(-1)">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <div class="slider-dots" id="routeDots">
+                    <span class="slider-dot-slide active" onclick="goToRouteSlide(0)"></span>
+                    <span class="slider-dot-slide" onclick="goToRouteSlide(1)"></span>
+                    <span class="slider-dot-slide" onclick="goToRouteSlide(2)"></span>
                 </div>
-                <div class="route-content">
-                    <div class="route-cities">
-                        <div class="city">
-                            <div class="name">Delhi</div>
-                            <div class="code">DEL</div>
-                        </div>
-                        <div class="route-arrow">
-                            <i class="fas fa-arrow-right"></i>
-                        </div>
-                        <div class="city">
-                            <div class="name">Jaipur</div>
-                            <div class="code">JAI</div>
-                        </div>
-                    </div>
-                    <div class="route-info">
-                        <div class="price">₹399 <small>onwards</small></div>
-                        <div class="duration"><i class="far fa-clock"></i> 5h 30m</div>
-                    </div>
-                </div>
-            </a>
-            
-            <a href="{% url 'search_buses' %}?from=Bangalore&to=Mysore&date={{ today|date:'Y-m-d' }}" class="route-card">
-                <div class="route-image" style="background-image: url('https://images.unsplash.com/photo-1596178065887-1198b6148b2b?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');">
-                    <span class="route-badge">Weekend Special</span>
-                </div>
-                <div class="route-content">
-                    <div class="route-cities">
-                        <div class="city">
-                            <div class="name">Bangalore</div>
-                            <div class="code">BLR</div>
-                        </div>
-                        <div class="route-arrow">
-                            <i class="fas fa-arrow-right"></i>
-                        </div>
-                        <div class="city">
-                            <div class="name">Mysore</div>
-                            <div class="code">MYS</div>
-                        </div>
-                    </div>
-                    <div class="route-info">
-                        <div class="price">₹199 <small>onwards</small></div>
-                        <div class="duration"><i class="far fa-clock"></i> 3h 15m</div>
-                    </div>
-                </div>
-            </a>
-            
-            <a href="{% url 'search_buses' %}?from=Chennai&to=Pondicherry&date={{ today|date:'Y-m-d' }}" class="route-card">
-                <div class="route-image" style="background-image: url('https://images.unsplash.com/photo-1589802829985-817e51171b92?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');">
-                    <span class="route-badge">Scenic</span>
-                </div>
-                <div class="route-content">
-                    <div class="route-cities">
-                        <div class="city">
-                            <div class="name">Chennai</div>
-                            <div class="code">MAA</div>
-                        </div>
-                        <div class="route-arrow">
-                            <i class="fas fa-arrow-right"></i>
-                        </div>
-                        <div class="city">
-                            <div class="name">Pondicherry</div>
-                            <div class="code">PNY</div>
-                        </div>
-                    </div>
-                    <div class="route-info">
-                        <div class="price">₹249 <small>onwards</small></div>
-                        <div class="duration"><i class="far fa-clock"></i> 4h 00m</div>
-                    </div>
-                </div>
-            </a>
-            
-            <a href="{% url 'search_buses' %}?from=Hyderabad&to=Bangalore&date={{ today|date:'Y-m-d' }}" class="route-card">
-                <div class="route-image" style="background-image: url('https://images.unsplash.com/photo-1565619624096-9f0c68ceb8a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');">
-                    <span class="route-badge">Night Buses</span>
-                </div>
-                <div class="route-content">
-                    <div class="route-cities">
-                        <div class="city">
-                            <div class="name">Hyderabad</div>
-                            <div class="code">HYD</div>
-                        </div>
-                        <div class="route-arrow">
-                            <i class="fas fa-arrow-right"></i>
-                        </div>
-                        <div class="city">
-                            <div class="name">Bangalore</div>
-                            <div class="code">BLR</div>
-                        </div>
-                    </div>
-                    <div class="route-info">
-                        <div class="price">₹599 <small>onwards</small></div>
-                        <div class="duration"><i class="far fa-clock"></i> 8h 00m</div>
-                    </div>
-                </div>
-            </a>
-            
-            <a href="{% url 'search_buses' %}?from=Ahmedabad&to=Surat&date={{ today|date:'Y-m-d' }}" class="route-card">
-                <div class="route-image" style="background-image: url('https://images.unsplash.com/photo-1570168007204-dfb528c6958f?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');">
-                    <span class="route-badge">Frequent</span>
-                </div>
-                <div class="route-content">
-                    <div class="route-cities">
-                        <div class="city">
-                            <div class="name">Ahmedabad</div>
-                            <div class="code">AMD</div>
-                        </div>
-                        <div class="route-arrow">
-                            <i class="fas fa-arrow-right"></i>
-                        </div>
-                        <div class="city">
-                            <div class="name">Surat</div>
-                            <div class="code">STV</div>
-                        </div>
-                    </div>
-                    <div class="route-info">
-                        <div class="price">₹199 <small>onwards</small></div>
-                        <div class="duration"><i class="far fa-clock"></i> 4h 30m</div>
-                    </div>
-                </div>
-            </a>
+                <button class="slider-control-btn" onclick="slideRoutes(1)">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
         </div>
     </div>
 </section>
@@ -1062,29 +1149,26 @@
         <div class="offers-grid">
             <div class="offer-card">
                 <div class="offer-icon">🎉</div>
-                <h3>First Booking Offer</h3>
-                <p>Get 20% off on your first bus booking</p>
+                <h3>First Booking</h3>
+                <p>Get 20% off on your first booking</p>
                 <span class="offer-code">FIRST20</span>
             </div>
-            
             <div class="offer-card">
                 <div class="offer-icon">🚀</div>
                 <h3>Weekend Special</h3>
-                <p>15% off on all weekend journeys</p>
+                <p>15% off on weekend journeys</p>
                 <span class="offer-code">WEEKEND15</span>
             </div>
-            
             <div class="offer-card">
                 <div class="offer-icon">👥</div>
                 <h3>Group Booking</h3>
                 <p>Book 4+ tickets & get 25% off</p>
                 <span class="offer-code">GROUP25</span>
             </div>
-            
             <div class="offer-card">
                 <div class="offer-icon">⭐</div>
                 <h3>Student Discount</h3>
-                <p>10% off for students with valid ID</p>
+                <p>10% off with valid ID card</p>
                 <span class="offer-code">STUDENT10</span>
             </div>
         </div>
@@ -1098,24 +1182,17 @@
             <div class="row align-items-center">
                 <div class="col-md-7">
                     <div class="app-content">
-                        <h2>Download the Easy Book App</h2>
-                        <p>Get the best bus booking experience on your mobile. Book tickets, track your bus, and get exclusive app-only offers.</p>
+                        <h2>Download the EasyBook App</h2>
+                        <p>Book tickets, track your bus, and get exclusive app-only offers.</p>
                         
                         <div class="app-buttons">
                             <a href="#" class="app-btn">
-                                <i class="fab fa-google-play fa-2x"></i>
-                                <div>
-                                    <small>Get it on</small>
-                                    <strong>Google Play</strong>
-                                </div>
+                                <i class="fab fa-google-play"></i>
+                                <div><small>Get it on</small><strong>Google Play</strong></div>
                             </a>
-                            
                             <a href="#" class="app-btn">
-                                <i class="fab fa-apple fa-2x"></i>
-                                <div>
-                                    <small>Download on</small>
-                                    <strong>App Store</strong>
-                                </div>
+                                <i class="fab fa-apple"></i>
+                                <div><small>Download on</small><strong>App Store</strong></div>
                             </a>
                         </div>
                     </div>
@@ -1123,8 +1200,8 @@
                 
                 <div class="col-md-5 text-center">
                     <div class="qr-code">
-                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://easybook.com/download" alt="Download App">
-                        <p class="mt-2 mb-0 text-dark">Scan to download</p>
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://easybook.com/download" alt="Download App">
+                        <p class="mt-3 mb-0 text-dark fw-bold">Scan to download</p>
                     </div>
                 </div>
             </div>
@@ -1137,61 +1214,34 @@
     <div class="container">
         <div class="section-title">
             <h2>What Our Customers Say</h2>
-            <p>Real stories from happy travelers</p>
+            <p>Real stories from happy travelers across India</p>
         </div>
         
         <div class="testimonials-grid">
             <div class="testimonial-card">
-                <div class="testimonial-rating">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                </div>
-                <p class="testimonial-text">"Excellent service! Booked Mumbai to Pune bus and the journey was very comfortable. Will definitely use Easy Book again."</p>
+                <div class="testimonial-rating">★★★★★</div>
+                <p class="testimonial-text">"Excellent service! Booked Mumbai to Pune bus and the journey was very comfortable."</p>
                 <div class="testimonial-author">
                     <div class="author-avatar">R</div>
-                    <div class="author-info">
-                        <h4>Rahul Sharma</h4>
-                        <p>Mumbai</p>
-                    </div>
+                    <div class="author-info"><h4>Rahul Sharma</h4><p>Mumbai</p></div>
                 </div>
             </div>
             
             <div class="testimonial-card">
-                <div class="testimonial-rating">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                </div>
-                <p class="testimonial-text">"The booking process was so smooth! Got great discounts on Delhi-Jaipur route. The bus was on time and very clean."</p>
+                <div class="testimonial-rating">★★★★★</div>
+                <p class="testimonial-text">"The booking process was so smooth! Got great discounts on Delhi-Jaipur route."</p>
                 <div class="testimonial-author">
                     <div class="author-avatar">P</div>
-                    <div class="author-info">
-                        <h4>Priya Singh</h4>
-                        <p>Delhi</p>
-                    </div>
+                    <div class="author-info"><h4>Priya Singh</h4><p>Delhi</p></div>
                 </div>
             </div>
             
             <div class="testimonial-card">
-                <div class="testimonial-rating">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                </div>
-                <p class="testimonial-text">"Amazing customer support! Had to change my booking date and they helped me instantly. Highly recommended!"</p>
+                <div class="testimonial-rating">★★★★★</div>
+                <p class="testimonial-text">"Amazing customer support! Had to change my booking date and they helped instantly."</p>
                 <div class="testimonial-author">
                     <div class="author-avatar">A</div>
-                    <div class="author-info">
-                        <h4>Arjun Kumar</h4>
-                        <p>Bangalore</p>
-                    </div>
+                    <div class="author-info"><h4>Arjun Kumar</h4><p>Bangalore</p></div>
                 </div>
             </div>
         </div>
@@ -1203,35 +1253,22 @@
     <div class="container">
         <div class="cta-card">
             <h2>Are you a Bus Operator?</h2>
-            <p>Join Easy Book and reach thousands of customers daily. List your buses for free and grow your business!</p>
+            <p>Join EasyBook and reach thousands of customers daily. List your buses for free!</p>
             <a href="{% url 'bus_owner_registration' %}" class="cta-btn">
-                <i class="fas fa-bus"></i>
-                Register Your Bus Now
+                <i class="fas fa-bus"></i> Register Your Bus Now
             </a>
         </div>
     </div>
 </section>
 
 <!-- Stats Section -->
-<section class="features-section" style="padding: 60px 0;">
+<section class="stats-section">
     <div class="container">
-        <div class="row text-center">
-            <div class="col-md-3 col-6 mb-4">
-                <h2 class="display-4 fw-bold text-primary">1000+</h2>
-                <p class="text-muted">Daily Buses</p>
-            </div>
-            <div class="col-md-3 col-6 mb-4">
-                <h2 class="display-4 fw-bold text-primary">500+</h2>
-                <p class="text-muted">Cities Covered</p>
-            </div>
-            <div class="col-md-3 col-6 mb-4">
-                <h2 class="display-4 fw-bold text-primary">2M+</h2>
-                <p class="text-muted">Happy Customers</p>
-            </div>
-            <div class="col-md-3 col-6 mb-4">
-                <h2 class="display-4 fw-bold text-primary">4.5★</h2>
-                <p class="text-muted">App Store Rating</p>
-            </div>
+        <div class="row">
+            <div class="col-md-3 col-6"><div class="stat-item"><h2>5000+</h2><p>Daily Buses</p></div></div>
+            <div class="col-md-3 col-6"><div class="stat-item"><h2>1000+</h2><p>Cities Covered</p></div></div>
+            <div class="col-md-3 col-6"><div class="stat-item"><h2>2M+</h2><p>Happy Customers</p></div></div>
+            <div class="col-md-3 col-6"><div class="stat-item"><h2>4.8★</h2><p>App Store Rating</p></div></div>
         </div>
     </div>
 </section>
@@ -1248,8 +1285,8 @@ function showSlide(index) {
     else if (index < 0) currentSlide = slides.length - 1;
     else currentSlide = index;
     
-    slides.forEach(slide => slide.classList.remove('active'));
-    dots.forEach(dot => dot.classList.remove('active'));
+    slides.forEach(s => s.classList.remove('active'));
+    dots.forEach(d => d.classList.remove('active'));
     
     slides[currentSlide].classList.add('active');
     dots[currentSlide].classList.add('active');
@@ -1274,19 +1311,16 @@ function resetTimer() {
     slideInterval = setInterval(nextSlide, 5000);
 }
 
-// Start automatic sliding
+// Initialize
 slideInterval = setInterval(nextSlide, 5000);
-
-// Set minimum date for journey date
 const today = new Date().toISOString().split('T')[0];
 document.getElementById('journeyDate').min = today;
 document.getElementById('journeyDate').value = today;
 
-// Handle search form submission with validation
+// Search validation
 document.getElementById('searchForm').addEventListener('submit', function(e) {
     const from = document.querySelector('input[name="from"]').value.trim();
     const to = document.querySelector('input[name="to"]').value.trim();
-    
     if (from.toLowerCase() === to.toLowerCase()) {
         e.preventDefault();
         alert('Source and destination cannot be the same!');
@@ -1300,7 +1334,41 @@ slider.addEventListener('mouseleave', () => {
     slideInterval = setInterval(nextSlide, 5000);
 });
 
-// Initialize first slide
+// Routes Slider
+let currentRouteSlide = 0;
+const routeSlides = document.querySelectorAll('.route-slide');
+const routeDots = document.querySelectorAll('.slider-dot-slide');
+const routeSlider = document.getElementById('routesSlider');
+
+function updateRouteSlider() {
+    const slideWidth = routeSlides[0].offsetWidth + 25;
+    routeSlider.style.transform = `translateX(-${currentRouteSlide * slideWidth}px)`;
+    routeDots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === currentRouteSlide);
+    });
+}
+
+function slideRoutes(direction) {
+    const maxSlides = routeSlides.length - 3;
+    currentRouteSlide = Math.min(Math.max(currentRouteSlide + direction, 0), maxSlides);
+    updateRouteSlider();
+}
+
+function goToRouteSlide(index) {
+    currentRouteSlide = Math.min(index, routeSlides.length - 3);
+    updateRouteSlider();
+}
+
+window.addEventListener('resize', updateRouteSlider);
+
+// Auto slide routes
+setInterval(() => {
+    slideRoutes(1);
+    if (currentRouteSlide >= routeSlides.length - 3) {
+        currentRouteSlide = -1;
+    }
+}, 5000);
+
 showSlide(0);
 </script>
 {% endblock %}

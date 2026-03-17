@@ -14,7 +14,7 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
         
         if user is not None:
-            login(request, user)
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             messages.success(request, f'Welcome back, {user.username}!')
             
             # Redirect based on user type
@@ -62,7 +62,7 @@ def signup_view(request):
             user_type=user_type
         )
         
-        login(request, user)
+        login(request, user, backend='django.contrib.auth.backends.ModelBackend')
         messages.success(request, 'Account created successfully!')
         
         # Redirect based on user type

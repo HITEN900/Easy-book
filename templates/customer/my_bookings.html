@@ -1,98 +1,400 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}My Bookings - Easy Book{% endblock %}
 
+{% block extra_css %}
+<style>
+    .booking-card { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.08); transition: all 0.3s; margin-bottom: 20px; border: 1px solid #e9ecef; }
+    .booking-card:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(67,97,238,0.15); }
+    .booking-header { background: linear-gradient(135deg, #667eea, #764ba2); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
+    .booking-header.cancelled-header { background: linear-gradient(135deg, #adb5bd, #868e96); }
+    .booking-ref { font-weight: 700; color: white; font-size: 1.1rem; }
+    .booking-body { padding: 20px; }
+    .route-info { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
+    .city { text-align: center; flex: 1; }
+    .city .name { font-weight: 700; font-size: 1.2rem; color: #2b2d42; }
+    .city .time { color: #6c757d; font-size: 0.9rem; }
+    .route-arrow { color: #667eea; font-size: 1.5rem; margin: 0 15px; }
+    .bus-info { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-top: 1px dashed #e9ecef; border-bottom: 1px dashed #e9ecef; }
+    .seats { display: flex; flex-wrap: wrap; gap: 5px; margin: 15px 0; }
+    .seat-badge { background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 5px 12px; border-radius: 30px; font-size: 0.9rem; font-weight: 600; }
+    .booking-footer { padding: 15px 20px; background: #f8f9fa; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+    .amount { font-size: 1.3rem; font-weight: 700; color: #2b2d42; }
+    .status-badge { padding: 6px 15px; border-radius: 30px; font-weight: 600; font-size: 0.9rem; }
+    .status-confirmed { background: linear-gradient(135deg, #d4edda, #c3e6cb); color: #155724; }
+    .status-pending { background: linear-gradient(135deg, #fff3cd, #ffeeba); color: #856404; }
+    .status-cancelled { background: linear-gradient(135deg, #f8d7da, #f5c6cb); color: #721c24; }
+    .status-completed { background: linear-gradient(135deg, #d1ecf1, #bee5eb); color: #0c5460; }
+    .action-btn { padding: 8px 15px; border-radius: 10px; font-size: 0.9rem; transition: all 0.3s; margin: 0 3px; border: none; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; }
+    .action-btn:hover { transform: translateY(-2px); }
+    .btn-view { background: #4895ef; color: white; }
+    .btn-pdf { background: #4cc9f0; color: white; }
+    .btn-cancel { background: #f72585; color: white; }
+    .btn-delete { background: #dc3545; color: white; }
+    .cancelled-badge { background: rgba(255,255,255,0.3); color: white; padding: 3px 10px; border-radius: 20px; font-size: 0.8rem; margin-left: 8px; }
+
+    /* ===== MODAL BASE ===== */
+    .app-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.55); z-index: 9999; align-items: center; justify-content: center; }
+    .app-modal.show { display: flex; animation: fadeIn 0.3s; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .modal-box { background: white; border-radius: 30px; max-width: 500px; width: 90%; max-height: 90vh; overflow-y: auto; animation: slideUp 0.3s; }
+    @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    .modal-head { padding: 25px; border-radius: 30px 30px 0 0; text-align: center; color: white; }
+    .modal-head.cancel-head { background: linear-gradient(135deg, #f72585, #b5179e); }
+    .modal-head.delete-head { background: linear-gradient(135deg, #dc3545, #a71d2a); }
+    .modal-head i.modal-icon { font-size: 3rem; margin-bottom: 10px; display: block; }
+    .modal-head h3 { font-weight: 700; margin: 0; }
+    .modal-bd { padding: 30px; }
+    .booking-summary { background: #f8f9fa; border-radius: 20px; padding: 20px; margin-bottom: 25px; }
+    .summary-item { display: flex; justify-content: space-between; margin-bottom: 12px; padding: 8px 0; border-bottom: 1px solid #e9ecef; }
+    .summary-item:last-child { border-bottom: none; }
+    .refund-box { background: linear-gradient(135deg, #d4edda, #c3e6cb); border-radius: 15px; padding: 20px; text-align: center; margin-bottom: 20px; }
+    .refund-amount { font-size: 2.5rem; font-weight: 800; color: #155724; }
+    .refund-note { font-size: 0.9rem; color: #155724; }
+    .delete-warning-box { background: linear-gradient(135deg, #f8d7da, #f5c6cb); border-radius: 15px; padding: 20px; text-align: center; margin-bottom: 20px; }
+    .delete-warning-box .warn-icon { font-size: 2.5rem; color: #721c24; margin-bottom: 10px; display: block; }
+    .delete-warning-box p { color: #721c24; margin: 0; font-weight: 600; }
+    .delete-warning-box small { color: #721c24; opacity: 0.85; }
+    .reason-option { margin-bottom: 12px; padding: 15px; border: 2px solid #e9ecef; border-radius: 15px; cursor: pointer; transition: all 0.3s; }
+    .reason-option:hover, .reason-option.selected { border-color: #f72585; background: #fff5f8; }
+    .reason-option input[type="radio"] { margin-right: 10px; }
+    .custom-reason { display: none; margin-top: 15px; }
+    .custom-reason.show { display: block; }
+    .custom-reason textarea { width: 100%; padding: 15px; border: 2px solid #e9ecef; border-radius: 15px; resize: none; }
+    .custom-reason textarea:focus { border-color: #f72585; outline: none; }
+    .policy-warning { background: #e7f3ff; padding: 15px; border-radius: 12px; margin: 20px 0; font-size: 0.9rem; color: #004085; }
+    .modal-ftbns { padding: 20px 30px 30px; display: flex; gap: 15px; }
+    .btn-modal { flex: 1; padding: 15px; border: none; border-radius: 15px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: all 0.3s; }
+    .btn-modal.close-btn { background: #e9ecef; color: #6c757d; }
+    .btn-modal.confirm-cancel { background: linear-gradient(135deg, #f72585, #b5179e); color: white; }
+    .btn-modal.confirm-cancel:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(247,37,133,0.3); }
+    .btn-modal.confirm-delete { background: linear-gradient(135deg, #dc3545, #a71d2a); color: white; }
+    .btn-modal.confirm-delete:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(220,53,69,0.3); }
+    .btn-modal:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+    .loading-spinner { display: inline-block; width: 18px; height: 18px; border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: white; animation: spin 1s ease-in-out infinite; margin-right: 8px; vertical-align: middle; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .no-bookings { text-align: center; padding: 80px 20px; background: white; border-radius: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
+
+    @media (max-width: 768px) {
+        .modal-ftbns { flex-direction: column; }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container mt-4">
+<div class="container mt-4 mb-5">
     <div class="row">
         <div class="col-12">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">My Bookings</h4>
-                </div>
-                <div class="card-body">
-                    {% if bookings %}
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Booking Ref</th>
-                                        <th>Bus</th>
-                                        <th>Route</th>
-                                        <th>Journey Date</th>
-                                        <th>Seats</th>
-                                        <th>Amount</th>
-                                        <th>Status</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for booking in bookings %}
-                                    <tr>
-                                        <td><strong>{{ booking.booking_reference }}</strong></td>
-                                        <td>{{ booking.route.bus.bus_name }}</td>
-                                        <td>{{ booking.route.source }} → {{ booking.route.destination }}</td>
-                                        <td>{{ booking.journey_date|date:"d M Y" }}<br>
-                                            <small class="text-muted">{{ booking.route.departure_time|date:"h:i A" }}</small>
-                                        </td>
-                                        <td>
-                                            {% for seat in booking.booked_seats.all %}
-                                                <span class="badge bg-primary">{{ seat.seat.seat_number }}</span>
-                                            {% endfor %}
-                                        </td>
-                                        <td>₹{{ booking.total_amount }}</td>
-                                        <td>
-                                            <span class="badge 
-                                                {% if booking.status == 'confirmed' %}bg-success
-                                                {% elif booking.status == 'cancelled' %}bg-danger
-                                                {% elif booking.status == 'completed' %}bg-info
-                                                {% else %}bg-warning{% endif %}">
-                                                {{ booking.status|title }}
-                                            </span>
-                                        </td>
-                                        <td>
-    <a href="{% url 'booking_confirmation' booking.id %}" class="btn btn-sm btn-info">
-        <i class="fas fa-eye"></i> View
-    </a>
-    <a href="{% url 'download_ticket' booking.id %}" class="btn btn-sm btn-success">
-        <i class="fas fa-download"></i> PDF
-    </a>
-    {% if booking.status == 'confirmed' or booking.status == 'pending' %}
-        <a href="{% url 'cancel_booking' booking.id %}" 
-           class="btn btn-sm btn-danger"
-           onclick="return confirm('Are you sure you want to cancel this booking?')">
-            <i class="fas fa-times"></i> Cancel
-        </a>
-    {% endif %}
-</td>
-                                        <td>
-                                            <a href="{% url 'booking_confirmation' booking.id %}" class="btn btn-sm btn-info">
-                                                <i class="fas fa-eye"></i> View
-                                            </a>
-                                            {% if booking.status == 'confirmed' or booking.status == 'pending' %}
-                                                <a href="{% url 'cancel_booking' booking.id %}" 
-                                                   class="btn btn-sm btn-danger"
-                                                   onclick="return confirm('Are you sure you want to cancel this booking?')">
-                                                    <i class="fas fa-times"></i> Cancel
-                                                </a>
-                                            {% endif %}
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    {% else %}
-                        <div class="text-center py-5">
-                            <i class="fas fa-ticket-alt fa-4x text-muted mb-3"></i>
-                            <h5>No bookings found</h5>
-                            <p>You haven't made any bookings yet.</p>
-                            <a href="{% url 'home' %}" class="btn btn-primary">Search Buses</a>
-                        </div>
-                    {% endif %}
-                </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="fw-bold"><i class="fas fa-ticket-alt me-2 text-primary"></i>My Bookings</h2>
+                <a href="{% url 'home' %}" class="btn btn-outline-primary">
+                    <i class="fas fa-search me-2"></i>Search New Buses
+                </a>
             </div>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-3" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            {% if bookings %}
+                <div class="row">
+                    {% for booking in bookings %}
+                    <div class="col-lg-6">
+                        <div class="booking-card">
+
+                            <!-- Header -->
+                            <div class="booking-header {% if booking.status == 'cancelled' %}cancelled-header{% endif %}">
+                                <span class="booking-ref">
+                                    <i class="fas fa-ticket-alt me-2"></i>{{ booking.booking_reference }}
+                                    {% if booking.status == 'cancelled' %}
+                                        <span class="cancelled-badge">Cancelled</span>
+                                    {% endif %}
+                                </span>
+                                <span class="status-badge status-{{ booking.status }}">
+                                    {{ booking.status|title }}
+                                </span>
+                            </div>
+
+                            <!-- Body -->
+                            <div class="booking-body">
+                                <div class="route-info">
+                                    <div class="city">
+                                        <div class="name">{{ booking.route.source }}</div>
+                                        <div class="time">{{ booking.route.departure_time|date:"h:i A" }}</div>
+                                    </div>
+                                    <div class="route-arrow"><i class="fas fa-long-arrow-alt-right"></i></div>
+                                    <div class="city">
+                                        <div class="name">{{ booking.route.destination }}</div>
+                                        <div class="time">{{ booking.route.arrival_time|date:"h:i A" }}</div>
+                                    </div>
+                                </div>
+
+                                <div class="bus-info">
+                                    <span><i class="fas fa-bus me-2 text-primary"></i>{{ booking.route.bus.bus_name }}</span>
+                                    <span><i class="fas fa-calendar me-2 text-primary"></i>{{ booking.journey_date|date:"d M Y" }}</span>
+                                </div>
+
+                                <div class="seats">
+                                    {% for seat in booking.booked_seats.all %}
+                                        <span class="seat-badge"><i class="fas fa-chair me-1"></i>{{ seat.seat.seat_number }}</span>
+                                    {% empty %}
+                                        <small class="text-muted">No seat info</small>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <!-- Footer -->
+                            <div class="booking-footer">
+                                <div>
+                                    <span class="amount">₹{{ booking.total_amount }}</span>
+                                    {% if booking.payment_method %}
+                                        <small class="text-muted ms-2">via {{ booking.payment_method }}</small>
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <a href="{% url 'booking_confirmation' booking.id %}" class="action-btn btn-view">
+                                        <i class="fas fa-eye me-1"></i>View
+                                    </a>
+                                    <a href="{% url 'download_ticket' booking.id %}" class="action-btn btn-pdf">
+                                        <i class="fas fa-download me-1"></i>PDF
+                                    </a>
+
+                                    {% if booking.status == 'confirmed' or booking.status == 'pending' %}
+                                    <button onclick="openCancelModal(
+                                        {{ booking.id }},
+                                        '{{ booking.booking_reference }}',
+                                        '{{ booking.route.source }}',
+                                        '{{ booking.route.destination }}',
+                                        '{{ booking.journey_date|date:"d M Y" }}',
+                                        {{ booking.total_amount }},
+                                        '{% url "cancel_booking" booking.id %}'
+                                    )" class="action-btn btn-cancel">
+                                        <i class="fas fa-times me-1"></i>Cancel
+                                    </button>
+                                    {% endif %}
+
+                                    {% if booking.status == 'cancelled' %}
+                                    <button onclick="openDeleteModal(
+                                        {{ booking.id }},
+                                        '{{ booking.booking_reference }}',
+                                        '{{ booking.route.source }}',
+                                        '{{ booking.route.destination }}',
+                                        '{{ booking.journey_date|date:"d M Y" }}',
+                                        '{% url "delete_booking" booking.id %}'
+                                    )" class="action-btn btn-delete">
+                                        <i class="fas fa-trash me-1"></i>Delete
+                                    </button>
+                                    {% endif %}
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+            {% else %}
+                <div class="no-bookings">
+                    <i class="fas fa-ticket-alt fa-5x text-muted mb-4 d-block"></i>
+                    <h3 class="fw-bold mb-3">No Bookings Found</h3>
+                    <p class="text-muted mb-4">You haven't made any bookings yet. Start your journey today!</p>
+                    <a href="{% url 'home' %}" class="btn btn-primary btn-lg px-5">
+                        <i class="fas fa-search me-2"></i>Search Buses
+                    </a>
+                </div>
+            {% endif %}
+
         </div>
     </div>
 </div>
+
+<!-- ===== CANCEL MODAL ===== -->
+<div id="cancelModal" class="app-modal">
+    <div class="modal-box">
+        <div class="modal-head cancel-head">
+            <i class="fas fa-exclamation-triangle modal-icon"></i>
+            <h3>Cancel Booking</h3>
+            <p class="mb-0 mt-1">Please select a reason for cancellation</p>
+        </div>
+        <div class="modal-bd">
+            <div class="booking-summary" id="cancelSummary"></div>
+            <div class="refund-box" id="cancelRefundInfo"></div>
+
+            <h6 class="fw-bold mb-3">Cancellation Reason <span class="text-danger">*</span></h6>
+            <div class="reason-option" onclick="selectReason(this,'Change in travel plans')"><input type="radio" name="reason" value="Change in travel plans"><label> Change in travel plans</label></div>
+            <div class="reason-option" onclick="selectReason(this,'Medical emergency')"><input type="radio" name="reason" value="Medical emergency"><label> Medical emergency</label></div>
+            <div class="reason-option" onclick="selectReason(this,'Personal reasons')"><input type="radio" name="reason" value="Personal reasons"><label> Personal reasons</label></div>
+            <div class="reason-option" onclick="selectReason(this,'Found better alternative')"><input type="radio" name="reason" value="Found better alternative"><label> Found better alternative</label></div>
+            <div class="reason-option" onclick="selectReason(this,'Weather conditions')"><input type="radio" name="reason" value="Weather conditions"><label> Weather conditions</label></div>
+            <div class="reason-option" onclick="selectReason(this,'Booking by mistake')"><input type="radio" name="reason" value="Booking by mistake"><label> Booking by mistake</label></div>
+            <div class="reason-option" onclick="selectReason(this,'other')"><input type="radio" name="reason" value="other"><label> Other reason</label></div>
+            <div class="custom-reason" id="customReasonBox">
+                <textarea id="customReason" rows="3" placeholder="Please specify your reason..."></textarea>
+            </div>
+
+            <div class="policy-warning">
+                <i class="fas fa-info-circle me-2"></i>
+                <strong>Refund Policy:</strong> Amount will be credited to your
+                <strong>original payment method within 5–7 business days</strong>.
+            </div>
+        </div>
+        <div class="modal-ftbns">
+            <button class="btn-modal close-btn" onclick="closeCancelModal()"><i class="fas fa-arrow-left me-2"></i>Go Back</button>
+            <button class="btn-modal confirm-cancel" id="confirmCancelBtn" onclick="submitCancellation()">
+                <span id="cancelBtnText"><i class="fas fa-check me-2"></i>Confirm Cancellation</span>
+                <span id="cancelBtnLoader" style="display:none;"><span class="loading-spinner"></span>Processing...</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== DELETE MODAL ===== -->
+<div id="deleteModal" class="app-modal">
+    <div class="modal-box">
+        <div class="modal-head delete-head">
+            <i class="fas fa-trash-alt modal-icon"></i>
+            <h3>Delete Booking</h3>
+            <p class="mb-0 mt-1">This action cannot be undone</p>
+        </div>
+        <div class="modal-bd">
+            <div class="booking-summary" id="deleteSummary"></div>
+            <div class="delete-warning-box">
+                <i class="fas fa-exclamation-circle warn-icon"></i>
+                <p>Permanently delete this cancelled booking?</p>
+                <small>This will remove the booking record from your history.</small>
+            </div>
+            <div class="policy-warning">
+                <i class="fas fa-info-circle me-2"></i>
+                Only <strong>cancelled bookings</strong> can be deleted.
+            </div>
+        </div>
+        <div class="modal-ftbns">
+            <button class="btn-modal close-btn" onclick="closeDeleteModal()"><i class="fas fa-arrow-left me-2"></i>Go Back</button>
+            <button class="btn-modal confirm-delete" id="confirmDeleteBtn" onclick="submitDelete()">
+                <span id="deleteBtnText"><i class="fas fa-trash me-2"></i>Yes, Delete It</span>
+                <span id="deleteBtnLoader" style="display:none;"><span class="loading-spinner"></span>Deleting...</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Hidden POST forms -->
+<form id="cancelForm" method="POST" style="display:none;">
+    {% csrf_token %}
+    <input type="hidden" name="reason_choice" id="formReasonChoice">
+    <input type="hidden" name="custom_reason" id="formCustomReason">
+</form>
+<form id="deleteForm" method="POST" style="display:none;">
+    {% csrf_token %}
+</form>
+
+<script>
+// ===== CANCEL =====
+let currentCancelUrl = null;
+
+function openCancelModal(bookingId, ref, source, dest, date, amount, cancelUrl) {
+    currentCancelUrl = cancelUrl;
+    document.getElementById('cancelSummary').innerHTML = `
+        <div class="summary-item"><span>Booking Ref</span><strong>#${ref}</strong></div>
+        <div class="summary-item"><span>Route</span><strong>${source} → ${dest}</strong></div>
+        <div class="summary-item"><span>Journey Date</span><strong>${date}</strong></div>
+        <div class="summary-item"><span>Amount Paid</span><strong>₹${amount}</strong></div>`;
+    document.getElementById('cancelRefundInfo').innerHTML = `
+        <div class="refund-note">💳 Refund Amount</div>
+        <div class="refund-amount">₹${amount}</div>
+        <div class="refund-note mt-1">Full refund to your original payment method</div>
+        <div class="refund-note">⏱ Within <strong>5–7 business days</strong></div>`;
+    resetCancelForm();
+    document.getElementById('cancelModal').classList.add('show');
+}
+
+function closeCancelModal() {
+    document.getElementById('cancelModal').classList.remove('show');
+    resetCancelForm();
+}
+
+function resetCancelForm() {
+    document.querySelectorAll('input[name="reason"]').forEach(r => r.checked = false);
+    document.querySelectorAll('.reason-option').forEach(o => o.classList.remove('selected'));
+    document.getElementById('customReasonBox').classList.remove('show');
+    document.getElementById('customReason').value = '';
+    document.getElementById('cancelBtnText').style.display = 'inline';
+    document.getElementById('cancelBtnLoader').style.display = 'none';
+    document.getElementById('confirmCancelBtn').disabled = false;
+}
+
+function selectReason(el, val) {
+    document.querySelectorAll('.reason-option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    el.querySelector('input[type="radio"]').checked = true;
+    document.getElementById('customReasonBox').classList.toggle('show', val === 'other');
+}
+
+function submitCancellation() {
+    const sel = document.querySelector('input[name="reason"]:checked');
+    if (!sel) { alert('Please select a cancellation reason.'); return; }
+    let reason = sel.value, custom = '';
+    if (sel.value === 'other') {
+        custom = document.getElementById('customReason').value.trim();
+        if (!custom) { alert('Please describe your reason.'); return; }
+        reason = 'other';
+    }
+    document.getElementById('cancelBtnText').style.display = 'none';
+    document.getElementById('cancelBtnLoader').style.display = 'inline-block';
+    document.getElementById('confirmCancelBtn').disabled = true;
+    const f = document.getElementById('cancelForm');
+    f.action = currentCancelUrl;
+    document.getElementById('formReasonChoice').value = reason;
+    document.getElementById('formCustomReason').value = custom;
+    f.submit();
+}
+
+// ===== DELETE =====
+let currentDeleteUrl = null;
+
+function openDeleteModal(bookingId, ref, source, dest, date, deleteUrl) {
+    currentDeleteUrl = deleteUrl;
+    document.getElementById('deleteSummary').innerHTML = `
+        <div class="summary-item"><span>Booking Ref</span><strong>#${ref}</strong></div>
+        <div class="summary-item"><span>Route</span><strong>${source} → ${dest}</strong></div>
+        <div class="summary-item"><span>Journey Date</span><strong>${date}</strong></div>
+        <div class="summary-item"><span>Status</span><strong style="color:#721c24;">Cancelled</strong></div>`;
+    document.getElementById('deleteBtnText').style.display = 'inline';
+    document.getElementById('deleteBtnLoader').style.display = 'none';
+    document.getElementById('confirmDeleteBtn').disabled = false;
+    document.getElementById('deleteModal').classList.add('show');
+}
+
+function closeDeleteModal() {
+    document.getElementById('deleteModal').classList.remove('show');
+}
+
+function submitDelete() {
+    document.getElementById('deleteBtnText').style.display = 'none';
+    document.getElementById('deleteBtnLoader').style.display = 'inline-block';
+    document.getElementById('confirmDeleteBtn').disabled = true;
+    const f = document.getElementById('deleteForm');
+    f.action = currentDeleteUrl;
+    f.submit();
+}
+
+// Close on outside click or Escape
+['cancelModal','deleteModal'].forEach(id => {
+    document.getElementById(id).addEventListener('click', function(e) {
+        if (e.target === this) this.classList.remove('show');
+    });
+});
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { closeCancelModal(); closeDeleteModal(); }
+});
+</script>
 {% endblock %}

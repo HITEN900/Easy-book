@@ -8,244 +8,80 @@
     :root {
         --primary-color: #4361ee;
         --secondary-color: #3f37c9;
-        --success-color: #4cc9f0;
         --danger-color: #f72585;
-        --warning-color: #f8961e;
-        --light-bg: #f8f9fa;
         --dark-text: #2b2d42;
     }
 
-    .dashboard-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        padding: 40px 0;
-        margin-bottom: 40px;
-        border-radius: 0 0 50px 50px;
-        color: white;
-    }
+    .dashboard-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px 0; margin-bottom: 40px; border-radius: 0 0 50px 50px; color: white; }
+    .welcome-card { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 20px; padding: 30px; border: 1px solid rgba(255,255,255,0.2); }
+    .stat-card { background: white; border-radius: 20px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); transition: all 0.3s ease; height: 100%; }
+    .stat-card:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(67,97,238,0.15); }
+    .stat-card .stat-icon { width: 60px; height: 60px; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin-bottom: 20px; }
+    .stat-card.total .stat-icon { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
+    .stat-card.upcoming .stat-icon { background: linear-gradient(135deg, #4cc9f0, #4361ee); color: white; }
+    .stat-card.completed .stat-icon { background: linear-gradient(135deg, #28a745, #20c997); color: white; }
+    .stat-card.cancelled .stat-icon { background: linear-gradient(135deg, #f72585, #b5179e); color: white; }
+    .stat-card .stat-value { font-size: 2.5rem; font-weight: 700; margin-bottom: 5px; }
+    .stat-card .stat-label { color: #6c757d; font-size: 1rem; }
 
-    .welcome-card {
-        background: rgba(255,255,255,0.1);
-        backdrop-filter: blur(10px);
-        border-radius: 20px;
-        padding: 30px;
-        border: 1px solid rgba(255,255,255,0.2);
-    }
+    .booking-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 5px 20px rgba(0,0,0,0.08); transition: all 0.3s ease; margin-bottom: 20px; border: 1px solid #e9ecef; }
+    .booking-card:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(67,97,238,0.12); }
+    .booking-header { background: linear-gradient(135deg, #f8f9fa, #e9ecef); padding: 15px 20px; border-bottom: 2px solid rgba(67,97,238,0.1); display: flex; justify-content: space-between; align-items: center; }
+    .booking-ref { font-weight: 600; color: var(--primary-color); }
+    .booking-body { padding: 20px; }
+    .booking-route { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
+    .route-point { text-align: center; }
+    .route-city { font-weight: 600; color: var(--dark-text); }
+    .route-time { font-size: 0.9rem; color: #6c757d; }
+    .route-arrow { color: var(--primary-color); }
+    .booking-footer { background: #f8f9fa; padding: 15px 20px; border-top: 1px solid #e9ecef; display: flex; justify-content: space-between; align-items: center; }
+    .status-badge { padding: 5px 15px; border-radius: 30px; font-weight: 500; font-size: 0.9rem; }
+    .status-confirmed { background: linear-gradient(135deg, #d4edda, #c3e6cb); color: #155724; }
+    .status-pending { background: linear-gradient(135deg, #fff3cd, #ffeeba); color: #856404; }
+    .status-cancelled { background: linear-gradient(135deg, #f8d7da, #f5c6cb); color: #721c24; }
+    .status-completed { background: linear-gradient(135deg, #d1ecf1, #bee5eb); color: #0c5460; }
 
-    .stat-card {
-        background: white;
-        border-radius: 20px;
-        padding: 25px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        transition: all 0.3s ease;
-        height: 100%;
-        position: relative;
-        overflow: hidden;
-    }
+    .empty-state { text-align: center; padding: 60px 20px; background: white; border-radius: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
+    .empty-state i { font-size: 5rem; color: #dee2e6; margin-bottom: 20px; }
 
-    .stat-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 15px 40px rgba(67, 97, 238, 0.15);
-    }
+    .quick-action-card { background: white; border-radius: 15px; padding: 25px; text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,0.05); transition: all 0.3s ease; text-decoration: none; color: var(--dark-text); display: block; height: 100%; }
+    .quick-action-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(67,97,238,0.15); color: var(--primary-color); }
+    .quick-action-icon { width: 70px; height: 70px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: white; font-size: 1.8rem; }
+    .section-title { position: relative; margin-bottom: 30px; padding-bottom: 10px; }
+    .section-title:after { content: ''; position: absolute; bottom: 0; left: 0; width: 60px; height: 3px; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); border-radius: 3px; }
 
-    .stat-card .stat-icon {
-        width: 60px;
-        height: 60px;
-        border-radius: 15px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.8rem;
-        margin-bottom: 20px;
-    }
-
-    .stat-card.total .stat-icon {
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        color: white;
-    }
-
-    .stat-card.upcoming .stat-icon {
-        background: linear-gradient(135deg, #4cc9f0, #4361ee);
-        color: white;
-    }
-
-    .stat-card.completed .stat-icon {
-        background: linear-gradient(135deg, #28a745, #20c997);
-        color: white;
-    }
-
-    .stat-card.cancelled .stat-icon {
-        background: linear-gradient(135deg, #f72585, #b5179e);
-        color: white;
-    }
-
-    .stat-card .stat-value {
-        font-size: 2.5rem;
-        font-weight: 700;
-        margin-bottom: 5px;
-    }
-
-    .stat-card .stat-label {
-        color: #6c757d;
-        font-size: 1rem;
-    }
-
-    .booking-card {
-        background: white;
-        border-radius: 15px;
-        overflow: hidden;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-        transition: all 0.3s ease;
-        margin-bottom: 20px;
-        border: 1px solid #e9ecef;
-    }
-
-    .booking-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 10px 30px rgba(67, 97, 238, 0.12);
-    }
-
-    .booking-header {
-        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-        padding: 15px 20px;
-        border-bottom: 2px solid rgba(67, 97, 238, 0.1);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .booking-ref {
-        font-weight: 600;
-        color: var(--primary-color);
-    }
-
-    .booking-body {
-        padding: 20px;
-    }
-
-    .booking-route {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 15px;
-    }
-
-    .route-point {
-        text-align: center;
-    }
-
-    .route-city {
-        font-weight: 600;
-        color: var(--dark-text);
-    }
-
-    .route-time {
-        font-size: 0.9rem;
-        color: #6c757d;
-    }
-
-    .route-arrow {
-        color: var(--primary-color);
-    }
-
-    .booking-footer {
-        background: #f8f9fa;
-        padding: 15px 20px;
-        border-top: 1px solid #e9ecef;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .status-badge {
-        padding: 5px 15px;
-        border-radius: 30px;
-        font-weight: 500;
-        font-size: 0.9rem;
-    }
-
-    .status-confirmed {
-        background: linear-gradient(135deg, #d4edda, #c3e6cb);
-        color: #155724;
-    }
-
-    .status-pending {
-        background: linear-gradient(135deg, #fff3cd, #ffeeba);
-        color: #856404;
-    }
-
-    .status-cancelled {
-        background: linear-gradient(135deg, #f8d7da, #f5c6cb);
-        color: #721c24;
-    }
-
-    .status-completed {
-        background: linear-gradient(135deg, #d1ecf1, #bee5eb);
-        color: #0c5460;
-    }
-
-    .empty-state {
-        text-align: center;
-        padding: 60px 20px;
-        background: white;
-        border-radius: 20px;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-    }
-
-    .empty-state i {
-        font-size: 5rem;
-        color: #dee2e6;
-        margin-bottom: 20px;
-    }
-
-    .quick-action-card {
-        background: white;
-        border-radius: 15px;
-        padding: 25px;
-        text-align: center;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-        transition: all 0.3s ease;
-        text-decoration: none;
-        color: var(--dark-text);
-        display: block;
-        height: 100%;
-    }
-
-    .quick-action-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 15px 30px rgba(67, 97, 238, 0.15);
-        text-decoration: none;
-        color: var(--primary-color);
-    }
-
-    .quick-action-icon {
-        width: 70px;
-        height: 70px;
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 20px;
-        color: white;
-        font-size: 1.8rem;
-    }
-
-    .section-title {
-        position: relative;
-        margin-bottom: 30px;
-        padding-bottom: 10px;
-    }
-
-    .section-title:after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 60px;
-        height: 3px;
-        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-        border-radius: 3px;
-    }
+    /* Cancel Modal */
+    .cancel-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; align-items: center; justify-content: center; }
+    .cancel-modal.show { display: flex; animation: fadeIn 0.3s; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .modal-box { background: white; border-radius: 30px; max-width: 500px; width: 90%; max-height: 90vh; overflow-y: auto; animation: slideUp 0.3s; }
+    @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    .modal-head { background: linear-gradient(135deg, #f72585, #b5179e); color: white; padding: 25px; border-radius: 30px 30px 0 0; text-align: center; }
+    .modal-head i { font-size: 3rem; margin-bottom: 10px; display: block; }
+    .modal-head h3 { font-weight: 700; margin: 0; }
+    .modal-bd { padding: 30px; }
+    .booking-summary { background: #f8f9fa; border-radius: 20px; padding: 20px; margin-bottom: 25px; }
+    .summary-item { display: flex; justify-content: space-between; margin-bottom: 12px; padding: 8px 0; border-bottom: 1px solid #e9ecef; }
+    .summary-item:last-child { border-bottom: none; }
+    .refund-box { background: linear-gradient(135deg, #d4edda, #c3e6cb); border-radius: 15px; padding: 20px; text-align: center; margin-bottom: 25px; }
+    .refund-amount { font-size: 2.5rem; font-weight: 800; color: #155724; }
+    .refund-note { font-size: 0.9rem; color: #155724; }
+    .reason-option { margin-bottom: 12px; padding: 15px; border: 2px solid #e9ecef; border-radius: 15px; cursor: pointer; transition: all 0.3s; }
+    .reason-option:hover, .reason-option.selected { border-color: #f72585; background: #fff5f8; }
+    .reason-option input[type="radio"] { margin-right: 10px; }
+    .custom-reason { display: none; margin-top: 15px; }
+    .custom-reason.show { display: block; }
+    .custom-reason textarea { width: 100%; padding: 15px; border: 2px solid #e9ecef; border-radius: 15px; resize: none; }
+    .custom-reason textarea:focus { border-color: #f72585; outline: none; }
+    .policy-warning { background: #e7f3ff; padding: 15px; border-radius: 12px; margin: 20px 0; font-size: 0.9rem; color: #004085; }
+    .modal-ftbns { padding: 20px 30px 30px; display: flex; gap: 15px; }
+    .btn-modal { flex: 1; padding: 15px; border: none; border-radius: 15px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: all 0.3s; }
+    .btn-modal.close-btn { background: #e9ecef; color: #6c757d; }
+    .btn-modal.confirm { background: linear-gradient(135deg, #f72585, #b5179e); color: white; }
+    .btn-modal.confirm:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(247,37,133,0.3); }
+    .btn-modal.confirm:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .loading-spinner { display: inline-block; width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: white; animation: spin 1s ease-in-out infinite; margin-right: 8px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
 </style>
 {% endblock %}
 
@@ -270,40 +106,42 @@
 </div>
 
 <div class="container mb-5">
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-4" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
     <!-- Statistics Cards -->
     <div class="row g-4 mb-5">
         <div class="col-md-3">
             <div class="stat-card total">
-                <div class="stat-icon">
-                    <i class="fas fa-ticket-alt"></i>
-                </div>
+                <div class="stat-icon"><i class="fas fa-ticket-alt"></i></div>
                 <div class="stat-value">{{ total_bookings }}</div>
                 <div class="stat-label">Total Bookings</div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="stat-card upcoming">
-                <div class="stat-icon">
-                    <i class="fas fa-clock"></i>
-                </div>
+                <div class="stat-icon"><i class="fas fa-clock"></i></div>
                 <div class="stat-value">{{ upcoming_bookings }}</div>
                 <div class="stat-label">Upcoming</div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="stat-card completed">
-                <div class="stat-icon">
-                    <i class="fas fa-check-circle"></i>
-                </div>
+                <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
                 <div class="stat-value">{{ completed_bookings }}</div>
                 <div class="stat-label">Completed</div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="stat-card cancelled">
-                <div class="stat-icon">
-                    <i class="fas fa-times-circle"></i>
-                </div>
+                <div class="stat-icon"><i class="fas fa-times-circle"></i></div>
                 <div class="stat-value">{{ cancelled_bookings }}</div>
                 <div class="stat-label">Cancelled</div>
             </div>
@@ -314,27 +152,21 @@
     <div class="row g-4 mb-5">
         <div class="col-md-4">
             <a href="{% url 'home' %}" class="quick-action-card">
-                <div class="quick-action-icon">
-                    <i class="fas fa-search"></i>
-                </div>
+                <div class="quick-action-icon"><i class="fas fa-search"></i></div>
                 <h5>Search Buses</h5>
                 <p class="text-muted mb-0">Find buses for your next journey</p>
             </a>
         </div>
         <div class="col-md-4">
             <a href="{% url 'my_bookings' %}" class="quick-action-card">
-                <div class="quick-action-icon">
-                    <i class="fas fa-ticket-alt"></i>
-                </div>
+                <div class="quick-action-icon"><i class="fas fa-ticket-alt"></i></div>
                 <h5>My Bookings</h5>
                 <p class="text-muted mb-0">View all your bookings</p>
             </a>
         </div>
         <div class="col-md-4">
             <a href="{% url 'profile' %}" class="quick-action-card">
-                <div class="quick-action-icon">
-                    <i class="fas fa-user-cog"></i>
-                </div>
+                <div class="quick-action-icon"><i class="fas fa-user-cog"></i></div>
                 <h5>Profile Settings</h5>
                 <p class="text-muted mb-0">Update your personal information</p>
             </a>
@@ -354,9 +186,7 @@
                 <div class="booking-card">
                     <div class="booking-header">
                         <span class="booking-ref">#{{ booking.booking_reference }}</span>
-                        <span class="status-badge status-{{ booking.status }}">
-                            {{ booking.status|title }}
-                        </span>
+                        <span class="status-badge status-{{ booking.status }}">{{ booking.status|title }}</span>
                     </div>
                     <div class="booking-body">
                         <div class="booking-route">
@@ -364,21 +194,15 @@
                                 <div class="route-city">{{ booking.route.source }}</div>
                                 <div class="route-time">{{ booking.route.departure_time|date:"h:i A" }}</div>
                             </div>
-                            <div class="route-arrow">
-                                <i class="fas fa-arrow-right"></i>
-                            </div>
+                            <div class="route-arrow"><i class="fas fa-arrow-right"></i></div>
                             <div class="route-point">
                                 <div class="route-city">{{ booking.route.destination }}</div>
                                 <div class="route-time">{{ booking.route.arrival_time|date:"h:i A" }}</div>
                             </div>
                         </div>
                         <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <i class="fas fa-calendar-alt text-primary me-2"></i>{{ booking.journey_date|date:"d M Y" }}
-                            </div>
-                            <div>
-                                <i class="fas fa-bus text-primary me-2"></i>{{ booking.route.bus.bus_name }}
-                            </div>
+                            <div><i class="fas fa-calendar-alt text-primary me-2"></i>{{ booking.journey_date|date:"d M Y" }}</div>
+                            <div><i class="fas fa-bus text-primary me-2"></i>{{ booking.route.bus.bus_name }}</div>
                         </div>
                         <div class="mt-3">
                             {% for seat in booking.booked_seats.all %}
@@ -392,11 +216,18 @@
                             <a href="{% url 'booking_confirmation' booking.id %}" class="btn btn-sm btn-primary me-2">
                                 <i class="fas fa-eye"></i> View
                             </a>
-                            {% if booking.status == 'confirmed' %}
-                            <a href="{% url 'cancel_booking' booking.id %}" class="btn btn-sm btn-danger" 
-                               onclick="return confirm('Are you sure you want to cancel this booking?')">
+                            {% if booking.status == 'confirmed' or booking.status == 'pending' %}
+                            <button onclick="openCancelModal(
+                                {{ booking.id }},
+                                '{{ booking.booking_reference }}',
+                                '{{ booking.route.source }}',
+                                '{{ booking.route.destination }}',
+                                '{{ booking.journey_date|date:"d M Y" }}',
+                                {{ booking.total_amount }},
+                                '{% url "cancel_booking" booking.id %}'
+                            )" class="btn btn-sm btn-danger">
                                 <i class="fas fa-times"></i> Cancel
-                            </a>
+                            </button>
                             {% endif %}
                         </div>
                     </div>
@@ -415,4 +246,152 @@
         </div>
     {% endif %}
 </div>
+
+<!-- ===== CANCEL MODAL ===== -->
+<div id="cancelModal" class="cancel-modal">
+    <div class="modal-box">
+        <div class="modal-head">
+            <i class="fas fa-exclamation-triangle"></i>
+            <h3>Cancel Booking</h3>
+            <p class="mb-0">Please select a reason for cancellation</p>
+        </div>
+
+        <div class="modal-bd">
+            <div class="booking-summary" id="modalBookingSummary"></div>
+
+            <div class="refund-box" id="modalRefundInfo"></div>
+
+            <h6 class="fw-bold mb-3">Select Cancellation Reason <span class="text-danger">*</span></h6>
+
+            <div class="reason-option" onclick="selectReason(this, 'Change in travel plans')">
+                <input type="radio" name="reason" value="Change in travel plans"><label> Change in travel plans</label>
+            </div>
+            <div class="reason-option" onclick="selectReason(this, 'Medical emergency')">
+                <input type="radio" name="reason" value="Medical emergency"><label> Medical emergency</label>
+            </div>
+            <div class="reason-option" onclick="selectReason(this, 'Personal reasons')">
+                <input type="radio" name="reason" value="Personal reasons"><label> Personal reasons</label>
+            </div>
+            <div class="reason-option" onclick="selectReason(this, 'Found better alternative')">
+                <input type="radio" name="reason" value="Found better alternative"><label> Found better alternative</label>
+            </div>
+            <div class="reason-option" onclick="selectReason(this, 'Weather conditions')">
+                <input type="radio" name="reason" value="Weather conditions"><label> Weather conditions</label>
+            </div>
+            <div class="reason-option" onclick="selectReason(this, 'Booking by mistake')">
+                <input type="radio" name="reason" value="Booking by mistake"><label> Booking by mistake</label>
+            </div>
+            <div class="reason-option" onclick="selectReason(this, 'other')">
+                <input type="radio" name="reason" value="other"><label> Other reason</label>
+            </div>
+
+            <div class="custom-reason" id="customReasonBox">
+                <textarea id="customReason" rows="3" placeholder="Please specify your reason..."></textarea>
+            </div>
+
+            <div class="policy-warning">
+                <i class="fas fa-info-circle me-2"></i>
+                <strong>Refund Policy:</strong> Refund will be credited back to your
+                <strong>original payment method within 5–7 business days</strong>.
+            </div>
+        </div>
+
+        <div class="modal-ftbns">
+            <button class="btn-modal close-btn" onclick="closeCancelModal()">
+                <i class="fas fa-times me-2"></i>Go Back
+            </button>
+            <button class="btn-modal confirm" id="confirmCancelBtn" onclick="submitCancellation()">
+                <span id="btnText"><i class="fas fa-check me-2"></i>Confirm Cancellation</span>
+                <span id="btnLoader" style="display:none;">
+                    <span class="loading-spinner"></span>Processing...
+                </span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Hidden real POST form -->
+<form id="cancelForm" method="POST" style="display:none;">
+    {% csrf_token %}
+    <input type="hidden" name="reason_choice" id="formReasonChoice">
+    <input type="hidden" name="custom_reason" id="formCustomReason">
+</form>
+
+<script>
+let currentCancelUrl = null;
+
+function openCancelModal(bookingId, ref, source, dest, date, amount, cancelUrl) {
+    currentCancelUrl = cancelUrl;
+
+    document.getElementById('modalBookingSummary').innerHTML = `
+        <div class="summary-item"><span>Booking Reference</span><strong>#${ref}</strong></div>
+        <div class="summary-item"><span>Route</span><strong>${source} → ${dest}</strong></div>
+        <div class="summary-item"><span>Journey Date</span><strong>${date}</strong></div>
+        <div class="summary-item"><span>Amount Paid</span><strong>₹${amount}</strong></div>
+    `;
+
+    document.getElementById('modalRefundInfo').innerHTML = `
+        <div class="refund-note">💳 Refund Amount</div>
+        <div class="refund-amount">₹${amount}</div>
+        <div class="refund-note mt-1">Full refund to your original payment method</div>
+        <div class="refund-note">⏱ Processed within <strong>5–7 business days</strong></div>
+    `;
+
+    resetModalForm();
+    document.getElementById('cancelModal').classList.add('show');
+}
+
+function resetModalForm() {
+    document.querySelectorAll('input[name="reason"]').forEach(r => r.checked = false);
+    document.querySelectorAll('.reason-option').forEach(o => o.classList.remove('selected'));
+    document.getElementById('customReasonBox').classList.remove('show');
+    document.getElementById('customReason').value = '';
+    document.getElementById('btnText').style.display = 'inline';
+    document.getElementById('btnLoader').style.display = 'none';
+    document.getElementById('confirmCancelBtn').disabled = false;
+}
+
+function closeCancelModal() {
+    document.getElementById('cancelModal').classList.remove('show');
+    resetModalForm();
+}
+
+function selectReason(element, value) {
+    document.querySelectorAll('.reason-option').forEach(o => o.classList.remove('selected'));
+    element.classList.add('selected');
+    element.querySelector('input[type="radio"]').checked = true;
+    document.getElementById('customReasonBox').classList.toggle('show', value === 'other');
+}
+
+function submitCancellation() {
+    const selected = document.querySelector('input[name="reason"]:checked');
+    if (!selected) { alert('Please select a cancellation reason.'); return; }
+
+    let finalReason = selected.value;
+    let customReason = '';
+
+    if (selected.value === 'other') {
+        customReason = document.getElementById('customReason').value.trim();
+        if (!customReason) { alert('Please describe your reason.'); return; }
+        finalReason = 'other';
+    }
+
+    document.getElementById('btnText').style.display = 'none';
+    document.getElementById('btnLoader').style.display = 'inline-block';
+    document.getElementById('confirmCancelBtn').disabled = true;
+
+    const form = document.getElementById('cancelForm');
+    form.action = currentCancelUrl;
+    document.getElementById('formReasonChoice').value = finalReason;
+    document.getElementById('formCustomReason').value = customReason;
+    form.submit();
+}
+
+document.getElementById('cancelModal').addEventListener('click', function(e) {
+    if (e.target === this) closeCancelModal();
+});
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeCancelModal();
+});
+</script>
 {% endblock %}

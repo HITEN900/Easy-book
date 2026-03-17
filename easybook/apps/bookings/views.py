@@ -498,21 +498,64 @@ def my_bookings(request):
 
 
 # Cancel Booking
+# @login_required
+# def cancel_booking(request, booking_id):
+#     booking = get_object_or_404(Booking, id=booking_id, user=request.user)
+
+#     if booking.status in ['confirmed', 'pending']:
+#         route = booking.route
+#         route.available_seats += booking.booked_seats.count()
+#         route.save()
+
+#         booking.status = 'cancelled'
+#         booking.save()
+
+#         messages.success(request, 'Booking cancelled successfully.')
+#     else:
+#         messages.error(request, 'This booking cannot be cancelled.')
+
+#     return redirect('my_bookings')
+
+@login_required
+def delete_booking(request, booking_id):
+    booking = get_object_or_404(Booking, id=booking_id, user=request.user)
+    if booking.status != 'cancelled':
+        messages.error(request, 'Only cancelled bookings can be deleted.')
+        return redirect('my_bookings')
+    if request.method == 'POST':
+        booking.delete()
+        messages.success(request, 'Booking deleted successfully.')
+        return redirect('my_bookings')
+    return redirect('my_bookings')
+
 @login_required
 def cancel_booking(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id, user=request.user)
 
-    if booking.status in ['confirmed', 'pending']:
+    if booking.status not in ['confirmed', 'pending']:
+        messages.error(request, 'This booking cannot be cancelled.')
+        return redirect('my_bookings')
+
+    if request.method == 'POST':
+        reason_choice = request.POST.get('reason_choice', '')
+        custom_reason = request.POST.get('custom_reason', '').strip()
+        final_reason = custom_reason if reason_choice == 'other' and custom_reason else reason_choice
+
         route = booking.route
         route.available_seats += booking.booked_seats.count()
         route.save()
 
         booking.status = 'cancelled'
+        # Save reason if your model has the field, otherwise remove next line
+        # booking.cancellation_reason = final_reason
         booking.save()
 
-        messages.success(request, 'Booking cancelled successfully.')
-    else:
-        messages.error(request, 'This booking cannot be cancelled.')
+        messages.success(
+            request,
+            f'Booking #{booking.booking_reference} cancelled. '
+            f'Refund of ₹{booking.total_amount} will be credited to your original payment method within 5–7 business days.'
+        )
+        return redirect('my_bookings')
 
     return redirect('my_bookings')
 
