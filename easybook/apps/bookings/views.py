@@ -517,6 +517,14 @@ def my_bookings(request):
 #     return redirect('my_bookings')
 
 @login_required
+def my_bookings(request):
+    bookings = Booking.objects.filter(
+        user=request.user
+    ).select_related('route', 'route__bus').prefetch_related('booked_seats__seat').order_by('-booking_date')
+
+    return render(request, 'customer/my_bookings.html', {'bookings': bookings})
+
+@login_required
 def delete_booking(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id, user=request.user)
     if booking.status != 'cancelled':
@@ -524,8 +532,7 @@ def delete_booking(request, booking_id):
         return redirect('my_bookings')
     if request.method == 'POST':
         booking.delete()
-        messages.success(request, 'Booking deleted successfully.')
-        return redirect('my_bookings')
+        messages.success(request, 'Booking deleted from your history.')
     return redirect('my_bookings')
 
 @login_required

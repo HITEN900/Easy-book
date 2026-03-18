@@ -118,6 +118,8 @@
         opacity: 0;
         visibility: hidden;
         transition: opacity 1s ease, visibility 1s ease;
+        background-size: cover;
+        background-position: center;
     }
 
     .hero-slide.active {
@@ -429,26 +431,32 @@
         font-size: 0.95rem;
     }
 
-    /* ===== ROUTES SLIDER ===== */
+    /* ===== FIXED ROUTES SLIDER ===== */
     .routes {
         padding: 6rem 0;
         background: white;
+        overflow: hidden;
     }
 
     .routes-slider-container {
         position: relative;
         margin-top: 3rem;
-        overflow: hidden;
+        padding: 0 20px;
     }
 
     .routes-slider {
         display: flex;
         gap: 1.5rem;
         transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        will-change: transform;
+    }
+
+    .route-item {
+        flex: 0 0 calc(33.333% - 1rem);
+        min-width: 300px;
     }
 
     .route-card {
-        flex: 0 0 calc(33.333% - 1rem);
         background: white;
         border-radius: var(--radius-xl);
         overflow: hidden;
@@ -456,6 +464,8 @@
         transition: all 0.3s ease;
         text-decoration: none;
         color: inherit;
+        display: block;
+        height: 100%;
     }
 
     .route-card:hover {
@@ -507,6 +517,7 @@
 
     .city {
         text-align: center;
+        flex: 1;
     }
 
     .city-name {
@@ -525,6 +536,7 @@
     .route-arrow {
         color: var(--primary);
         font-size: 1.5rem;
+        margin: 0 0.5rem;
     }
 
     .route-meta {
@@ -583,6 +595,13 @@
         background: var(--gradient-primary);
         color: white;
         border-color: transparent;
+        transform: scale(1.1);
+    }
+
+    .slider-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        pointer-events: none;
     }
 
     .slider-dots {
@@ -782,8 +801,9 @@
     }
 
     .testimonial-rating {
-        color: #e2dccb;
+        color: #fbbf24;
         margin-bottom: 1rem;
+        font-size: 1.1rem;
     }
 
     .testimonial-text {
@@ -921,6 +941,10 @@
         .app-title {
             font-size: 2rem;
         }
+        
+        .route-item {
+            flex: 0 0 calc(50% - 1rem);
+        }
     }
 
     @media (max-width: 768px) {
@@ -928,7 +952,7 @@
             display: none;
         }
         
-        .route-card {
+        .route-item {
             flex: 0 0 calc(100% - 1rem);
         }
         
@@ -946,6 +970,12 @@
         
         .cta-title {
             font-size: 2rem;
+        }
+        
+        .slider-btn {
+            width: 2.5rem;
+            height: 2.5rem;
+            font-size: 1rem;
         }
     }
 
@@ -1046,11 +1076,9 @@
         <div class="search-card">
             <div class="search-tabs">
                 <span class="search-tab active">Bus Tickets</span>
-                {% comment %} <span class="search-tab">Train Tickets</span>
-                <span class="search-tab">Flight Tickets</span> {% endcomment %}
             </div>
             
-            <form class="search-form" action="{% url 'search_buses' %}" method="GET">
+            <form class="search-form" id="searchForm" action="{% url 'search_buses' %}" method="GET">
                 <div class="form-group">
                     <i class="fas fa-map-marker-alt"></i>
                     <input type="text" class="form-control" name="from" placeholder="From (e.g., Mumbai)" required>
@@ -1124,7 +1152,7 @@
     </div>
 </section>
 
-<!-- Popular Routes Section -->
+<!-- Popular Routes Slider - FIXED -->
 <section class="routes">
     <div class="container">
         <div class="text-center">
@@ -1136,8 +1164,8 @@
         <div class="routes-slider-container">
             <div class="routes-slider" id="routesSlider">
                 <!-- Route 1 -->
-                <div class="route-card">
-                    <a href="{% url 'search_buses' %}?from=Mumbai&to=Pune" class="route-card-link">
+                <div class="route-item">
+                    <a href="{% url 'search_buses' %}?from=Mumbai&to=Pune" class="route-card">
                         <div class="route-image">
                             <img src="https://images.unsplash.com/photo-1565019011515-64dbaee0a10e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80" alt="Mumbai to Pune">
                             <span class="route-badge">Most Booked</span>
@@ -1169,8 +1197,8 @@
                 </div>
                 
                 <!-- Route 2 -->
-                <div class="route-card">
-                    <a href="{% url 'search_buses' %}?from=Delhi&to=Jaipur" class="route-card-link">
+                <div class="route-item">
+                    <a href="{% url 'search_buses' %}?from=Delhi&to=Jaipur" class="route-card">
                         <div class="route-image">
                             <img src="https://images.unsplash.com/photo-1587474260584-136574528ed5?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80" alt="Delhi to Jaipur">
                             <span class="route-badge">Popular</span>
@@ -1202,8 +1230,8 @@
                 </div>
                 
                 <!-- Route 3 -->
-                <div class="route-card">
-                    <a href="{% url 'search_buses' %}?from=Bangalore&to=Mysore" class="route-card-link">
+                <div class="route-item">
+                    <a href="{% url 'search_buses' %}?from=Bangalore&to=Mysore" class="route-card">
                         <div class="route-image">
                             <img src="https://images.unsplash.com/photo-1596178065887-1198b6148b2b?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80" alt="Bangalore to Mysore">
                             <span class="route-badge">Weekend Special</span>
@@ -1235,8 +1263,8 @@
                 </div>
                 
                 <!-- Route 4 -->
-                <div class="route-card">
-                    <a href="{% url 'search_buses' %}?from=Chennai&to=Pondicherry" class="route-card-link">
+                <div class="route-item">
+                    <a href="{% url 'search_buses' %}?from=Chennai&to=Pondicherry" class="route-card">
                         <div class="route-image">
                             <img src="https://images.unsplash.com/photo-1589802829985-817e51171b92?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80" alt="Chennai to Pondicherry">
                             <span class="route-badge">Scenic</span>
@@ -1268,8 +1296,8 @@
                 </div>
                 
                 <!-- Route 5 -->
-                <div class="route-card">
-                    <a href="{% url 'search_buses' %}?from=Hyderabad&to=Bangalore" class="route-card-link">
+                <div class="route-item">
+                    <a href="{% url 'search_buses' %}?from=Hyderabad&to=Bangalore" class="route-card">
                         <div class="route-image">
                             <img src="https://images.unsplash.com/photo-1565619624096-9f0c68ceb8a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80" alt="Hyderabad to Bangalore">
                             <span class="route-badge">Night Bus</span>
@@ -1301,8 +1329,8 @@
                 </div>
                 
                 <!-- Route 6 -->
-                <div class="route-card">
-                    <a href="{% url 'search_buses' %}?from=Ahmedabad&to=Surat" class="route-card-link">
+                <div class="route-item">
+                    <a href="{% url 'search_buses' %}?from=Ahmedabad&to=Surat" class="route-card">
                         <div class="route-image">
                             <img src="https://images.unsplash.com/photo-1570168007204-dfb528c6958f?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80" alt="Ahmedabad to Surat">
                             <span class="route-badge">Frequent</span>
@@ -1335,7 +1363,7 @@
             </div>
             
             <div class="slider-nav">
-                <button class="slider-btn" onclick="slideRoutes(-1)">
+                <button class="slider-btn" id="prevRouteBtn" onclick="slideRoutes(-1)">
                     <i class="fas fa-chevron-left"></i>
                 </button>
                 <div class="slider-dots" id="routeDots">
@@ -1343,7 +1371,7 @@
                     <span class="slider-dot" onclick="goToRouteSlide(1)"></span>
                     <span class="slider-dot" onclick="goToRouteSlide(2)"></span>
                 </div>
-                <button class="slider-btn" onclick="slideRoutes(1)">
+                <button class="slider-btn" id="nextRouteBtn" onclick="slideRoutes(1)">
                     <i class="fas fa-chevron-right"></i>
                 </button>
             </div>
@@ -1550,7 +1578,7 @@ AOS.init({
     offset: 100
 });
 
-// Hero Slider
+// ===== HERO SLIDER =====
 let currentSlide = 0;
 const slides = document.querySelectorAll('.hero-slide');
 const dots = document.querySelectorAll('.hero-dot');
@@ -1587,8 +1615,10 @@ function resetTimer() {
     slideInterval = setInterval(nextSlide, 6000);
 }
 
-// Initialize slider
-slideInterval = setInterval(nextSlide, 6000);
+// Initialize hero slider
+if (slides.length > 0) {
+    slideInterval = setInterval(nextSlide, 6000);
+}
 
 // Set journey date
 const today = new Date().toISOString().split('T')[0];
@@ -1606,58 +1636,123 @@ document.getElementById('searchForm').addEventListener('submit', function(e) {
     }
 });
 
-// Pause slider on hover
+// Pause hero slider on hover
 const heroSlider = document.querySelector('.hero-slider');
-heroSlider.addEventListener('mouseenter', () => clearInterval(slideInterval));
-heroSlider.addEventListener('mouseleave', () => {
-    slideInterval = setInterval(nextSlide, 6000);
-});
-
-// Routes Slider
-let currentRouteSlide = 0;
-const routeSlides = document.querySelectorAll('.route-card');
-const routeDots = document.querySelectorAll('.slider-dot');
-const routeSlider = document.getElementById('routesSlider');
-
-function updateRouteSlider() {
-    const slideWidth = routeSlides[0].offsetWidth + 24; // width + gap
-    routeSlider.style.transform = `translateX(-${currentRouteSlide * slideWidth}px)`;
-    
-    routeDots.forEach((dot, i) => {
-        dot.classList.toggle('active', i === currentRouteSlide);
+if (heroSlider) {
+    heroSlider.addEventListener('mouseenter', () => clearInterval(slideInterval));
+    heroSlider.addEventListener('mouseleave', () => {
+        slideInterval = setInterval(nextSlide, 6000);
     });
 }
 
+// ===== FIXED ROUTES SLIDER =====
+let currentRouteSlide = 0;
+const routeItems = document.querySelectorAll('.route-item');
+const routeDots = document.querySelectorAll('.slider-dot');
+const routeSlider = document.getElementById('routesSlider');
+const prevBtn = document.getElementById('prevRouteBtn');
+const nextBtn = document.getElementById('nextRouteBtn');
+
+function updateRouteSlider() {
+    if (!routeItems.length || !routeSlider) return;
+    
+    // Calculate how many items to show based on screen width
+    let itemsPerView = 3;
+    if (window.innerWidth <= 768) {
+        itemsPerView = 1;
+    } else if (window.innerWidth <= 1024) {
+        itemsPerView = 2;
+    }
+    
+    const maxSlides = Math.max(0, routeItems.length - itemsPerView);
+    
+    // Ensure current slide is within bounds
+    currentRouteSlide = Math.min(currentRouteSlide, maxSlides);
+    currentRouteSlide = Math.max(currentRouteSlide, 0);
+    
+    // Calculate slide width (item width + gap)
+    const slideWidth = routeItems[0].offsetWidth + 24; // 24px is the gap
+    routeSlider.style.transform = `translateX(-${currentRouteSlide * slideWidth}px)`;
+    
+    // Update dots (number of dots = number of slides)
+    const numDots = Math.ceil(routeItems.length / itemsPerView);
+    routeDots.forEach((dot, i) => {
+        if (i < numDots) {
+            dot.style.display = 'inline-block';
+            dot.classList.toggle('active', i === Math.floor(currentRouteSlide));
+        } else {
+            dot.style.display = 'none';
+        }
+    });
+    
+    // Update button states
+    if (prevBtn) {
+        prevBtn.disabled = currentRouteSlide === 0;
+    }
+    if (nextBtn) {
+        nextBtn.disabled = currentRouteSlide >= maxSlides;
+    }
+}
+
 function slideRoutes(direction) {
-    const maxSlides = routeSlides.length - 3;
-    currentRouteSlide = Math.max(0, Math.min(currentRouteSlide + direction, maxSlides));
+    if (!routeItems.length) return;
+    
+    let itemsPerView = 3;
+    if (window.innerWidth <= 768) {
+        itemsPerView = 1;
+    } else if (window.innerWidth <= 1024) {
+        itemsPerView = 2;
+    }
+    
+    const maxSlides = Math.max(0, routeItems.length - itemsPerView);
+    currentRouteSlide += direction;
+    currentRouteSlide = Math.min(Math.max(currentRouteSlide, 0), maxSlides);
+    
     updateRouteSlider();
 }
 
 function goToRouteSlide(index) {
-    const maxSlides = routeSlides.length - 3;
+    let itemsPerView = 3;
+    if (window.innerWidth <= 768) {
+        itemsPerView = 1;
+    } else if (window.innerWidth <= 1024) {
+        itemsPerView = 2;
+    }
+    
+    const maxSlides = Math.max(0, routeItems.length - itemsPerView);
     currentRouteSlide = Math.min(index, maxSlides);
     updateRouteSlider();
 }
 
-// Update slider on resize
-window.addEventListener('resize', () => {
+// Initialize route slider
+if (routeItems.length > 0) {
     updateRouteSlider();
-});
-
-// Auto slide routes
-setInterval(() => {
-    const maxSlides = routeSlides.length - 3;
-    if (currentRouteSlide < maxSlides) {
-        slideRoutes(1);
-    } else {
-        currentRouteSlide = -1;
-        slideRoutes(1);
-    }
-}, 5000);
+    
+    // Update on window resize
+    window.addEventListener('resize', () => {
+        updateRouteSlider();
+    });
+    
+    // Auto slide routes every 5 seconds
+    setInterval(() => {
+        let itemsPerView = 3;
+        if (window.innerWidth <= 768) {
+            itemsPerView = 1;
+        } else if (window.innerWidth <= 1024) {
+            itemsPerView = 2;
+        }
+        const maxSlides = Math.max(0, routeItems.length - itemsPerView);
+        
+        if (currentRouteSlide < maxSlides) {
+            slideRoutes(1);
+        } else {
+            currentRouteSlide = 0;
+            updateRouteSlider();
+        }
+    }, 5000);
+}
 
 // Initialize first slide
 showSlide(0);
-updateRouteSlider();
 </script>
 {% endblock %}

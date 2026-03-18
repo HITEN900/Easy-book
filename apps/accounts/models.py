@@ -8,7 +8,7 @@ class User(AbstractUser):
     )
     
     user_type = models.CharField(max_length=20, choices=USER_TYPES, default='customer')
-    phone = models.CharField(max_length=15, blank=True)
+    phone = models.CharField(max_length=15, unique=True)  # Added unique=True
     email = models.EmailField(unique=True)
     
     def __str__(self):
