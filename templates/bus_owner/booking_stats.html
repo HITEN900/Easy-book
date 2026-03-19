@@ -1,157 +1,761 @@
 {% extends 'base.html' %}
+{% load static %}
 
-{% block title %}Booking Statistics - Easy Book{% endblock %}
+{% block title %}Booking Statistics - EasyBook{% endblock %}
+
+{% block extra_css %}
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<!-- AOS Animation Library -->
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<style>
+    :root {
+        --primary: #4361ee;
+        --primary-dark: #3a56d4;
+        --primary-light: #6c8cff;
+        --secondary: #7209b7;
+        --accent: #f72585;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --info: #3b82f6;
+        --dark: #0f172a;
+        --dark-800: #1e293b;
+        --dark-700: #334155;
+        --dark-600: #475569;
+        --light: #f8fafc;
+        --light-200: #e2e8f0;
+        --light-300: #cbd5e1;
+        
+        --gradient-primary: linear-gradient(135deg, #4361ee, #7209b7);
+        --gradient-success: linear-gradient(135deg, #10b981, #059669);
+        --gradient-warning: linear-gradient(135deg, #f59e0b, #d97706);
+        --gradient-danger: linear-gradient(135deg, #ef4444, #dc2626);
+        --gradient-info: linear-gradient(135deg, #3b82f6, #2563eb);
+        --gradient-earnings: linear-gradient(135deg, #43e97b, #38f9d7);
+        
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+        --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+        
+        --radius-sm: 0.375rem;
+        --radius-md: 0.5rem;
+        --radius-lg: 1rem;
+        --radius-xl: 1.5rem;
+        --radius-2xl: 2rem;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        color: var(--dark);
+        min-height: 100vh;
+    }
+
+    /* Page Header */
+    .page-header {
+        background: linear-gradient(135deg, #1a1a2e 0%, #2d2d44 100%);
+        padding: 40px 0;
+        margin-bottom: 40px;
+        border-radius: 0 0 50px 50px;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .page-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        border-radius: 50%;
+    }
+
+    .page-header::after {
+        content: '';
+        position: absolute;
+        bottom: -30%;
+        left: -5%;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        border-radius: 50%;
+    }
+
+    .page-header h1 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 10px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .page-header p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        position: relative;
+        z-index: 2;
+    }
+
+    /* Profile Card */
+    .profile-card {
+        background: white;
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-lg);
+        overflow: hidden;
+        border: 1px solid var(--light-200);
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+
+    .profile-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-xl);
+    }
+
+    .profile-header {
+        background: var(--gradient-primary);
+        padding: 30px 20px;
+        text-align: center;
+        color: white;
+    }
+
+    .profile-avatar {
+        width: 80px;
+        height: 80px;
+        background: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 15px;
+        color: var(--primary);
+        font-size: 2.5rem;
+        border: 4px solid rgba(255,255,255,0.3);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .profile-name {
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin-bottom: 5px;
+    }
+
+    .profile-role {
+        background: rgba(255,255,255,0.2);
+        display: inline-block;
+        padding: 5px 20px;
+        border-radius: 50px;
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+
+    .profile-body {
+        padding: 20px;
+    }
+
+    .profile-links {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .profile-link-btn {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 15px;
+        background: var(--light);
+        border-radius: var(--radius-lg);
+        color: var(--dark-700);
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border: 1px solid var(--light-200);
+        font-weight: 500;
+    }
+
+    .profile-link-btn:hover {
+        transform: translateX(5px);
+        background: linear-gradient(135deg, var(--light), white);
+        border-color: var(--primary);
+        color: var(--primary);
+        text-decoration: none;
+    }
+
+    .profile-link-btn i {
+        width: 30px;
+        height: 30px;
+        background: linear-gradient(135deg, rgba(67, 97, 238, 0.1), rgba(114, 9, 183, 0.1));
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--primary);
+        font-size: 1rem;
+    }
+
+    /* Stat Cards */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .stat-card {
+        background: linear-gradient(135deg, white, var(--light));
+        border-radius: var(--radius-lg);
+        padding: 20px;
+        box-shadow: var(--shadow-md);
+        transition: all 0.3s ease;
+        border: 1px solid var(--light-200);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: var(--gradient-primary);
+    }
+
+    .stat-card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .stat-card.primary::before { background: var(--gradient-primary); }
+    .stat-card.success::before { background: var(--gradient-success); }
+    .stat-card.warning::before { background: var(--gradient-warning); }
+    .stat-card.danger::before { background: var(--gradient-danger); }
+
+    .stat-icon {
+        width: 45px;
+        height: 45px;
+        background: linear-gradient(135deg, rgba(67, 97, 238, 0.1), rgba(114, 9, 183, 0.1));
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: var(--primary);
+        margin-bottom: 12px;
+        transition: all 0.3s ease;
+    }
+
+    .stat-card:hover .stat-icon {
+        background: var(--gradient-primary);
+        color: white;
+        transform: scale(1.05) rotate(3deg);
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+        color: var(--dark-600);
+        margin-bottom: 5px;
+        font-weight: 500;
+    }
+
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--dark);
+        line-height: 1;
+    }
+
+    /* Earnings Card */
+    .earnings-card {
+        background: var(--gradient-earnings);
+        border-radius: var(--radius-xl);
+        padding: 30px;
+        margin-bottom: 25px;
+        box-shadow: var(--shadow-lg);
+        position: relative;
+        overflow: hidden;
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.95; }
+    }
+
+    .earnings-card::before {
+        content: '';
+        position: absolute;
+        top: -30%;
+        right: -10%;
+        width: 200px;
+        height: 200px;
+        background: rgba(255,255,255,0.2);
+        border-radius: 50%;
+    }
+
+    .earnings-card::after {
+        content: '';
+        position: absolute;
+        bottom: -30%;
+        left: -10%;
+        width: 150px;
+        height: 150px;
+        background: rgba(255,255,255,0.2);
+        border-radius: 50%;
+    }
+
+    .earnings-content {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .earnings-label {
+        color: white;
+        font-size: 1.1rem;
+        opacity: 0.9;
+        margin-bottom: 5px;
+    }
+
+    .earnings-amount {
+        color: white;
+        font-size: 3.5rem;
+        font-weight: 800;
+        line-height: 1;
+    }
+
+    .earnings-icon {
+        color: rgba(255,255,255,0.3);
+        font-size: 6rem;
+    }
+
+    /* Chart Card */
+    .chart-card {
+        background: white;
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-lg);
+        overflow: hidden;
+        border: 1px solid var(--light-200);
+        margin-bottom: 25px;
+    }
+
+    .chart-header {
+        background: var(--gradient-primary);
+        padding: 18px 25px;
+        color: white;
+    }
+
+    .chart-header h5 {
+        font-weight: 700;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .chart-header h5 i {
+        font-size: 1.3rem;
+    }
+
+    .chart-body {
+        padding: 25px;
+    }
+
+    .chart-wrapper {
+        position: relative;
+        height: 250px;
+        width: 100%;
+    }
+
+    /* Table Card */
+    .table-card {
+        background: white;
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-lg);
+        overflow: hidden;
+        border: 1px solid var(--light-200);
+    }
+
+    .table-header {
+        background: var(--gradient-primary);
+        padding: 18px 25px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: white;
+    }
+
+    .table-header h5 {
+        font-weight: 700;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .table-header h5 i {
+        font-size: 1.3rem;
+    }
+
+    .badge-count {
+        background: rgba(255,255,255,0.2);
+        color: white;
+        padding: 5px 15px;
+        border-radius: 50px;
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+
+    .table-body {
+        padding: 20px;
+    }
+
+    /* Custom Table */
+    .table-custom {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 8px;
+    }
+
+    .table-custom thead th {
+        background: var(--light);
+        padding: 12px;
+        font-weight: 600;
+        color: var(--dark-700);
+        border: none;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .table-custom tbody tr {
+        background: white;
+        box-shadow: var(--shadow-sm);
+        border-radius: var(--radius-md);
+        transition: all 0.3s ease;
+    }
+
+    .table-custom tbody tr:hover {
+        box-shadow: var(--shadow-lg);
+        transform: scale(1.005);
+    }
+
+    .table-custom tbody td {
+        padding: 15px;
+        vertical-align: middle;
+        border: none;
+        font-size: 0.95rem;
+    }
+
+    .table-custom tbody td:first-child {
+        border-radius: var(--radius-md) 0 0 var(--radius-md);
+    }
+
+    .table-custom tbody td:last-child {
+        border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    }
+
+    /* Badges */
+    .badge-custom {
+        padding: 6px 15px;
+        border-radius: 50px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        display: inline-block;
+    }
+
+    .badge-success {
+        background: linear-gradient(135deg, #d4edda, #c3e6cb);
+        color: #155724;
+    }
+
+    .badge-warning {
+        background: linear-gradient(135deg, #fff3cd, #ffeeba);
+        color: #856404;
+    }
+
+    .badge-danger {
+        background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+        color: #721c24;
+    }
+
+    .badge-secondary {
+        background: linear-gradient(135deg, #e2e3e5, #d6d8d9);
+        color: #383d41;
+    }
+
+    .badge-ac {
+        background: linear-gradient(135deg, #cce5ff, #b8daff);
+        color: #004085;
+        font-size: 0.8rem;
+        padding: 3px 8px;
+        margin-right: 3px;
+    }
+
+    /* Avatar Circle */
+    .avatar-circle {
+        width: 30px;
+        height: 30px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin-right: 8px;
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 50px;
+        background: var(--light);
+        border-radius: var(--radius-lg);
+    }
+
+    .empty-state i {
+        font-size: 4rem;
+        color: var(--light-300);
+        margin-bottom: 15px;
+    }
+
+    .empty-state h5 {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--dark);
+        margin-bottom: 8px;
+    }
+
+    .empty-state p {
+        color: var(--dark-600);
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .page-header h1 {
+            font-size: 2rem;
+        }
+
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .earnings-content {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .earnings-icon {
+            display: none;
+        }
+
+        .table-header {
+            flex-direction: column;
+            gap: 10px;
+            align-items: flex-start;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
+<!-- Page Header -->
+<div class="page-header" data-aos="fade-down">
+    <div class="container">
+        <h1 class="display-4"><i class="fas fa-chart-bar me-3"></i>Booking Statistics</h1>
+        <p class="lead">Track your business performance and earnings</p>
+    </div>
+</div>
+
+<div class="container mb-5">
     <div class="row">
-        <div class="col-md-3">
-            <div class="card">
-                <div class="card-body text-center">
-                    <i class="fas fa-bus fa-4x text-primary mb-3"></i>
-                    <h5>{{ user.get_full_name|default:user.username }}</h5>
-                    <p class="text-muted">Bus Owner</p>
-                    <hr>
-                    <a href="{% url 'add_bank_details' %}" class="btn btn-outline-primary btn-sm w-100 mb-2">
-                        <i class="fas fa-university"></i> Bank Details
-                    </a>
-                    <a href="{% url 'bus_owner_dashboard' %}" class="btn btn-outline-success btn-sm w-100">
-                        <i class="fas fa-tachometer-alt"></i> Dashboard
-                    </a>
+        <!-- Left Sidebar -->
+        <div class="col-lg-3 mb-4" data-aos="fade-right">
+            <div class="profile-card">
+                <div class="profile-header">
+                    <div class="profile-avatar">
+                        <i class="fas fa-bus"></i>
+                    </div>
+                    <h5 class="profile-name">{{ user.get_full_name|default:user.username }}</h5>
+                    <span class="profile-role">Bus Owner</span>
+                </div>
+                <div class="profile-body">
+                    <div class="profile-links">
+                        <a href="{% url 'add_bank_details' %}" class="profile-link-btn">
+                            <i class="fas fa-university"></i>
+                            <span>Bank Details</span>
+                        </a>
+                        <a href="{% url 'bus_owner_dashboard' %}" class="profile-link-btn">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
-        
-        <div class="col-md-9">
+
+        <!-- Main Content -->
+        <div class="col-lg-9" data-aos="fade-left">
             <!-- Statistics Cards -->
-            <div class="row">
-                <div class="col-md-3 mb-3">
-                    <div class="card bg-primary text-white">
-                        <div class="card-body">
-                            <h6>Total Bookings</h6>
-                            <h3>{{ total_bookings }}</h3>
-                        </div>
-                    </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-ticket-alt"></i></div>
+                    <div class="stat-label">Total Bookings</div>
+                    <div class="stat-value">{{ total_bookings|default:"0" }}</div>
                 </div>
-                <div class="col-md-3 mb-3">
-                    <div class="card bg-success text-white">
-                        <div class="card-body">
-                            <h6>Confirmed</h6>
-                            <h3>{{ confirmed_bookings }}</h3>
-                        </div>
-                    </div>
+                <div class="stat-card success">
+                    <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                    <div class="stat-label">Confirmed</div>
+                    <div class="stat-value">{{ confirmed_bookings|default:"0" }}</div>
                 </div>
-                <div class="col-md-3 mb-3">
-                    <div class="card bg-warning text-white">
-                        <div class="card-body">
-                            <h6>Pending</h6>
-                            <h3>{{ pending_bookings }}</h3>
-                        </div>
-                    </div>
+                <div class="stat-card warning">
+                    <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                    <div class="stat-label">Pending</div>
+                    <div class="stat-value">{{ pending_bookings|default:"0" }}</div>
                 </div>
-                <div class="col-md-3 mb-3">
-                    <div class="card bg-danger text-white">
-                        <div class="card-body">
-                            <h6>Cancelled</h6>
-                            <h3>{{ cancelled_bookings }}</h3>
-                        </div>
-                    </div>
+                <div class="stat-card danger">
+                    <div class="stat-icon"><i class="fas fa-times-circle"></i></div>
+                    <div class="stat-label">Cancelled</div>
+                    <div class="stat-value">{{ cancelled_bookings|default:"0" }}</div>
                 </div>
             </div>
-            
+
             <!-- Earnings Card -->
-            <div class="card bg-gradient-success text-white mb-4">
-                <div class="card-body">
-                    <div class="row align-items-center">
-                        <div class="col-md-6">
-                            <h5>Total Earnings</h5>
-                            <h2 class="display-4">₹{{ total_earnings|floatformat:0 }}</h2>
-                        </div>
-                        <div class="col-md-6 text-end">
-                            <i class="fas fa-rupee-sign fa-5x opacity-50"></i>
-                        </div>
+            <div class="earnings-card">
+                <div class="earnings-content">
+                    <div>
+                        <div class="earnings-label">Total Earnings</div>
+                        <div class="earnings-amount">₹{{ total_earnings|floatformat:0|default:"0" }}</div>
+                    </div>
+                    <div class="earnings-icon">
+                        <i class="fas fa-rupee-sign"></i>
                     </div>
                 </div>
             </div>
-            
+
             <!-- Monthly Earnings Chart -->
-            <div class="card mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">Monthly Earnings</h5>
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h5><i class="fas fa-chart-line"></i> Monthly Earnings Overview</h5>
                 </div>
-                <div class="card-body">
-                    <canvas id="earningsChart" height="100"></canvas>
+                <div class="chart-body">
+                    <div class="chart-wrapper">
+                        <canvas id="earningsChart"></canvas>
+                    </div>
                 </div>
             </div>
-            
+
             <!-- Recent Bookings -->
-            <div class="card">
-                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Recent Bookings</h5>
-                    <span class="badge bg-light text-dark">{{ recent_bookings|length }} Bookings</span>
+            <div class="table-card">
+                <div class="table-header">
+                    <h5><i class="fas fa-clock"></i> Recent Bookings</h5>
+                    <span class="badge-count">{{ recent_bookings|length }} Bookings</span>
                 </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Booking Ref</th>
-                                    <th>Customer</th>
-                                    <th>Route</th>
-                                    <th>Seats</th>
-                                    <th>Amount</th>
-                                    <th>Status</th>
-                                    <th>Date</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for booking in recent_bookings %}
-                                <tr>
-                                    <td>{{ booking.booking_reference }}</td>
-                                    <td>{{ booking.user.username }}</td>
-                                    <td>{{ booking.route.source }} → {{ booking.route.destination }}</td>
-                                    <td>
-                                        {% for seat in booking.booked_seats.all %}
-                                            <span class="badge bg-primary">{{ seat.seat.seat_number }}</span>
-                                        {% endfor %}
-                                    </td>
-                                    <td>₹{{ booking.total_amount }}</td>
-                                    <td>
-                                        <span class="badge 
-                                            {% if booking.status == 'confirmed' %}bg-success
-                                            {% elif booking.status == 'pending' %}bg-warning
-                                            {% elif booking.status == 'cancelled' %}bg-danger
-                                            {% else %}bg-secondary{% endif %}">
-                                            {{ booking.status }}
-                                        </span>
-                                    </td>
-                                    <td>{{ booking.booking_date|date:"d M Y" }}</td>
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                    <td colspan="7" class="text-center">No bookings yet</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="table-body">
+                    {% if recent_bookings %}
+                        <div class="table-responsive">
+                            <table class="table-custom">
+                                <thead>
+                                    <tr>
+                                        <th>Booking Ref</th>
+                                        <th>Customer</th>
+                                        <th>Route</th>
+                                        <th>Seats</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for booking in recent_bookings %}
+                                    <tr>
+                                        <td class="fw-bold text-primary">#{{ booking.booking_reference|truncatechars:12 }}</td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="avatar-circle">
+                                                    {{ booking.user.username|first|upper }}
+                                                </div>
+                                                {{ booking.user.username|truncatechars:10 }}
+                                            </div>
+                                        </td>
+                                        <td>{{ booking.route.source }} → {{ booking.route.destination }}</td>
+                                        <td>
+                                            {% for seat in booking.booked_seats.all|slice:":3" %}
+                                                <span class="badge-ac">{{ seat.seat.seat_number }}</span>
+                                            {% endfor %}
+                                            {% if booking.booked_seats.count > 3 %}
+                                                <span class="badge-ac">+{{ booking.booked_seats.count|add:"-3" }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="fw-bold">₹{{ booking.total_amount }}</td>
+                                        <td>
+                                            <span class="badge-custom 
+                                                {% if booking.status == 'confirmed' %}badge-success
+                                                {% elif booking.status == 'pending' %}badge-warning
+                                                {% elif booking.status == 'cancelled' %}badge-danger
+                                                {% else %}badge-secondary{% endif %}">
+                                                {{ booking.status|title }}
+                                            </span>
+                                        </td>
+                                        <td>{{ booking.booking_date|date:"d M Y" }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="empty-state">
+                            <i class="fas fa-ticket-alt"></i>
+                            <h5>No Bookings Yet</h5>
+                            <p>Your recent bookings will appear here once customers start booking.</p>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<style>
-.bg-gradient-success {
-    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-}
-.opacity-50 {
-    opacity: 0.5;
-}
-</style>
+<!-- AOS Animation Library -->
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+// Initialize AOS
+AOS.init({
+    duration: 800,
+    once: true,
+    offset: 50
+});
+
+// Create Earnings Chart
 document.addEventListener('DOMContentLoaded', function() {
     // Prepare monthly earnings data
     const months = [];
@@ -162,6 +766,12 @@ document.addEventListener('DOMContentLoaded', function() {
         earnings.push({{ month.total|floatformat:0 }});
     {% endfor %}
     
+    // If no data, show sample data
+    if (months.length === 0) {
+        months.push('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun');
+        earnings.push(0, 0, 0, 0, 0, 0);
+    }
+    
     // Create chart
     const ctx = document.getElementById('earningsChart').getContext('2d');
     new Chart(ctx, {
@@ -171,26 +781,54 @@ document.addEventListener('DOMContentLoaded', function() {
             datasets: [{
                 label: 'Monthly Earnings (₹)',
                 data: earnings,
-                borderColor: '#28a745',
-                backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                borderColor: '#10b981',
+                backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                borderWidth: 3,
+                pointBackgroundColor: '#10b981',
+                pointBorderColor: 'white',
+                pointBorderWidth: 2,
+                pointRadius: 5,
+                pointHoverRadius: 7,
                 tension: 0.4,
                 fill: true
             }]
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
                 legend: {
                     display: false
+                },
+                tooltip: {
+                    backgroundColor: '#1e293b',
+                    titleColor: 'white',
+                    bodyColor: '#cbd5e1',
+                    padding: 12,
+                    cornerRadius: 8,
+                    callbacks: {
+                        label: function(context) {
+                            return `₹${context.raw.toLocaleString()}`;
+                        }
+                    }
                 }
             },
             scales: {
                 y: {
                     beginAtZero: true,
+                    grid: {
+                        color: 'rgba(0,0,0,0.05)',
+                        drawBorder: false
+                    },
                     ticks: {
                         callback: function(value) {
                             return '₹' + value;
                         }
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
                     }
                 }
             }

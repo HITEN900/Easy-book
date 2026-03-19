@@ -1,44 +1,873 @@
 {% extends 'base.html' %}
+{% load static %}
 
-{% block title %}Register as Bus Owner - Easy Book{% endblock %}
+{% block title %}Register as Bus Owner - EasyBook{% endblock %}
+
+{% block extra_css %}
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<!-- AOS Animation Library -->
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+<style>
+    :root {
+        --primary: #4361ee;
+        --primary-dark: #3a56d4;
+        --primary-light: #6c8cff;
+        --secondary: #7209b7;
+        --accent: #f72585;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --info: #3b82f6;
+        --dark: #0f172a;
+        --dark-800: #1e293b;
+        --dark-700: #334155;
+        --dark-600: #475569;
+        --light: #f8fafc;
+        --light-200: #e2e8f0;
+        --light-300: #cbd5e1;
+        
+        --gradient-primary: linear-gradient(135deg, #4361ee, #7209b7);
+        --gradient-success: linear-gradient(135deg, #10b981, #059669);
+        --gradient-warning: linear-gradient(135deg, #f59e0b, #d97706);
+        --gradient-danger: linear-gradient(135deg, #ef4444, #dc2626);
+        --gradient-info: linear-gradient(135deg, #3b82f6, #2563eb);
+        
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+        --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+        
+        --radius-sm: 0.375rem;
+        --radius-md: 0.5rem;
+        --radius-lg: 1rem;
+        --radius-xl: 1.5rem;
+        --radius-2xl: 2rem;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background: #f8fafc;
+        color: var(--dark);
+        min-height: 100vh;
+        padding: 40px 20px;
+    }
+
+    /* Main Container */
+    .registration-container {
+        width: 100%;
+        max-width: 900px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 2;
+    }
+
+    /* Main Card */
+    .registration-card {
+        background: white;
+        border-radius: var(--radius-2xl);
+        box-shadow: var(--shadow-2xl);
+        overflow: hidden;
+        animation: slideUp 0.5s ease;
+        border: 1px solid var(--light-200);
+    }
+
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Card Header - FIXED VISIBILITY */
+    .card-header-custom {
+        background: var(--gradient-primary);
+        padding: 30px;
+        position: relative;
+        overflow: hidden;
+        color: white;
+    }
+
+    .card-header-custom::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 300px;
+        height: 300px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+    }
+
+    .card-header-custom::after {
+        content: '';
+        position: absolute;
+        bottom: -50%;
+        left: -10%;
+        width: 250px;
+        height: 250px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+    }
+
+    .header-content {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .header-icon {
+        width: 70px;
+        height: 70px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        color: white;
+        box-shadow: var(--shadow-lg);
+    }
+
+    .header-text h2 {
+        font-size: 2rem;
+        font-weight: 800;
+        margin-bottom: 5px;
+        color: white;
+    }
+
+    .header-text p {
+        font-size: 1rem;
+        opacity: 0.9;
+        margin: 0;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    /* Progress Steps - FIXED VISIBILITY */
+    .progress-steps {
+        display: flex;
+        justify-content: space-between;
+        padding: 20px 30px;
+        background: var(--light);
+        border-bottom: 1px solid var(--light-200);
+        position: relative;
+    }
+
+    .progress-step {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--dark-600);
+        font-weight: 500;
+        position: relative;
+        flex: 1;
+    }
+
+    .progress-step:not(:last-child)::after {
+        content: '';
+        position: absolute;
+        right: -15px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 30px;
+        height: 2px;
+        background: var(--light-300);
+    }
+
+    .progress-step.active {
+        color: var(--primary);
+    }
+
+    .step-number {
+        width: 35px;
+        height: 35px;
+        background: white;
+        border: 2px solid var(--light-300);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        color: var(--dark-600);
+    }
+
+    .progress-step.active .step-number {
+        background: var(--primary);
+        border-color: var(--primary);
+        color: white;
+    }
+
+    .step-text {
+        font-size: 0.95rem;
+        font-weight: 600;
+    }
+
+    /* Card Body */
+    .card-body-custom {
+        padding: 40px;
+    }
+
+    /* Info Alert */
+    .info-alert {
+        background: linear-gradient(135deg, #e7f3ff, #d4e6ff);
+        border-left: 5px solid var(--info);
+        border-radius: var(--radius-lg);
+        padding: 20px;
+        margin-bottom: 30px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        color: #004085;
+    }
+
+    .info-alert i {
+        font-size: 2rem;
+        color: var(--info);
+    }
+
+    .info-alert div {
+        flex: 1;
+    }
+
+    .info-alert strong {
+        font-weight: 700;
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    /* Form Sections */
+    .form-section {
+        background: var(--light);
+        border-radius: var(--radius-xl);
+        padding: 25px;
+        margin-bottom: 25px;
+        border: 1px solid var(--light-200);
+        transition: all 0.3s ease;
+    }
+
+    .form-section:hover {
+        box-shadow: var(--shadow-lg);
+        border-color: var(--primary-light);
+    }
+
+    .section-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--dark);
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid var(--light-200);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .section-title i {
+        color: var(--primary);
+        font-size: 1.2rem;
+    }
+
+    /* Form Fields */
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: var(--dark-700);
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 0.95rem;
+    }
+
+    .form-label i {
+        color: var(--primary);
+        font-size: 1rem;
+    }
+
+    .required-star {
+        color: var(--danger);
+        margin-left: 3px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 14px 16px;
+        border: 2px solid var(--light-200);
+        border-radius: var(--radius-lg);
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        font-family: 'Inter', sans-serif;
+        background: white;
+    }
+
+    .form-control:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.1);
+        outline: none;
+    }
+
+    .form-control::placeholder {
+        color: var(--light-300);
+        font-size: 0.95rem;
+    }
+
+    textarea.form-control {
+        resize: vertical;
+        min-height: 100px;
+    }
+
+    .form-text {
+        font-size: 0.85rem;
+        color: var(--dark-600);
+        margin-top: 5px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .form-text i {
+        color: var(--info);
+        font-size: 0.9rem;
+    }
+
+    /* Input Groups */
+    .input-group {
+        display: flex;
+        align-items: center;
+    }
+
+    .input-group-text {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        padding: 14px 20px;
+        border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+        font-weight: 600;
+        border: none;
+    }
+
+    .input-group .form-control {
+        border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+    }
+
+    /* License Preview */
+    .license-preview {
+        background: white;
+        border-radius: var(--radius-lg);
+        padding: 15px;
+        margin-top: 15px;
+        border: 2px dashed var(--light-300);
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .license-icon {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, var(--warning), #d97706);
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+    }
+
+    .license-text {
+        color: var(--dark-600);
+        font-size: 0.9rem;
+        flex: 1;
+    }
+
+    .license-text strong {
+        color: var(--warning);
+    }
+
+    /* Terms Checkbox */
+    .terms-checkbox {
+        margin: 25px 0;
+        padding: 20px;
+        background: var(--light);
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--light-200);
+    }
+
+    .checkbox-label {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        cursor: pointer;
+    }
+
+    .checkbox-label input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+        accent-color: var(--primary);
+        margin-top: 2px;
+    }
+
+    .checkbox-text {
+        color: var(--dark-700);
+        font-size: 0.95rem;
+        flex: 1;
+        line-height: 1.5;
+    }
+
+    .checkbox-text a {
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .checkbox-text a:hover {
+        color: var(--primary-dark);
+        text-decoration: underline;
+    }
+
+    /* Benefits Section */
+    .benefits-section {
+        margin-top: 30px;
+        padding: 25px;
+        background: linear-gradient(135deg, var(--light), white);
+        border-radius: var(--radius-xl);
+        border: 1px solid var(--light-200);
+    }
+
+    .benefits-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--dark);
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .benefits-title i {
+        color: var(--success);
+        font-size: 1.2rem;
+    }
+
+    .benefits-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+    }
+
+    .benefit-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--dark-600);
+        font-size: 0.95rem;
+        padding: 8px;
+        background: white;
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--light-200);
+    }
+
+    .benefit-item i {
+        color: var(--success);
+        font-size: 1.1rem;
+    }
+
+    /* Action Buttons */
+    .action-buttons {
+        display: flex;
+        gap: 15px;
+        margin-top: 30px;
+    }
+
+    .btn-submit {
+        background: var(--gradient-primary);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 16px 30px;
+        font-weight: 700;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        cursor: pointer;
+        box-shadow: 0 8px 20px rgba(67, 97, 238, 0.3);
+        flex: 2;
+    }
+
+    .btn-submit:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 30px rgba(67, 97, 238, 0.4);
+    }
+
+    .btn-submit i {
+        font-size: 1.2rem;
+    }
+
+    .btn-cancel {
+        background: white;
+        color: var(--dark-700);
+        border: 2px solid var(--light-300);
+        border-radius: 50px;
+        padding: 16px 30px;
+        font-weight: 700;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        text-decoration: none;
+        flex: 1;
+    }
+
+    .btn-cancel:hover {
+        background: var(--light);
+        border-color: var(--primary);
+        color: var(--primary);
+        transform: translateY(-2px);
+        text-decoration: none;
+    }
+
+    .btn-cancel i {
+        font-size: 1.2rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        body {
+            padding: 20px 10px;
+        }
+
+        .card-header-custom {
+            padding: 25px;
+        }
+
+        .header-content {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .header-text h2 {
+            font-size: 1.8rem;
+        }
+
+        .progress-steps {
+            flex-direction: column;
+            gap: 15px;
+            padding: 20px;
+        }
+
+        .progress-step:not(:last-child)::after {
+            display: none;
+        }
+
+        .card-body-custom {
+            padding: 25px;
+        }
+
+        .info-alert {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .benefits-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+        }
+
+        .btn-submit, .btn-cancel {
+            width: 100%;
+        }
+
+        .license-preview {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .checkbox-label {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">Bus Owner Registration</h4>
+<div class="registration-container">
+    <!-- Main Card -->
+    <div class="registration-card" data-aos="fade-up">
+        <!-- Card Header - FIXED VISIBILITY -->
+        <div class="card-header-custom">
+            <div class="header-content">
+                <div class="header-icon">
+                    <i class="fas fa-bus"></i>
                 </div>
-                <div class="card-body">
-                    <form method="POST">
-                        {% csrf_token %}
-                        <div class="mb-3">
-                            <label for="business_name" class="form-label">Business Name</label>
-                            <input type="text" class="form-control" id="business_name" name="business_name" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="address" class="form-label">Business Address</label>
-                            <textarea class="form-control" id="address" name="address" rows="3" required></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="license_number" class="form-label">License Number</label>
-                            <input type="text" class="form-control" id="license_number" name="license_number" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="phone" class="form-label">Contact Number</label>
-                            <input type="tel" class="form-control" id="phone" name="phone" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="email" name="email" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Submit Registration</button>
-                        <a href="{% url 'home' %}" class="btn btn-secondary">Cancel</a>
-                    </form>
+                <div class="header-text">
+                    <h2>Become a Bus Owner</h2>
+                    <p>Join EasyBook and grow your business with thousands of daily customers</p>
                 </div>
             </div>
         </div>
+
+        <!-- Progress Steps - FIXED VISIBILITY -->
+        <div class="progress-steps">
+            <div class="progress-step active">
+                <span class="step-number">1</span>
+                <span class="step-text">Business Details</span>
+            </div>
+            <div class="progress-step">
+                <span class="step-number">2</span>
+                <span class="step-text">Verification</span>
+            </div>
+            <div class="progress-step">
+                <span class="step-number">3</span>
+                <span class="step-text">Complete</span>
+            </div>
+        </div>
+
+        <!-- Card Body -->
+        <div class="card-body-custom">
+            <!-- Info Alert -->
+            <div class="info-alert" data-aos="fade-up">
+                <i class="fas fa-info-circle"></i>
+                <div>
+                    <strong>Ready to grow your business?</strong>
+                    Fill in your details below to register as a bus owner. Our team will verify your information within 24-48 hours.
+                </div>
+            </div>
+
+            <form method="POST" id="registrationForm">
+                {% csrf_token %}
+
+                <!-- Business Information Section -->
+                <div class="form-section" data-aos="fade-up">
+                    <h5 class="section-title"><i class="fas fa-building"></i> Business Information</h5>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-store"></i> Business Name
+                            <span class="required-star">*</span>
+                        </label>
+                        <input type="text" class="form-control" id="business_name" name="business_name" 
+                               placeholder="e.g., Sharma Travels" required>
+                        <div class="form-text">
+                            <i class="fas fa-info-circle"></i> Your registered business name
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-map-marker-alt"></i> Business Address
+                            <span class="required-star">*</span>
+                        </label>
+                        <textarea class="form-control" id="address" name="address" rows="3" 
+                                  placeholder="Enter your complete business address" required></textarea>
+                        <div class="form-text">
+                            <i class="fas fa-info-circle"></i> Full address with city and pincode
+                        </div>
+                    </div>
+                </div>
+
+                <!-- License & Verification Section -->
+                <div class="form-section" data-aos="fade-up">
+                    <h5 class="section-title"><i class="fas fa-file-contract"></i> License & Verification</h5>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-id-card"></i> License Number
+                            <span class="required-star">*</span>
+                        </label>
+                        <input type="text" class="form-control" id="license_number" name="license_number" 
+                               placeholder="e.g., RTO/2024/12345" required onkeyup="updateLicensePreview()">
+                        <div class="form-text">
+                            <i class="fas fa-info-circle"></i> Your RTO/Transport license number
+                        </div>
+                    </div>
+
+                    <!-- License Preview -->
+                    <div class="license-preview" id="licensePreview">
+                        <div class="license-icon">
+                            <i class="fas fa-id-card"></i>
+                        </div>
+                        <div class="license-text">
+                            Enter your license number to see preview
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Information Section -->
+                <div class="form-section" data-aos="fade-up">
+                    <h5 class="section-title"><i class="fas fa-address-book"></i> Contact Information</h5>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-phone"></i> Contact Number
+                                    <span class="required-star">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text">+91</span>
+                                    <input type="tel" class="form-control" id="phone" name="phone" 
+                                           placeholder="9876543210" pattern="[0-9]{10}" required>
+                                </div>
+                                <div class="form-text">
+                                    <i class="fas fa-info-circle"></i> 10-digit mobile number
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-envelope"></i> Email Address
+                                    <span class="required-star">*</span>
+                                </label>
+                                <input type="email" class="form-control" id="email" name="email" 
+                                       placeholder="owner@example.com" required>
+                                <div class="form-text">
+                                    <i class="fas fa-info-circle"></i> We'll send updates here
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Terms and Conditions -->
+                <div class="terms-checkbox" data-aos="fade-up">
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="terms" id="terms" required>
+                        <span class="checkbox-text">
+                            I confirm that the information provided is accurate and I agree to the 
+                            <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>. 
+                            I understand that my business will be verified before activation.
+                        </span>
+                    </label>
+                </div>
+
+                <!-- Benefits Section -->
+                <div class="benefits-section" data-aos="fade-up">
+                    <div class="benefits-title">
+                        <i class="fas fa-gem"></i>
+                        <span>Why partner with EasyBook?</span>
+                    </div>
+                    <div class="benefits-grid">
+                        <div class="benefit-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>2M+ monthly customers</span>
+                        </div>
+                        <div class="benefit-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Zero registration fee</span>
+                        </div>
+                        <div class="benefit-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Instant payments</span>
+                        </div>
+                        <div class="benefit-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>24/7 dedicated support</span>
+                        </div>
+                        <div class="benefit-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Marketing tools</span>
+                        </div>
+                        <div class="benefit-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Analytics dashboard</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button type="submit" class="btn-submit" id="submitBtn">
+                        <i class="fas fa-paper-plane"></i> Submit Registration
+                    </button>
+                    <a href="{% url 'home' %}" class="btn-cancel">
+                        <i class="fas fa-times"></i> Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
+
+<!-- AOS Animation Library -->
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+<script>
+// Initialize AOS
+AOS.init({
+    duration: 600,
+    once: true,
+    offset: 50
+});
+
+// Update license preview
+function updateLicensePreview() {
+    const license = document.getElementById('license_number').value;
+    const preview = document.getElementById('licensePreview');
+    const textDiv = preview.querySelector('.license-text');
+    
+    if (license) {
+        textDiv.innerHTML = `License Number: <strong>${license}</strong><br><small>Will be verified with RTO</small>`;
+        preview.style.borderColor = 'var(--primary)';
+    } else {
+        textDiv.innerHTML = 'Enter your license number to see preview';
+        preview.style.borderColor = 'var(--light-300)';
+    }
+}
+
+// Phone number validation
+document.getElementById('phone').addEventListener('input', function(e) {
+    this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);
+});
+
+// Form submission animation
+document.getElementById('registrationForm').addEventListener('submit', function(e) {
+    const submitBtn = document.getElementById('submitBtn');
+    const termsChecked = document.getElementById('terms').checked;
+    
+    if (!termsChecked) {
+        e.preventDefault();
+        alert('Please agree to the Terms and Conditions');
+        return;
+    }
+    
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+    submitBtn.disabled = true;
+});
+
+// Preview license on page load if value exists
+document.addEventListener('DOMContentLoaded', function() {
+    updateLicensePreview();
+});
+</script>
 {% endblock %}

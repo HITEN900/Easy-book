@@ -1,40 +1,697 @@
 {% extends 'base.html' %}
+{% load static %}
 
-{% block title %}Booking Details - Easy Book{% endblock %}
+{% block title %}Booking Details - EasyBook{% endblock %}
+
+{% block extra_css %}
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<!-- AOS Animation Library -->
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+<style>
+    :root {
+        --primary: #4361ee;
+        --primary-dark: #3a56d4;
+        --primary-light: #6c8cff;
+        --secondary: #7209b7;
+        --accent: #f72585;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --info: #3b82f6;
+        --dark: #0f172a;
+        --dark-800: #1e293b;
+        --dark-700: #334155;
+        --dark-600: #475569;
+        --light: #f8fafc;
+        --light-200: #e2e8f0;
+        --light-300: #cbd5e1;
+        
+        --gradient-primary: linear-gradient(135deg, #4361ee, #7209b7);
+        --gradient-success: linear-gradient(135deg, #10b981, #059669);
+        --gradient-warning: linear-gradient(135deg, #f59e0b, #d97706);
+        --gradient-danger: linear-gradient(135deg, #ef4444, #dc2626);
+        --gradient-info: linear-gradient(135deg, #3b82f6, #2563eb);
+        
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+        --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+        
+        --radius-sm: 0.375rem;
+        --radius-md: 0.5rem;
+        --radius-lg: 1rem;
+        --radius-xl: 1.5rem;
+        --radius-2xl: 2rem;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        color: var(--dark);
+        min-height: 100vh;
+    }
+
+    /* Page Header */
+    .page-header {
+        background: linear-gradient(135deg, #1a1a2e 0%, #2d2d44 100%);
+        padding: 40px 0;
+        margin-bottom: 40px;
+        border-radius: 0 0 50px 50px;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .page-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        border-radius: 50%;
+    }
+
+    .page-header::after {
+        content: '';
+        position: absolute;
+        bottom: -30%;
+        left: -5%;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        border-radius: 50%;
+    }
+
+    .page-header h1 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 10px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .page-header p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        position: relative;
+        z-index: 2;
+    }
+
+    /* Main Card */
+    .booking-card {
+        background: white;
+        border-radius: var(--radius-2xl);
+        box-shadow: var(--shadow-2xl);
+        overflow: hidden;
+        margin-bottom: 40px;
+        animation: slideUp 0.5s ease;
+        border: 1px solid var(--light-200);
+    }
+
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Card Header */
+    .card-header-custom {
+        background: var(--gradient-primary);
+        padding: 25px 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .card-header-custom h4 {
+        color: white;
+        font-size: 1.5rem;
+        font-weight: 800;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .card-header-custom h4 i {
+        font-size: 1.8rem;
+    }
+
+    .status-badge {
+        padding: 8px 25px;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        box-shadow: var(--shadow-md);
+    }
+
+    .status-badge.confirmed {
+        background: var(--gradient-success);
+        color: white;
+    }
+
+    .status-badge.pending {
+        background: var(--gradient-warning);
+        color: white;
+    }
+
+    .status-badge.cancelled {
+        background: var(--gradient-danger);
+        color: white;
+    }
+
+    .status-badge.completed {
+        background: var(--gradient-info);
+        color: white;
+    }
+
+    /* Card Body */
+    .card-body-custom {
+        padding: 40px;
+    }
+
+    /* Section Cards */
+    .info-section {
+        background: var(--light);
+        border-radius: var(--radius-xl);
+        padding: 25px;
+        margin-bottom: 25px;
+        border: 1px solid var(--light-200);
+        transition: all 0.3s ease;
+    }
+
+    .info-section:hover {
+        box-shadow: var(--shadow-lg);
+        border-color: var(--primary-light);
+    }
+
+    .section-title {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--dark);
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid var(--light-200);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .section-title i {
+        color: var(--primary);
+        font-size: 1.3rem;
+    }
+
+    /* Info Grid */
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+
+    .info-item {
+        background: white;
+        padding: 15px;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+        transition: all 0.3s ease;
+    }
+
+    .info-item:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .info-label {
+        font-size: 0.85rem;
+        color: var(--dark-600);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 5px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .info-label i {
+        color: var(--primary);
+        font-size: 0.9rem;
+    }
+
+    .info-value {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--dark);
+    }
+
+    /* Journey Route Display */
+    .journey-route {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: white;
+        padding: 20px;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+    }
+
+    .route-point {
+        text-align: center;
+        flex: 1;
+    }
+
+    .route-city {
+        font-size: 1.3rem;
+        font-weight: 800;
+        color: var(--primary);
+        margin-bottom: 5px;
+    }
+
+    .route-time {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--dark);
+        margin-bottom: 3px;
+    }
+
+    .route-date {
+        font-size: 0.9rem;
+        color: var(--dark-600);
+    }
+
+    .route-arrow {
+        color: var(--primary);
+        font-size: 2rem;
+        margin: 0 20px;
+    }
+
+    /* Passenger Table */
+    .passenger-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 8px;
+    }
+
+    .passenger-table thead th {
+        background: var(--gradient-primary);
+        color: white;
+        padding: 15px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        border: none;
+    }
+
+    .passenger-table thead th:first-child {
+        border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+    }
+
+    .passenger-table thead th:last-child {
+        border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+    }
+
+    .passenger-table tbody tr {
+        background: white;
+        box-shadow: var(--shadow-sm);
+        border-radius: var(--radius-lg);
+        transition: all 0.3s ease;
+    }
+
+    .passenger-table tbody tr:hover {
+        box-shadow: var(--shadow-lg);
+        transform: scale(1.005);
+    }
+
+    .passenger-table tbody td {
+        padding: 15px;
+        border: none;
+        font-size: 0.95rem;
+    }
+
+    .passenger-table tbody td:first-child {
+        border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+    }
+
+    .passenger-table tbody td:last-child {
+        border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+    }
+
+    .seat-number {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        padding: 4px 12px;
+        border-radius: 30px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        display: inline-block;
+    }
+
+    /* Payment Details */
+    .payment-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+
+    .payment-item {
+        background: white;
+        padding: 20px;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+        transition: all 0.3s ease;
+    }
+
+    .payment-item:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+        border-left: 4px solid var(--primary);
+    }
+
+    .payment-label {
+        font-size: 0.85rem;
+        color: var(--dark-600);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .payment-label i {
+        color: var(--primary);
+    }
+
+    .payment-value {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--dark);
+    }
+
+    .payment-value.amount {
+        color: var(--primary);
+        font-size: 1.5rem;
+    }
+
+    /* Status Update Form */
+    .status-update {
+        background: white;
+        padding: 20px;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+        border: 2px dashed var(--light-300);
+    }
+
+    .status-update h5 {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--dark);
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .status-update h5 i {
+        color: var(--primary);
+    }
+
+    .form-select {
+        width: 100%;
+        padding: 14px 16px;
+        border: 2px solid var(--light-200);
+        border-radius: var(--radius-lg);
+        font-size: 1rem;
+        font-family: 'Inter', sans-serif;
+        margin-bottom: 15px;
+        transition: all 0.3s ease;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%234361ee' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 15px center;
+    }
+
+    .form-select:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.1);
+        outline: none;
+    }
+
+    .btn-update {
+        background: var(--gradient-primary);
+        color: white;
+        border: none;
+        border-radius: var(--radius-lg);
+        padding: 14px 25px;
+        font-weight: 700;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .btn-update:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .btn-update i {
+        font-size: 1.1rem;
+    }
+
+    /* Back Button */
+    .back-button {
+        display: flex;
+        justify-content: center;
+        margin-top: 30px;
+    }
+
+    .btn-back {
+        background: white;
+        color: var(--dark-700);
+        border: 2px solid var(--light-300);
+        border-radius: 50px;
+        padding: 14px 40px;
+        font-weight: 700;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+    }
+
+    .btn-back:hover {
+        background: var(--light);
+        border-color: var(--primary);
+        color: var(--primary);
+        transform: translateY(-2px);
+        text-decoration: none;
+    }
+
+    .btn-back i {
+        font-size: 1.1rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .page-header h1 {
+            font-size: 2rem;
+        }
+
+        .card-body-custom {
+            padding: 25px;
+        }
+
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .journey-route {
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .route-arrow {
+            transform: rotate(90deg);
+        }
+
+        .payment-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .card-header-custom {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .card-header-custom h4 {
+            font-size: 1.2rem;
+        }
+
+        .status-badge {
+            width: 100%;
+            text-align: center;
+        }
+
+        .passenger-table thead {
+            display: none;
+        }
+
+        .passenger-table tbody tr {
+            display: block;
+            margin-bottom: 15px;
+        }
+
+        .passenger-table tbody td {
+            display: block;
+            text-align: right;
+            padding: 10px 15px;
+            border-bottom: 1px solid var(--light-200);
+        }
+
+        .passenger-table tbody td::before {
+            content: attr(data-label);
+            float: left;
+            font-weight: 600;
+            color: var(--dark-600);
+        }
+
+        .passenger-table tbody td:last-child {
+            border-bottom: none;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-md-8 offset-md-2">
-            <div class="card">
-                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                    <h4 class="mb-0">Booking Details: {{ booking.booking_reference }}</h4>
-                    <span class="badge {% if booking.status == 'confirmed' %}bg-success{% elif booking.status == 'cancelled' %}bg-danger{% else %}bg-warning{% endif %}">
-                        {{ booking.status|title }}
+<!-- Page Header -->
+<div class="page-header" data-aos="fade-down">
+    <div class="container">
+        <h1 class="display-4"><i class="fas fa-ticket-alt me-3"></i>Booking Details</h1>
+        <p class="lead">View complete information about this booking</p>
+    </div>
+</div>
+
+<div class="container mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <!-- Main Card -->
+            <div class="booking-card" data-aos="fade-up">
+                <!-- Card Header -->
+                <div class="card-header-custom">
+                    <h4>
+                        <i class="fas fa-ticket-alt"></i>
+                        Booking #{{ booking.booking_reference }}
+                    </h4>
+                    <span class="status-badge {{ booking.status }}">
+                        {{ booking.status|upper }}
                     </span>
                 </div>
-                <div class="card-body">
-                    <div class="row mb-4">
-                        <div class="col-md-6">
-                            <h5>Customer Information</h5>
-                            <p><strong>Name:</strong> {{ booking.user.get_full_name|default:booking.user.username }}</p>
-                            <p><strong>Email:</strong> {{ booking.user.email }}</p>
-                            <p><strong>Phone:</strong> {{ booking.user.phone }}</p>
-                        </div>
-                        <div class="col-md-6">
-                            <h5>Journey Details</h5>
-                            <p><strong>Bus:</strong> {{ booking.route.bus.bus_name }} ({{ booking.route.bus.bus_number }})</p>
-                            <p><strong>Route:</strong> {{ booking.route.source }} → {{ booking.route.destination }}</p>
-                            <p><strong>Journey Date:</strong> {{ booking.journey_date|date:"d M Y" }}</p>
-                            <p><strong>Departure:</strong> {{ booking.route.departure_time|date:"h:i A" }}</p>
-                            <p><strong>Arrival:</strong> {{ booking.route.arrival_time|date:"h:i A" }}</p>
+
+                <!-- Card Body -->
+                <div class="card-body-custom">
+                    <!-- Journey Route Display -->
+                    <div class="info-section" data-aos="fade-up">
+                        <h5 class="section-title"><i class="fas fa-route"></i> Journey Route</h5>
+                        <div class="journey-route">
+                            <div class="route-point">
+                                <div class="route-city">{{ booking.route.source }}</div>
+                                <div class="route-time">{{ booking.route.departure_time|date:"h:i A" }}</div>
+                                <div class="route-date">{{ booking.journey_date|date:"d M Y" }}</div>
+                            </div>
+                            <div class="route-arrow">
+                                <i class="fas fa-long-arrow-alt-right"></i>
+                            </div>
+                            <div class="route-point">
+                                <div class="route-city">{{ booking.route.destination }}</div>
+                                <div class="route-time">{{ booking.route.arrival_time|date:"h:i A" }}</div>
+                                <div class="route-date">{{ booking.journey_date|date:"d M Y" }}</div>
+                            </div>
                         </div>
                     </div>
-                    
-                    <div class="row mb-4">
-                        <div class="col-12">
-                            <h5>Passenger Details</h5>
-                            <table class="table table-bordered">
+
+                    <!-- Customer & Bus Information -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="info-section" data-aos="fade-up" data-aos-delay="100">
+                                <h5 class="section-title"><i class="fas fa-user"></i> Customer Information</h5>
+                                <div class="info-grid">
+                                    <div class="info-item">
+                                        <div class="info-label"><i class="fas fa-user"></i> Name</div>
+                                        <div class="info-value">{{ booking.user.get_full_name|default:booking.user.username }}</div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label"><i class="fas fa-envelope"></i> Email</div>
+                                        <div class="info-value">{{ booking.user.email }}</div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label"><i class="fas fa-phone"></i> Phone</div>
+                                        <div class="info-value">{{ booking.user.phone|default:"Not provided" }}</div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label"><i class="fas fa-calendar"></i> Member Since</div>
+                                        <div class="info-value">{{ booking.user.date_joined|date:"M Y" }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="info-section" data-aos="fade-up" data-aos-delay="200">
+                                <h5 class="section-title"><i class="fas fa-bus"></i> Bus Information</h5>
+                                <div class="info-grid">
+                                    <div class="info-item">
+                                        <div class="info-label"><i class="fas fa-bus"></i> Bus Name</div>
+                                        <div class="info-value">{{ booking.route.bus.bus_name }}</div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label"><i class="fas fa-hashtag"></i> Bus Number</div>
+                                        <div class="info-value">{{ booking.route.bus.bus_number }}</div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label"><i class="fas fa-tag"></i> Bus Type</div>
+                                        <div class="info-value">{{ booking.route.bus.get_bus_type_display }}</div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label"><i class="fas fa-chair"></i> Total Seats</div>
+                                        <div class="info-value">{{ booking.route.bus.total_seats }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Passenger Details -->
+                    <div class="info-section" data-aos="fade-up">
+                        <h5 class="section-title"><i class="fas fa-users"></i> Passenger Details</h5>
+                        <div class="table-responsive">
+                            <table class="passenger-table">
                                 <thead>
                                     <tr>
                                         <th>Seat No.</th>
@@ -46,45 +703,85 @@
                                 <tbody>
                                     {% for seat in booked_seats %}
                                     <tr>
-                                        <td>{{ seat.seat.seat_number }}</td>
-                                        <td>{{ seat.passenger_name }}</td>
-                                        <td>{{ seat.passenger_age }}</td>
-                                        <td>{{ seat.get_passenger_gender_display }}</td>
+                                        <td data-label="Seat No."><span class="seat-number">{{ seat.seat.seat_number }}</span></td>
+                                        <td data-label="Passenger Name">{{ seat.passenger_name }}</td>
+                                        <td data-label="Age">{{ seat.passenger_age }}</td>
+                                        <td data-label="Gender">{{ seat.get_passenger_gender_display }}</td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
                         </div>
                     </div>
-                    
+
+                    <!-- Payment & Status Update -->
                     <div class="row">
                         <div class="col-md-6">
-                            <h5>Payment Details</h5>
-                            <p><strong>Total Amount:</strong> ₹{{ booking.total_amount }}</p>
-                            <p><strong>Payment ID:</strong> {{ booking.payment_id|default:"N/A" }}</p>
-                            <p><strong>Booking Date:</strong> {{ booking.booking_date|date:"d M Y h:i A" }}</p>
+                            <div class="info-section" data-aos="fade-up">
+                                <h5 class="section-title"><i class="fas fa-credit-card"></i> Payment Details</h5>
+                                <div class="payment-grid">
+                                    <div class="payment-item">
+                                        <div class="payment-label"><i class="fas fa-rupee-sign"></i> Total Amount</div>
+                                        <div class="payment-value amount">₹{{ booking.total_amount|floatformat:2 }}</div>
+                                    </div>
+                                    <div class="payment-item">
+                                        <div class="payment-label"><i class="fas fa-hashtag"></i> Payment ID</div>
+                                        <div class="payment-value">{{ booking.payment_id|default:"N/A" }}</div>
+                                    </div>
+                                    <div class="payment-item">
+                                        <div class="payment-label"><i class="fas fa-calendar"></i> Booking Date</div>
+                                        <div class="payment-value">{{ booking.booking_date|date:"d M Y" }}</div>
+                                    </div>
+                                    <div class="payment-item">
+                                        <div class="payment-label"><i class="fas fa-clock"></i> Booking Time</div>
+                                        <div class="payment-value">{{ booking.booking_date|date:"h:i A" }}</div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+
                         <div class="col-md-6">
-                            <h5>Update Status</h5>
-                            <form method="POST" action="{% url 'update_booking_status' booking.id %}">
-                                {% csrf_token %}
-                                <select name="status" class="form-control mb-2">
-                                    <option value="pending" {% if booking.status == 'pending' %}selected{% endif %}>Pending</option>
-                                    <option value="confirmed" {% if booking.status == 'confirmed' %}selected{% endif %}>Confirmed</option>
-                                    <option value="cancelled" {% if booking.status == 'cancelled' %}selected{% endif %}>Cancelled</option>
-                                    <option value="completed" {% if booking.status == 'completed' %}selected{% endif %}>Completed</option>
-                                </select>
-                                <button type="submit" class="btn btn-primary btn-sm">Update Status</button>
-                            </form>
+                            <div class="info-section" data-aos="fade-up">
+                                <h5 class="section-title"><i class="fas fa-edit"></i> Update Status</h5>
+                                <div class="status-update">
+                                    <form method="POST" action="{% url 'update_booking_status' booking.id %}">
+                                        {% csrf_token %}
+                                        <select name="status" class="form-select">
+                                            <option value="pending" {% if booking.status == 'pending' %}selected{% endif %}>Pending</option>
+                                            <option value="confirmed" {% if booking.status == 'confirmed' %}selected{% endif %}>Confirmed</option>
+                                            <option value="cancelled" {% if booking.status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+                                            <option value="completed" {% if booking.status == 'completed' %}selected{% endif %}>Completed</option>
+                                        </select>
+                                        <button type="submit" class="btn-update">
+                                            <i class="fas fa-save"></i> Update Status
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    
-                    <div class="text-center mt-4">
-                        <a href="{% url 'bus_bookings' %}" class="btn btn-secondary">Back to Bookings</a>
+
+                    <!-- Back Button -->
+                    <div class="back-button">
+                        <a href="{% url 'bus_bookings' %}" class="btn-back">
+                            <i class="fas fa-arrow-left"></i> Back to Bookings
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- AOS Animation Library -->
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+<script>
+// Initialize AOS
+AOS.init({
+    duration: 800,
+    once: true,
+    offset: 50
+});
+</script>
 {% endblock %}

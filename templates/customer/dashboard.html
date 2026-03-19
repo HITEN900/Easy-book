@@ -1,87 +1,850 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}My Dashboard - Easy Book{% endblock %}
+{% block title %}My Dashboard - EasyBook{% endblock %}
 
 {% block extra_css %}
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<!-- AOS Animation Library -->
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
 <style>
     :root {
-        --primary-color: #4361ee;
-        --secondary-color: #3f37c9;
-        --danger-color: #f72585;
-        --dark-text: #2b2d42;
+        --primary: #4361ee;
+        --primary-dark: #3a56d4;
+        --primary-light: #6c8cff;
+        --secondary: #7209b7;
+        --accent: #f72585;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --dark: #0f172a;
+        --dark-800: #1e293b;
+        --dark-700: #334155;
+        --dark-600: #475569;
+        --light: #f8fafc;
+        --light-200: #e2e8f0;
+        --light-300: #cbd5e1;
+        
+        --gradient-primary: linear-gradient(135deg, #4361ee, #7209b7);
+        --gradient-accent: linear-gradient(135deg, #f72585, #b5179e);
+        --gradient-success: linear-gradient(135deg, #10b981, #059669);
+        --gradient-warning: linear-gradient(135deg, #f59e0b, #d97706);
+        --gradient-danger: linear-gradient(135deg, #ef4444, #dc2626);
+        
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+        --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+        
+        --radius-sm: 0.375rem;
+        --radius-md: 0.5rem;
+        --radius-lg: 1rem;
+        --radius-xl: 1.5rem;
+        --radius-2xl: 2rem;
     }
 
-    .dashboard-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px 0; margin-bottom: 40px; border-radius: 0 0 50px 50px; color: white; }
-    .welcome-card { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 20px; padding: 30px; border: 1px solid rgba(255,255,255,0.2); }
-    .stat-card { background: white; border-radius: 20px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); transition: all 0.3s ease; height: 100%; }
-    .stat-card:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(67,97,238,0.15); }
-    .stat-card .stat-icon { width: 60px; height: 60px; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin-bottom: 20px; }
-    .stat-card.total .stat-icon { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
-    .stat-card.upcoming .stat-icon { background: linear-gradient(135deg, #4cc9f0, #4361ee); color: white; }
-    .stat-card.completed .stat-icon { background: linear-gradient(135deg, #28a745, #20c997); color: white; }
-    .stat-card.cancelled .stat-icon { background: linear-gradient(135deg, #f72585, #b5179e); color: white; }
-    .stat-card .stat-value { font-size: 2.5rem; font-weight: 700; margin-bottom: 5px; }
-    .stat-card .stat-label { color: #6c757d; font-size: 1rem; }
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
-    .booking-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 5px 20px rgba(0,0,0,0.08); transition: all 0.3s ease; margin-bottom: 20px; border: 1px solid #e9ecef; }
-    .booking-card:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(67,97,238,0.12); }
-    .booking-header { background: linear-gradient(135deg, #f8f9fa, #e9ecef); padding: 15px 20px; border-bottom: 2px solid rgba(67,97,238,0.1); display: flex; justify-content: space-between; align-items: center; }
-    .booking-ref { font-weight: 600; color: var(--primary-color); }
-    .booking-body { padding: 20px; }
-    .booking-route { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
-    .route-point { text-align: center; }
-    .route-city { font-weight: 600; color: var(--dark-text); }
-    .route-time { font-size: 0.9rem; color: #6c757d; }
-    .route-arrow { color: var(--primary-color); }
-    .booking-footer { background: #f8f9fa; padding: 15px 20px; border-top: 1px solid #e9ecef; display: flex; justify-content: space-between; align-items: center; }
-    .status-badge { padding: 5px 15px; border-radius: 30px; font-weight: 500; font-size: 0.9rem; }
-    .status-confirmed { background: linear-gradient(135deg, #d4edda, #c3e6cb); color: #155724; }
-    .status-pending { background: linear-gradient(135deg, #fff3cd, #ffeeba); color: #856404; }
-    .status-cancelled { background: linear-gradient(135deg, #f8d7da, #f5c6cb); color: #721c24; }
-    .status-completed { background: linear-gradient(135deg, #d1ecf1, #bee5eb); color: #0c5460; }
+    body {
+        font-family: 'Inter', sans-serif;
+        background: #f8fafc;
+        color: var(--dark);
+    }
 
-    .empty-state { text-align: center; padding: 60px 20px; background: white; border-radius: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
-    .empty-state i { font-size: 5rem; color: #dee2e6; margin-bottom: 20px; }
+    /* Dashboard Header */
+    .dashboard-header {
+        background: linear-gradient(135deg, #1e1e2f 0%, #2d2d44 100%);
+        padding: 60px 0;
+        margin-bottom: 40px;
+        border-radius: 0 0 50px 50px;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
 
-    .quick-action-card { background: white; border-radius: 15px; padding: 25px; text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,0.05); transition: all 0.3s ease; text-decoration: none; color: var(--dark-text); display: block; height: 100%; }
-    .quick-action-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(67,97,238,0.15); color: var(--primary-color); }
-    .quick-action-icon { width: 70px; height: 70px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: white; font-size: 1.8rem; }
-    .section-title { position: relative; margin-bottom: 30px; padding-bottom: 10px; }
-    .section-title:after { content: ''; position: absolute; bottom: 0; left: 0; width: 60px; height: 3px; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); border-radius: 3px; }
+    .dashboard-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        border-radius: 50%;
+    }
 
-    /* Cancel Modal */
-    .cancel-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; align-items: center; justify-content: center; }
-    .cancel-modal.show { display: flex; animation: fadeIn 0.3s; }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    .modal-box { background: white; border-radius: 30px; max-width: 500px; width: 90%; max-height: 90vh; overflow-y: auto; animation: slideUp 0.3s; }
-    @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-    .modal-head { background: linear-gradient(135deg, #f72585, #b5179e); color: white; padding: 25px; border-radius: 30px 30px 0 0; text-align: center; }
-    .modal-head i { font-size: 3rem; margin-bottom: 10px; display: block; }
-    .modal-head h3 { font-weight: 700; margin: 0; }
-    .modal-bd { padding: 30px; }
-    .booking-summary { background: #f8f9fa; border-radius: 20px; padding: 20px; margin-bottom: 25px; }
-    .summary-item { display: flex; justify-content: space-between; margin-bottom: 12px; padding: 8px 0; border-bottom: 1px solid #e9ecef; }
-    .summary-item:last-child { border-bottom: none; }
-    .refund-box { background: linear-gradient(135deg, #d4edda, #c3e6cb); border-radius: 15px; padding: 20px; text-align: center; margin-bottom: 25px; }
-    .refund-amount { font-size: 2.5rem; font-weight: 800; color: #155724; }
-    .refund-note { font-size: 0.9rem; color: #155724; }
-    .reason-option { margin-bottom: 12px; padding: 15px; border: 2px solid #e9ecef; border-radius: 15px; cursor: pointer; transition: all 0.3s; }
-    .reason-option:hover, .reason-option.selected { border-color: #f72585; background: #fff5f8; }
-    .reason-option input[type="radio"] { margin-right: 10px; }
-    .custom-reason { display: none; margin-top: 15px; }
-    .custom-reason.show { display: block; }
-    .custom-reason textarea { width: 100%; padding: 15px; border: 2px solid #e9ecef; border-radius: 15px; resize: none; }
-    .custom-reason textarea:focus { border-color: #f72585; outline: none; }
-    .policy-warning { background: #e7f3ff; padding: 15px; border-radius: 12px; margin: 20px 0; font-size: 0.9rem; color: #004085; }
-    .modal-ftbns { padding: 20px 30px 30px; display: flex; gap: 15px; }
-    .btn-modal { flex: 1; padding: 15px; border: none; border-radius: 15px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: all 0.3s; }
-    .btn-modal.close-btn { background: #e9ecef; color: #6c757d; }
-    .btn-modal.confirm { background: linear-gradient(135deg, #f72585, #b5179e); color: white; }
-    .btn-modal.confirm:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(247,37,133,0.3); }
-    .btn-modal.confirm:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-    .loading-spinner { display: inline-block; width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: white; animation: spin 1s ease-in-out infinite; margin-right: 8px; }
-    @keyframes spin { to { transform: rotate(360deg); } }
+    .dashboard-header::after {
+        content: '';
+        position: absolute;
+        bottom: -30%;
+        left: -5%;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        border-radius: 50%;
+    }
+
+    .welcome-card {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: var(--radius-2xl);
+        padding: 40px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        position: relative;
+        z-index: 2;
+        box-shadow: var(--shadow-xl);
+    }
+
+    .welcome-card h1 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 15px;
+    }
+
+    .welcome-card .lead {
+        font-size: 1.2rem;
+        opacity: 0.9;
+    }
+
+    .btn-edit-profile {
+        background: white;
+        color: var(--dark);
+        border: none;
+        padding: 12px 30px;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: var(--shadow-lg);
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .btn-edit-profile:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-xl);
+        background: var(--gradient-accent);
+        color: white;
+    }
+
+    /* Statistics Cards */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: var(--radius-xl);
+        padding: 25px;
+        box-shadow: var(--shadow-md);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid var(--light-200);
+    }
+
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: var(--gradient-primary);
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-xl);
+    }
+
+    .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+        background: linear-gradient(135deg, rgba(67, 97, 238, 0.1), rgba(114, 9, 183, 0.1));
+        color: var(--primary);
+        transition: all 0.3s ease;
+    }
+
+    .stat-card:hover .stat-icon {
+        background: var(--gradient-primary);
+        color: white;
+        transform: scale(1.1);
+    }
+
+    .stat-value {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: var(--dark);
+        margin-bottom: 5px;
+        line-height: 1;
+    }
+
+    .stat-label {
+        color: var(--dark-600);
+        font-size: 0.95rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* Quick Actions */
+    .quick-actions-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+
+    .quick-action-card {
+        background: white;
+        border-radius: var(--radius-xl);
+        padding: 30px 20px;
+        text-align: center;
+        box-shadow: var(--shadow-md);
+        transition: all 0.3s ease;
+        text-decoration: none;
+        color: var(--dark);
+        display: block;
+        border: 1px solid var(--light-200);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .quick-action-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: var(--gradient-accent);
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+    }
+
+    .quick-action-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-xl);
+    }
+
+    .quick-action-card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .quick-action-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, rgba(247, 37, 133, 0.1), rgba(181, 23, 158, 0.1));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        color: var(--accent);
+        font-size: 2rem;
+        transition: all 0.3s ease;
+    }
+
+    .quick-action-card:hover .quick-action-icon {
+        background: var(--gradient-accent);
+        color: white;
+        transform: scale(1.1) rotate(360deg);
+    }
+
+    .quick-action-card h5 {
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+
+    .quick-action-card p {
+        color: var(--dark-600);
+        font-size: 0.9rem;
+        margin: 0;
+    }
+
+    /* Section Header */
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .section-title {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: var(--dark);
+        position: relative;
+        padding-bottom: 10px;
+    }
+
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 60px;
+        height: 4px;
+        background: var(--gradient-primary);
+        border-radius: 2px;
+    }
+
+    .btn-view-all {
+        background: transparent;
+        border: 2px solid var(--primary);
+        color: var(--primary);
+        padding: 10px 25px;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-view-all:hover {
+        background: var(--gradient-primary);
+        color: white;
+        border-color: transparent;
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    /* Booking Cards Grid */
+    .bookings-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
+
+    .booking-card {
+        background: white;
+        border-radius: var(--radius-xl);
+        overflow: hidden;
+        box-shadow: var(--shadow-md);
+        transition: all 0.3s ease;
+        border: 1px solid var(--light-200);
+    }
+
+    .booking-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-xl);
+    }
+
+    .booking-header {
+        background: linear-gradient(135deg, var(--light), var(--light-200));
+        padding: 15px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 2px solid rgba(67, 97, 238, 0.1);
+    }
+
+    .booking-ref {
+        font-weight: 700;
+        color: var(--primary);
+        font-size: 1.1rem;
+        letter-spacing: 0.5px;
+    }
+
+    .status-badge {
+        padding: 6px 15px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .status-confirmed {
+        background: linear-gradient(135deg, #d4edda, #c3e6cb);
+        color: #155724;
+    }
+
+    .status-pending {
+        background: linear-gradient(135deg, #fff3cd, #ffeeba);
+        color: #856404;
+    }
+
+    .status-cancelled {
+        background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+        color: #721c24;
+    }
+
+    .status-completed {
+        background: linear-gradient(135deg, #d1ecf1, #bee5eb);
+        color: #0c5460;
+    }
+
+    .booking-body {
+        padding: 20px;
+    }
+
+    .route-info {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 15px;
+        background: var(--light);
+        padding: 15px;
+        border-radius: var(--radius-lg);
+    }
+
+    .route-point {
+        text-align: center;
+        flex: 1;
+    }
+
+    .route-city {
+        font-weight: 700;
+        font-size: 1.2rem;
+        color: var(--dark);
+        margin-bottom: 3px;
+    }
+
+    .route-time {
+        font-size: 0.9rem;
+        color: var(--dark-600);
+    }
+
+    .route-arrow {
+        color: var(--primary);
+        font-size: 1.2rem;
+        margin: 0 10px;
+    }
+
+    .booking-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        font-size: 0.95rem;
+    }
+
+    .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--dark-700);
+    }
+
+    .meta-item i {
+        color: var(--primary);
+    }
+
+    .seats-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        margin-bottom: 15px;
+    }
+
+    .seat-badge {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        padding: 4px 12px;
+        border-radius: 30px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .booking-footer {
+        background: var(--light);
+        padding: 15px 20px;
+        border-top: 1px solid var(--light-200);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .amount {
+        font-size: 1.3rem;
+        font-weight: 800;
+        color: var(--primary);
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 8px;
+    }
+
+    .btn-action {
+        padding: 8px 15px;
+        border-radius: 30px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .btn-view {
+        background: var(--primary);
+        color: white;
+    }
+
+    .btn-view:hover {
+        background: var(--primary-dark);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .btn-cancel {
+        background: var(--gradient-danger);
+        color: white;
+    }
+
+    .btn-cancel:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 80px 20px;
+        background: white;
+        border-radius: var(--radius-2xl);
+        box-shadow: var(--shadow-md);
+    }
+
+    .empty-state i {
+        font-size: 5rem;
+        color: var(--light-300);
+        margin-bottom: 20px;
+    }
+
+    .empty-state h4 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--dark);
+        margin-bottom: 10px;
+    }
+
+    .empty-state p {
+        color: var(--dark-600);
+        margin-bottom: 25px;
+    }
+
+    /* ===== PROFESSIONAL MODAL ===== */
+    .cancel-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
+        z-index: 9999;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .cancel-modal.show {
+        display: flex;
+        animation: fadeIn 0.3s;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    .modal-box {
+        background: white;
+        border-radius: var(--radius-2xl);
+        max-width: 500px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+        animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: var(--shadow-2xl);
+    }
+
+    @keyframes slideUp {
+        from {
+            transform: translateY(50px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .modal-head {
+        background: var(--gradient-danger);
+        color: white;
+        padding: 30px;
+        border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+        text-align: center;
+    }
+
+    .modal-head i {
+        font-size: 4rem;
+        margin-bottom: 15px;
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+    }
+
+    .modal-head h3 {
+        font-size: 1.8rem;
+        font-weight: 800;
+        margin-bottom: 5px;
+    }
+
+    .modal-bd {
+        padding: 30px;
+    }
+
+    .booking-summary {
+        background: var(--light);
+        border-radius: var(--radius-xl);
+        padding: 20px;
+        margin-bottom: 20px;
+        border: 1px solid var(--light-200);
+    }
+
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 12px;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--light-200);
+    }
+
+    .summary-item:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .summary-item span:first-child {
+        color: var(--dark-600);
+    }
+
+    .summary-item strong {
+        color: var(--dark);
+        font-size: 1.1rem;
+    }
+
+    .refund-box {
+        background: linear-gradient(135deg, #d4edda, #c3e6cb);
+        border-radius: var(--radius-xl);
+        padding: 25px;
+        text-align: center;
+        margin-bottom: 25px;
+        border: 1px solid #c3e6cb;
+    }
+
+    .refund-amount {
+        font-size: 3rem;
+        font-weight: 800;
+        color: #155724;
+        line-height: 1;
+        margin: 10px 0;
+    }
+
+    .refund-note {
+        color: #155724;
+        font-size: 0.95rem;
+    }
+
+    .reason-option {
+        margin-bottom: 12px;
+        padding: 15px 20px;
+        border: 2px solid var(--light-200);
+        border-radius: var(--radius-lg);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .reason-option:hover {
+        border-color: var(--accent);
+        background: #fff5f8;
+        transform: translateX(5px);
+    }
+
+    .reason-option.selected {
+        border-color: var(--accent);
+        background: #fff5f8;
+    }
+
+    .reason-option input[type="radio"] {
+        margin-right: 12px;
+        accent-color: var(--accent);
+    }
+
+    .custom-reason {
+        display: none;
+        margin-top: 15px;
+    }
+
+    .custom-reason.show {
+        display: block;
+        animation: slideDown 0.3s;
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .custom-reason textarea {
+        width: 100%;
+        padding: 15px;
+        border: 2px solid var(--light-200);
+        border-radius: var(--radius-lg);
+        font-family: 'Inter', sans-serif;
+        resize: none;
+        transition: all 0.3s;
+    }
+
+    .custom-reason textarea:focus {
+        border-color: var(--accent);
+        outline: none;
+        box-shadow: 0 0 0 4px rgba(247, 37, 133, 0.1);
+    }
+
+    .policy-warning {
+        background: #e7f3ff;
+        border-radius: var(--radius-lg);
+        padding: 15px;
+        margin: 20px 0;
+        color: #004085;
+        font-size: 0.95rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .modal-ftbns {
+        padding: 0 30px 30px;
+        display: flex;
+        gap: 15px;
+    }
+
+    .btn-modal {
+        flex: 1;
+        padding: 15px 20px;
+        border: none;
+        border-radius: var(--radius-lg);
+        font-weight: 700;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .btn-modal.close-btn {
+        background: var(--light-200);
+        color: var(--dark-600);
+    }
+
+    .btn-modal.close-btn:hover {
+        background: var(--light-300);
+        transform: translateY(-2px);
+    }
+
+    .btn-modal.confirm {
+        background: var(--gradient-danger);
+        color: white;
+        box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
+    }
+
+    .btn-modal.confirm:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+    }
+
+    .btn-modal.confirm:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+
+    .loading-spinner {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top-color: white;
+        animation: spin 1s ease-in-out infinite;
+        margin-right: 8px;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+        .stats-grid,
+        .quick-actions-grid,
+        .bookings-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .stats-grid,
+        .quick-actions-grid,
+        .bookings-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .welcome-card h1 {
+            font-size: 2rem;
+        }
+
+        .section-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .modal-ftbns {
+            flex-direction: column;
+        }
+    }
 </style>
 {% endblock %}
 
@@ -89,14 +852,14 @@
 <!-- Dashboard Header -->
 <div class="dashboard-header">
     <div class="container">
-        <div class="welcome-card">
+        <div class="welcome-card" data-aos="fade-up">
             <div class="row align-items-center">
                 <div class="col-md-8">
                     <h1 class="display-4 mb-3">Welcome back, {{ user.first_name|default:user.username }}! 👋</h1>
                     <p class="lead mb-0">Manage your bookings and profile from your personal dashboard.</p>
                 </div>
                 <div class="col-md-4 text-md-end">
-                    <a href="{% url 'profile' %}" class="btn btn-light btn-lg">
+                    <a href="{% url 'profile' %}" class="btn-edit-profile">
                         <i class="fas fa-user-circle me-2"></i>Edit Profile
                     </a>
                 </div>
@@ -106,10 +869,11 @@
 </div>
 
 <div class="container mb-5">
-
+    <!-- Messages -->
     {% if messages %}
         {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-4" role="alert">
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-4" role="alert" data-aos="fade-down">
+                <i class="fas fa-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}exclamation-circle{% else %}info-circle{% endif %} me-2"></i>
                 {{ message }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
@@ -117,126 +881,120 @@
     {% endif %}
 
     <!-- Statistics Cards -->
-    <div class="row g-4 mb-5">
-        <div class="col-md-3">
-            <div class="stat-card total">
-                <div class="stat-icon"><i class="fas fa-ticket-alt"></i></div>
-                <div class="stat-value">{{ total_bookings }}</div>
-                <div class="stat-label">Total Bookings</div>
-            </div>
+    <div class="stats-grid">
+        <div class="stat-card" data-aos="fade-up" data-aos-delay="0">
+            <div class="stat-icon"><i class="fas fa-ticket-alt"></i></div>
+            <div class="stat-value">{{ total_bookings|default:"0" }}</div>
+            <div class="stat-label">Total Bookings</div>
         </div>
-        <div class="col-md-3">
-            <div class="stat-card upcoming">
-                <div class="stat-icon"><i class="fas fa-clock"></i></div>
-                <div class="stat-value">{{ upcoming_bookings }}</div>
-                <div class="stat-label">Upcoming</div>
-            </div>
+        <div class="stat-card" data-aos="fade-up" data-aos-delay="100">
+            <div class="stat-icon"><i class="fas fa-clock"></i></div>
+            <div class="stat-value">{{ upcoming_bookings|default:"0" }}</div>
+            <div class="stat-label">Upcoming</div>
         </div>
-        <div class="col-md-3">
-            <div class="stat-card completed">
-                <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
-                <div class="stat-value">{{ completed_bookings }}</div>
-                <div class="stat-label">Completed</div>
-            </div>
+        <div class="stat-card" data-aos="fade-up" data-aos-delay="200">
+            <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+            <div class="stat-value">{{ completed_bookings|default:"0" }}</div>
+            <div class="stat-label">Completed</div>
         </div>
-        <div class="col-md-3">
-            <div class="stat-card cancelled">
-                <div class="stat-icon"><i class="fas fa-times-circle"></i></div>
-                <div class="stat-value">{{ cancelled_bookings }}</div>
-                <div class="stat-label">Cancelled</div>
-            </div>
+        <div class="stat-card" data-aos="fade-up" data-aos-delay="300">
+            <div class="stat-icon"><i class="fas fa-times-circle"></i></div>
+            <div class="stat-value">{{ cancelled_bookings|default:"0" }}</div>
+            <div class="stat-label">Cancelled</div>
         </div>
     </div>
 
     <!-- Quick Actions -->
-    <div class="row g-4 mb-5">
-        <div class="col-md-4">
-            <a href="{% url 'home' %}" class="quick-action-card">
-                <div class="quick-action-icon"><i class="fas fa-search"></i></div>
-                <h5>Search Buses</h5>
-                <p class="text-muted mb-0">Find buses for your next journey</p>
-            </a>
-        </div>
-        <div class="col-md-4">
-            <a href="{% url 'my_bookings' %}" class="quick-action-card">
-                <div class="quick-action-icon"><i class="fas fa-ticket-alt"></i></div>
-                <h5>My Bookings</h5>
-                <p class="text-muted mb-0">View all your bookings</p>
-            </a>
-        </div>
-        <div class="col-md-4">
-            <a href="{% url 'profile' %}" class="quick-action-card">
-                <div class="quick-action-icon"><i class="fas fa-user-cog"></i></div>
-                <h5>Profile Settings</h5>
-                <p class="text-muted mb-0">Update your personal information</p>
-            </a>
-        </div>
+    <div class="quick-actions-grid">
+        <a href="{% url 'home' %}" class="quick-action-card" data-aos="fade-up" data-aos-delay="0">
+            <div class="quick-action-icon"><i class="fas fa-search"></i></div>
+            <h5>Search Buses</h5>
+            <p class="text-muted mb-0">Find buses for your next journey</p>
+        </a>
+        <a href="{% url 'my_bookings' %}" class="quick-action-card" data-aos="fade-up" data-aos-delay="100">
+            <div class="quick-action-icon"><i class="fas fa-ticket-alt"></i></div>
+            <h5>My Bookings</h5>
+            <p class="text-muted mb-0">View all your bookings</p>
+        </a>
+        <a href="{% url 'profile' %}" class="quick-action-card" data-aos="fade-up" data-aos-delay="200">
+            <div class="quick-action-icon"><i class="fas fa-user-cog"></i></div>
+            <h5>Profile Settings</h5>
+            <p class="text-muted mb-0">Update your personal information</p>
+        </a>
     </div>
 
-    <!-- Recent Bookings -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3 class="section-title">Recent Bookings</h3>
-        <a href="{% url 'my_bookings' %}" class="btn btn-outline-primary">View All <i class="fas fa-arrow-right ms-2"></i></a>
+    <!-- Recent Bookings Section -->
+    <div class="section-header" data-aos="fade-up">
+        <h2 class="section-title">Recent Bookings</h2>
+        <a href="{% url 'my_bookings' %}" class="btn-view-all">
+            View All <i class="fas fa-arrow-right"></i>
+        </a>
     </div>
 
     {% if recent_bookings %}
-        <div class="row">
+        <div class="bookings-grid">
             {% for booking in recent_bookings %}
-            <div class="col-md-6">
-                <div class="booking-card">
-                    <div class="booking-header">
-                        <span class="booking-ref">#{{ booking.booking_reference }}</span>
-                        <span class="status-badge status-{{ booking.status }}">{{ booking.status|title }}</span>
-                    </div>
-                    <div class="booking-body">
-                        <div class="booking-route">
-                            <div class="route-point">
-                                <div class="route-city">{{ booking.route.source }}</div>
-                                <div class="route-time">{{ booking.route.departure_time|date:"h:i A" }}</div>
-                            </div>
-                            <div class="route-arrow"><i class="fas fa-arrow-right"></i></div>
-                            <div class="route-point">
-                                <div class="route-city">{{ booking.route.destination }}</div>
-                                <div class="route-time">{{ booking.route.arrival_time|date:"h:i A" }}</div>
-                            </div>
+            <div class="booking-card" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:100 }}">
+                <div class="booking-header">
+                    <span class="booking-ref">#{{ booking.booking_reference }}</span>
+                    <span class="status-badge status-{{ booking.status }}">{{ booking.status|title }}</span>
+                </div>
+                <div class="booking-body">
+                    <div class="route-info">
+                        <div class="route-point">
+                            <div class="route-city">{{ booking.route.source }}</div>
+                            <div class="route-time">{{ booking.route.departure_time|date:"h:i A" }}</div>
                         </div>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div><i class="fas fa-calendar-alt text-primary me-2"></i>{{ booking.journey_date|date:"d M Y" }}</div>
-                            <div><i class="fas fa-bus text-primary me-2"></i>{{ booking.route.bus.bus_name }}</div>
-                        </div>
-                        <div class="mt-3">
-                            {% for seat in booking.booked_seats.all %}
-                                <span class="badge bg-primary me-1">{{ seat.seat.seat_number }}</span>
-                            {% endfor %}
+                        <div class="route-arrow"><i class="fas fa-arrow-right"></i></div>
+                        <div class="route-point">
+                            <div class="route-city">{{ booking.route.destination }}</div>
+                            <div class="route-time">{{ booking.route.arrival_time|date:"h:i A" }}</div>
                         </div>
                     </div>
-                    <div class="booking-footer">
-                        <span class="fw-bold">₹{{ booking.total_amount|floatformat:2 }}</span>
-                        <div>
-                            <a href="{% url 'booking_confirmation' booking.id %}" class="btn btn-sm btn-primary me-2">
-                                <i class="fas fa-eye"></i> View
-                            </a>
-                            {% if booking.status == 'confirmed' or booking.status == 'pending' %}
-                            <button onclick="openCancelModal(
-                                {{ booking.id }},
-                                '{{ booking.booking_reference }}',
-                                '{{ booking.route.source }}',
-                                '{{ booking.route.destination }}',
-                                '{{ booking.journey_date|date:"d M Y" }}',
-                                {{ booking.total_amount }},
-                                '{% url "cancel_booking" booking.id %}'
-                            )" class="btn btn-sm btn-danger">
-                                <i class="fas fa-times"></i> Cancel
-                            </button>
-                            {% endif %}
+                    
+                    <div class="booking-meta">
+                        <div class="meta-item">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>{{ booking.journey_date|date:"d M Y" }}</span>
                         </div>
+                        <div class="meta-item">
+                            <i class="fas fa-bus"></i>
+                            <span>{{ booking.route.bus.bus_name }}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="seats-container">
+                        {% for seat in booking.booked_seats.all %}
+                            <span class="seat-badge">{{ seat.seat.seat_number }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="booking-footer">
+                    <span class="amount">₹{{ booking.total_amount|floatformat:2 }}</span>
+                    <div class="action-buttons">
+                        <a href="{% url 'booking_confirmation' booking.id %}" class="btn-action btn-view">
+                            <i class="fas fa-eye"></i> View
+                        </a>
+                        {% if booking.status == 'confirmed' or booking.status == 'pending' %}
+                        <button onclick="openCancelModal(
+                            {{ booking.id }},
+                            '{{ booking.booking_reference }}',
+                            '{{ booking.route.source }}',
+                            '{{ booking.route.destination }}',
+                            '{{ booking.journey_date|date:"d M Y" }}',
+                            {{ booking.total_amount }},
+                            '{% url "cancel_booking" booking.id %}'
+                        )" class="btn-action btn-cancel">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                        {% endif %}
                     </div>
                 </div>
             </div>
             {% endfor %}
         </div>
     {% else %}
-        <div class="empty-state">
+        <div class="empty-state" data-aos="fade-up">
             <i class="fas fa-ticket-alt"></i>
             <h4>No Bookings Yet</h4>
             <p class="text-muted">You haven't made any bookings. Start by searching for buses!</p>
@@ -247,7 +1005,7 @@
     {% endif %}
 </div>
 
-<!-- ===== CANCEL MODAL ===== -->
+<!-- ===== PROFESSIONAL CANCEL MODAL ===== -->
 <div id="cancelModal" class="cancel-modal">
     <div class="modal-box">
         <div class="modal-head">
@@ -264,25 +1022,32 @@
             <h6 class="fw-bold mb-3">Select Cancellation Reason <span class="text-danger">*</span></h6>
 
             <div class="reason-option" onclick="selectReason(this, 'Change in travel plans')">
-                <input type="radio" name="reason" value="Change in travel plans"><label> Change in travel plans</label>
+                <input type="radio" name="reason" value="Change in travel plans">
+                <label>Change in travel plans</label>
             </div>
             <div class="reason-option" onclick="selectReason(this, 'Medical emergency')">
-                <input type="radio" name="reason" value="Medical emergency"><label> Medical emergency</label>
+                <input type="radio" name="reason" value="Medical emergency">
+                <label>Medical emergency</label>
             </div>
             <div class="reason-option" onclick="selectReason(this, 'Personal reasons')">
-                <input type="radio" name="reason" value="Personal reasons"><label> Personal reasons</label>
+                <input type="radio" name="reason" value="Personal reasons">
+                <label>Personal reasons</label>
             </div>
             <div class="reason-option" onclick="selectReason(this, 'Found better alternative')">
-                <input type="radio" name="reason" value="Found better alternative"><label> Found better alternative</label>
+                <input type="radio" name="reason" value="Found better alternative">
+                <label>Found better alternative</label>
             </div>
             <div class="reason-option" onclick="selectReason(this, 'Weather conditions')">
-                <input type="radio" name="reason" value="Weather conditions"><label> Weather conditions</label>
+                <input type="radio" name="reason" value="Weather conditions">
+                <label>Weather conditions</label>
             </div>
             <div class="reason-option" onclick="selectReason(this, 'Booking by mistake')">
-                <input type="radio" name="reason" value="Booking by mistake"><label> Booking by mistake</label>
+                <input type="radio" name="reason" value="Booking by mistake">
+                <label>Booking by mistake</label>
             </div>
             <div class="reason-option" onclick="selectReason(this, 'other')">
-                <input type="radio" name="reason" value="other"><label> Other reason</label>
+                <input type="radio" name="reason" value="other">
+                <label>Other reason</label>
             </div>
 
             <div class="custom-reason" id="customReasonBox">
@@ -290,15 +1055,16 @@
             </div>
 
             <div class="policy-warning">
-                <i class="fas fa-info-circle me-2"></i>
-                <strong>Refund Policy:</strong> Refund will be credited back to your
-                <strong>original payment method within 5–7 business days</strong>.
+                <i class="fas fa-info-circle"></i>
+                <div>
+                    <strong>Refund Policy:</strong> Full refund will be credited back to your original payment method within 5–7 business days.
+                </div>
             </div>
         </div>
 
         <div class="modal-ftbns">
             <button class="btn-modal close-btn" onclick="closeCancelModal()">
-                <i class="fas fa-times me-2"></i>Go Back
+                <i class="fas fa-arrow-left me-2"></i>Go Back
             </button>
             <button class="btn-modal confirm" id="confirmCancelBtn" onclick="submitCancellation()">
                 <span id="btnText"><i class="fas fa-check me-2"></i>Confirm Cancellation</span>
@@ -317,7 +1083,17 @@
     <input type="hidden" name="custom_reason" id="formCustomReason">
 </form>
 
+<!-- AOS Animation Library -->
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
 <script>
+// Initialize AOS
+AOS.init({
+    duration: 800,
+    once: true,
+    offset: 100
+});
+
 let currentCancelUrl = null;
 
 function openCancelModal(bookingId, ref, source, dest, date, amount, cancelUrl) {
@@ -331,10 +1107,10 @@ function openCancelModal(bookingId, ref, source, dest, date, amount, cancelUrl) 
     `;
 
     document.getElementById('modalRefundInfo').innerHTML = `
-        <div class="refund-note">💳 Refund Amount</div>
+        <div class="refund-note">Refund Amount</div>
         <div class="refund-amount">₹${amount}</div>
         <div class="refund-note mt-1">Full refund to your original payment method</div>
-        <div class="refund-note">⏱ Processed within <strong>5–7 business days</strong></div>
+        <div class="refund-note">⏱ Processed within 5–7 business days</div>
     `;
 
     resetModalForm();
@@ -365,17 +1141,24 @@ function selectReason(element, value) {
 
 function submitCancellation() {
     const selected = document.querySelector('input[name="reason"]:checked');
-    if (!selected) { alert('Please select a cancellation reason.'); return; }
+    if (!selected) { 
+        alert('Please select a cancellation reason.'); 
+        return; 
+    }
 
     let finalReason = selected.value;
     let customReason = '';
 
     if (selected.value === 'other') {
         customReason = document.getElementById('customReason').value.trim();
-        if (!customReason) { alert('Please describe your reason.'); return; }
+        if (!customReason) { 
+            alert('Please describe your reason.'); 
+            return; 
+        }
         finalReason = 'other';
     }
 
+    // Show loading state
     document.getElementById('btnText').style.display = 'none';
     document.getElementById('btnLoader').style.display = 'inline-block';
     document.getElementById('confirmCancelBtn').disabled = true;
@@ -387,11 +1170,16 @@ function submitCancellation() {
     form.submit();
 }
 
+// Close modal when clicking outside
 document.getElementById('cancelModal').addEventListener('click', function(e) {
     if (e.target === this) closeCancelModal();
 });
+
+// Close modal on Escape key
 document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') closeCancelModal();
+    if (e.key === 'Escape' && document.getElementById('cancelModal').classList.contains('show')) {
+        closeCancelModal();
+    }
 });
 </script>
 {% endblock %}

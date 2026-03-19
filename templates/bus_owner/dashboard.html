@@ -1,199 +1,1071 @@
 {% extends 'base.html' %}
+{% load static %}
 
-{% block title %}Bus Owner Dashboard - Easy Book{% endblock %}
+{% block title %}Bus Owner Dashboard - EasyBook{% endblock %}
+
+{% block extra_css %}
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<!-- AOS Animation Library -->
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<style>
+    :root {
+        --primary: #4361ee;
+        --primary-dark: #3a56d4;
+        --primary-light: #6c8cff;
+        --secondary: #7209b7;
+        --accent: #f72585;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --info: #3b82f6;
+        --dark: #0f172a;
+        --dark-800: #1e293b;
+        --dark-700: #334155;
+        --dark-600: #475569;
+        --light: #f8fafc;
+        --light-200: #e2e8f0;
+        --light-300: #cbd5e1;
+        
+        --gradient-primary: linear-gradient(135deg, #4361ee, #7209b7);
+        --gradient-success: linear-gradient(135deg, #10b981, #059669);
+        --gradient-warning: linear-gradient(135deg, #f59e0b, #d97706);
+        --gradient-danger: linear-gradient(135deg, #ef4444, #dc2626);
+        --gradient-info: linear-gradient(135deg, #3b82f6, #2563eb);
+        --gradient-dark: linear-gradient(135deg, #0f172a, #1e293b);
+        
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+        --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+        
+        --radius-sm: 0.375rem;
+        --radius-md: 0.5rem;
+        --radius-lg: 1rem;
+        --radius-xl: 1.5rem;
+        --radius-2xl: 2rem;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background: #f8fafc;
+        color: var(--dark);
+    }
+
+    /* Dashboard Header */
+    .dashboard-header {
+        background: linear-gradient(135deg, #1a1a2e 0%, #2d2d44 100%);
+        padding: 30px 0;
+        margin-bottom: 30px;
+        border-radius: 0 0 40px 40px;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .dashboard-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 500px;
+        height: 500px;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        border-radius: 50%;
+    }
+
+    .dashboard-header::after {
+        content: '';
+        position: absolute;
+        bottom: -30%;
+        left: -5%;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        border-radius: 50%;
+    }
+
+    .welcome-card {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: var(--radius-xl);
+        padding: 25px 30px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        position: relative;
+        z-index: 2;
+        box-shadow: var(--shadow-lg);
+    }
+
+    .welcome-card h1 {
+        font-size: 2rem;
+        font-weight: 800;
+        margin-bottom: 5px;
+    }
+
+    .welcome-card .lead {
+        font-size: 1rem;
+        opacity: 0.9;
+    }
+
+    .btn-edit-profile {
+        background: white;
+        color: var(--dark);
+        border: none;
+        padding: 10px 25px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        box-shadow: var(--shadow-lg);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+    }
+
+    .btn-edit-profile:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-xl);
+        background: var(--gradient-primary);
+        color: white;
+        text-decoration: none;
+    }
+
+    /* Compact Left Sidebar */
+    .profile-card {
+        background: white;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-md);
+        overflow: hidden;
+        border: 1px solid var(--light-200);
+        transition: all 0.3s ease;
+    }
+
+    .profile-card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .profile-header {
+        background: var(--gradient-primary);
+        padding: 20px 15px;
+        text-align: center;
+        color: white;
+    }
+
+    .profile-avatar {
+        width: 70px;
+        height: 70px;
+        background: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 10px;
+        color: var(--primary);
+        font-size: 2.2rem;
+        border: 3px solid rgba(255,255,255,0.3);
+        box-shadow: var(--shadow-md);
+    }
+
+    .profile-name {
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin-bottom: 3px;
+    }
+
+    .profile-role {
+        background: rgba(255,255,255,0.2);
+        display: inline-block;
+        padding: 3px 15px;
+        border-radius: 50px;
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+
+    .profile-body {
+        padding: 15px;
+    }
+
+    .profile-info-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+        padding: 8px 10px;
+        background: var(--light);
+        border-radius: var(--radius-md);
+        transition: all 0.3s ease;
+        font-size: 0.9rem;
+    }
+
+    .profile-info-item:hover {
+        background: linear-gradient(135deg, var(--light), white);
+        transform: translateX(3px);
+    }
+
+    .profile-info-item i {
+        width: 28px;
+        height: 28px;
+        background: linear-gradient(135deg, rgba(67, 97, 238, 0.1), rgba(114, 9, 183, 0.1));
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--primary);
+        font-size: 1rem;
+    }
+
+    .profile-info-item span {
+        font-weight: 500;
+        color: var(--dark-700);
+        font-size: 0.9rem;
+    }
+
+    /* Quick Actions Card */
+    .quick-actions-card {
+        background: white;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-md);
+        overflow: hidden;
+        border: 1px solid var(--light-200);
+        margin-top: 15px;
+    }
+
+    .quick-actions-header {
+        background: var(--gradient-primary);
+        padding: 12px 15px;
+        color: white;
+    }
+
+    .quick-actions-header h5 {
+        font-weight: 700;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 1rem;
+    }
+
+    .quick-actions-header h5 i {
+        font-size: 1.1rem;
+    }
+
+    .quick-actions-body {
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .action-btn {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        background: white;
+        border-radius: var(--radius-md);
+        color: var(--dark-800);
+        text-decoration: none;
+        transition: all 0.2s ease;
+        border: 1px solid var(--light-300);
+        font-weight: 500;
+        font-size: 0.9rem;
+        box-shadow: var(--shadow-sm);
+        width: 100%;
+    }
+
+    .action-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+        border-color: var(--primary);
+        background: linear-gradient(135deg, white, var(--light));
+        color: var(--primary);
+        text-decoration: none;
+    }
+
+    .action-btn i {
+        width: 30px;
+        height: 30px;
+        background: var(--gradient-primary);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
+    }
+
+    .action-btn:hover i {
+        transform: scale(1.05);
+    }
+
+    .action-btn span {
+        flex: 1;
+        text-align: left;
+    }
+
+    /* Payment Status Card */
+    .payment-card {
+        background: white;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-md);
+        overflow: hidden;
+        border: 1px solid var(--light-200);
+        margin-top: 15px;
+    }
+
+    .payment-header {
+        background: var(--gradient-info);
+        padding: 12px 15px;
+        color: white;
+    }
+
+    .payment-header h5 {
+        font-weight: 700;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 1rem;
+    }
+
+    .payment-body {
+        padding: 15px;
+    }
+
+    .status-success {
+        background: linear-gradient(135deg, #d4edda, #c3e6cb);
+        color: #155724;
+        padding: 15px;
+        border-radius: var(--radius-md);
+        text-align: center;
+        margin-bottom: 12px;
+        border: 1px solid #c3e6cb;
+        font-size: 0.9rem;
+    }
+
+    .status-success i {
+        font-size: 2rem;
+        margin-bottom: 5px;
+        display: block;
+    }
+
+    .status-warning {
+        background: linear-gradient(135deg, #fff3cd, #ffeeba);
+        color: #856404;
+        padding: 15px;
+        border-radius: var(--radius-md);
+        text-align: center;
+        margin-bottom: 12px;
+        border: 1px solid #ffeeba;
+        font-size: 0.9rem;
+    }
+
+    .status-warning i {
+        font-size: 2rem;
+        margin-bottom: 5px;
+        display: block;
+    }
+
+    .bank-detail {
+        background: var(--light);
+        border-radius: var(--radius-md);
+        padding: 10px 12px;
+        margin-bottom: 8px;
+        border: 1px solid var(--light-200);
+    }
+
+    .bank-detail small {
+        color: var(--dark-600);
+        display: block;
+        margin-bottom: 3px;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .bank-detail strong {
+        color: var(--dark);
+        font-size: 1rem;
+    }
+
+    .btn-add-bank {
+        background: var(--gradient-primary);
+        color: white;
+        border: none;
+        border-radius: var(--radius-md);
+        padding: 12px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        text-decoration: none;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .btn-add-bank:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-update-bank {
+        background: white;
+        color: var(--primary);
+        border: 1px solid var(--primary);
+        border-radius: var(--radius-md);
+        padding: 10px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        text-decoration: none;
+        margin-top: 12px;
+    }
+
+    .btn-update-bank:hover {
+        background: var(--gradient-primary);
+        color: white;
+        border-color: transparent;
+        transform: translateY(-2px);
+        text-decoration: none;
+    }
+
+    /* Stat Cards */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .stat-card {
+        background: linear-gradient(135deg, white, var(--light));
+        border-radius: var(--radius-lg);
+        padding: 15px;
+        box-shadow: var(--shadow-sm);
+        transition: all 0.3s ease;
+        border: 1px solid var(--light-200);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: var(--gradient-primary);
+    }
+
+    .stat-card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .stat-icon {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, rgba(67, 97, 238, 0.1), rgba(114, 9, 183, 0.1));
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+        color: var(--primary);
+        margin-bottom: 10px;
+        transition: all 0.3s ease;
+    }
+
+    .stat-card:hover .stat-icon {
+        background: var(--gradient-primary);
+        color: white;
+        transform: scale(1.05) rotate(3deg);
+    }
+
+    .stat-value {
+        font-size: 1.6rem;
+        font-weight: 800;
+        color: var(--dark);
+        margin-bottom: 3px;
+        line-height: 1;
+    }
+
+    .stat-label {
+        color: var(--dark-600);
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+
+    /* Chart Container - NEW */
+    .chart-container {
+        background: white;
+        border-radius: var(--radius-lg);
+        padding: 20px;
+        margin: 20px 0;
+        box-shadow: var(--shadow-md);
+        border: 1px solid var(--light-200);
+    }
+
+    .chart-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .chart-header h5 {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--dark);
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .chart-header h5 i {
+        color: var(--primary);
+    }
+
+    .chart-legend {
+        display: flex;
+        gap: 15px;
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 0.85rem;
+        color: var(--dark-600);
+    }
+
+    .legend-color {
+        width: 12px;
+        height: 12px;
+        border-radius: 3px;
+        background: var(--primary);
+    }
+
+    .legend-color.earnings {
+        background: var(--success);
+    }
+
+    .chart-wrapper {
+        position: relative;
+        height: 250px;
+        width: 100%;
+    }
+
+    /* Section Cards */
+    .section-card {
+        background: white;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-md);
+        overflow: hidden;
+        border: 1px solid var(--light-200);
+        margin-top: 20px;
+    }
+
+    .section-header {
+        background: var(--gradient-primary);
+        padding: 15px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: white;
+    }
+
+    .section-header h5 {
+        font-weight: 700;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 1.1rem;
+    }
+
+    .section-header h5 i {
+        font-size: 1.2rem;
+    }
+
+    .btn-view-all {
+        background: rgba(255,255,255,0.2);
+        color: white;
+        padding: 6px 15px;
+        border-radius: 50px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .btn-view-all:hover {
+        background: white;
+        color: var(--primary);
+        transform: translateY(-2px);
+        text-decoration: none;
+    }
+
+    .section-body {
+        padding: 20px;
+    }
+
+    /* Tables */
+    .table-custom {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 8px;
+    }
+
+    .table-custom thead th {
+        background: var(--light);
+        padding: 12px;
+        font-weight: 600;
+        color: var(--dark-700);
+        border: none;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .table-custom tbody tr {
+        background: white;
+        box-shadow: var(--shadow-sm);
+        border-radius: var(--radius-md);
+        transition: all 0.3s ease;
+    }
+
+    .table-custom tbody tr:hover {
+        box-shadow: var(--shadow-md);
+        transform: scale(1.005);
+    }
+
+    .table-custom tbody td {
+        padding: 12px;
+        vertical-align: middle;
+        border: none;
+        font-size: 0.9rem;
+    }
+
+    .table-custom tbody td:first-child {
+        border-radius: var(--radius-md) 0 0 var(--radius-md);
+    }
+
+    .table-custom tbody td:last-child {
+        border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    }
+
+    /* Badges */
+    .badge-custom {
+        padding: 4px 12px;
+        border-radius: 50px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        display: inline-block;
+    }
+
+    .badge-active {
+        background: linear-gradient(135deg, #d4edda, #c3e6cb);
+        color: #155724;
+    }
+
+    .badge-inactive {
+        background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+        color: #721c24;
+    }
+
+    .badge-ac {
+        background: linear-gradient(135deg, #cce5ff, #b8daff);
+        color: #004085;
+    }
+
+    .badge-non-ac {
+        background: linear-gradient(135deg, #e2e3e5, #d6d8d9);
+        color: #383d41;
+    }
+
+    .badge-sleeper {
+        background: linear-gradient(135deg, #d4edda, #c3e6cb);
+        color: #155724;
+    }
+
+    .badge-seater {
+        background: linear-gradient(135deg, #fff3cd, #ffeeba);
+        color: #856404;
+    }
+
+    .badge-luxury {
+        background: linear-gradient(135deg, #d1ecf1, #bee5eb);
+        color: #0c5460;
+    }
+
+    .badge-secondary {
+        background: linear-gradient(135deg, #e2e3e5, #d6d8d9);
+        color: #383d41;
+    }
+
+    /* Action Buttons Small */
+    .action-btn-sm {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 2px;
+        color: white;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        font-size: 0.9rem;
+    }
+
+    .action-btn-sm:hover {
+        transform: translateY(-2px) scale(1.05);
+        color: white;
+        text-decoration: none;
+    }
+
+    .action-btn-sm.info { background: var(--info); }
+    .action-btn-sm.success { background: var(--success); }
+    .action-btn-sm.primary { background: var(--primary); }
+
+    /* Avatar Circle */
+    .avatar-circle {
+        width: 28px;
+        height: 28px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    /* Empty States */
+    .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        background: var(--light);
+        border-radius: var(--radius-lg);
+    }
+
+    .empty-state i {
+        font-size: 3.5rem;
+        color: var(--light-300);
+        margin-bottom: 15px;
+    }
+
+    .empty-state h5 {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--dark);
+        margin-bottom: 8px;
+    }
+
+    .empty-state p {
+        color: var(--dark-600);
+        font-size: 0.9rem;
+        margin-bottom: 15px;
+    }
+
+    .btn-primary-custom {
+        background: var(--gradient-primary);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 10px 25px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+    }
+
+    .btn-primary-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+        color: white;
+        text-decoration: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .welcome-card h1 {
+            font-size: 1.6rem;
+        }
+
+        .section-header {
+            flex-direction: column;
+            gap: 10px;
+            align-items: flex-start;
+        }
+
+        .quick-actions-body {
+            padding: 10px;
+        }
+
+        .chart-wrapper {
+            height: 200px;
+        }
+
+        .chart-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
+<!-- Dashboard Header - Compact -->
+<div class="dashboard-header" data-aos="fade-down">
+    <div class="container">
+        <div class="welcome-card">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="mb-2">Welcome back, {{ user.get_full_name|default:user.username }}! 👋</h1>
+                    <p class="lead mb-0">Manage your buses, routes, and earnings.</p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <a href="{% url 'profile' %}" class="btn-edit-profile">
+                        <i class="fas fa-user-circle"></i>Edit Profile
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mb-5">
     <div class="row">
-        <div class="col-md-3">
-            <!-- Profile Card -->
-            <div class="card">
-                <div class="card-body text-center">
-                    <i class="fas fa-bus fa-4x text-primary mb-3"></i>
-                    <h5>{{ user.get_full_name|default:user.username }}</h5>
-                    <p class="text-muted">Bus Owner</p>
-                    <p><i class="fas fa-envelope"></i> {{ user.email }}</p>
-                    <p><i class="fas fa-phone"></i> {{ user.phone }}</p>
+        <!-- Left Sidebar - Compact -->
+        <div class="col-lg-3 mb-4" data-aos="fade-right">
+            <!-- Profile Card - Compact -->
+            <div class="profile-card">
+                <div class="profile-header">
+                    <div class="profile-avatar">
+                        <i class="fas fa-bus"></i>
+                    </div>
+                    <h5 class="profile-name">{{ user.get_full_name|default:user.username }}</h5>
+                    <span class="profile-role">Bus Owner</span>
+                </div>
+                <div class="profile-body">
+                    <div class="profile-info-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>{{ user.email|default:"Not provided"|truncatechars:20 }}</span>
+                    </div>
+                    <div class="profile-info-item">
+                        <i class="fas fa-phone"></i>
+                        <span>{{ user.phone|default:"Not provided" }}</span>
+                    </div>
+                    <div class="profile-info-item">
+                        <i class="fas fa-calendar"></i>
+                        <span>Joined {{ user.date_joined|date:"M Y" }}</span>
+                    </div>
                 </div>
             </div>
-            
+
             <!-- Quick Actions Card -->
-            <div class="card mt-3">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">Quick Actions</h5>
+            <div class="quick-actions-card">
+                <div class="quick-actions-header">
+                    <h5><i class="fas fa-bolt"></i> Quick Actions</h5>
                 </div>
-                <div class="card-body">
-                    <a href="{% url 'add_bus' %}" class="btn btn-primary btn-block mb-2 w-100">
-                        <i class="fas fa-plus-circle"></i> Add New Bus
+                <div class="quick-actions-body">
+                    <a href="{% url 'add_bus' %}" class="action-btn">
+                        <i class="fas fa-plus-circle"></i>
+                        <span>Add New Bus</span>
                     </a>
-                    <a href="{% url 'manage_buses' %}" class="btn btn-success btn-block mb-2 w-100">
-                        <i class="fas fa-edit"></i> Manage Buses
+                    <a href="{% url 'manage_buses' %}" class="action-btn">
+                        <i class="fas fa-edit"></i>
+                        <span>Manage Buses</span>
                     </a>
-                    <a href="{% url 'bus_bookings' %}" class="btn btn-info btn-block mb-2 w-100">
-                        <i class="fas fa-calendar-check"></i> View Bookings
+                    <a href="{% url 'bus_bookings' %}" class="action-btn">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>View Bookings</span>
                     </a>
-                    <a href="{% url 'earnings' %}" class="btn btn-warning btn-block mb-2 w-100">
-                        <i class="fas fa-rupee-sign"></i> Earnings Report
+                    <a href="{% url 'earnings' %}" class="action-btn">
+                        <i class="fas fa-rupee-sign"></i>
+                        <span>Earnings Report</span>
                     </a>
-                    <a href="{% url 'owner_booking_stats' %}" class="btn btn-secondary btn-block mb-2 w-100">
-                        <i class="fas fa-chart-bar"></i> Booking Statistics
+                    <a href="{% url 'owner_booking_stats' %}" class="action-btn">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Booking Stats</span>
                     </a>
-                    <a href="{% url 'add_bank_details' %}" class="btn btn-dark btn-block mb-2 w-100">
-                        <i class="fas fa-university"></i> Bank Details (for Payments)
+                    <a href="{% url 'add_bank_details' %}" class="action-btn">
+                        <i class="fas fa-university"></i>
+                        <span>Bank Details</span>
                     </a>
                 </div>
             </div>
-            
-            <!-- Bank Details Status Card -->
-            <div class="card mt-3">
-                <div class="card-header bg-info text-white">
-                    <h5 class="mb-0">Payment Status</h5>
+
+            <!-- Payment Status Card -->
+            <div class="payment-card">
+                <div class="payment-header">
+                    <h5><i class="fas fa-credit-card"></i> Payment Status</h5>
                 </div>
-                <div class="card-body">
+                <div class="payment-body">
                     {% if user.bank_details %}
-                        <div class="alert alert-success mb-0">
-                            <i class="fas fa-check-circle"></i> Bank details added
-                            <br>
-                            <small>UPI: {{ user.bank_details.upi_id }}</small>
+                        <div class="status-success">
+                            <i class="fas fa-check-circle"></i>
+                            <strong>Bank Verified</strong>
                         </div>
+                        <div class="bank-detail">
+                            <small>UPI ID</small>
+                            <strong>{{ user.bank_details.upi_id|default:"Not added" }}</strong>
+                        </div>
+                        <div class="bank-detail">
+                            <small>Account</small>
+                            <strong>XXXX{{ user.bank_details.account_number|slice:"-4:"|default:"XXXX" }}</strong>
+                        </div>
+                        <a href="{% url 'add_bank_details' %}" class="btn-update-bank">
+                            <i class="fas fa-edit"></i> Update
+                        </a>
                     {% else %}
-                        <div class="alert alert-warning mb-0">
-                            <i class="fas fa-exclamation-triangle"></i> Bank details not added
-                            <br>
-                            <small>Customers cannot pay until you add bank details</small>
-                            <a href="{% url 'add_bank_details' %}" class="btn btn-sm btn-primary mt-2 w-100">
-                                Add Bank Details Now
-                            </a>
+                        <div class="status-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <strong>Bank Details Required</strong>
                         </div>
+                        <p class="text-muted small mb-2 text-center">
+                            Add bank details to receive payments.
+                        </p>
+                        <a href="{% url 'add_bank_details' %}" class="btn-add-bank">
+                            <i class="fas fa-plus-circle"></i> Add Now
+                        </a>
                     {% endif %}
                 </div>
             </div>
         </div>
-        
-        <div class="col-md-9">
+
+        <!-- Main Content -->
+        <div class="col-lg-9" data-aos="fade-left">
             <!-- Statistics Cards Row 1 -->
-            <div class="row">
-                <div class="col-md-3 mb-3">
-                    <div class="card bg-primary text-white">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h6 class="mb-0">Total Buses</h6>
-                                    <h2 class="mb-0">{{ total_buses|default:"0" }}</h2>
-                                </div>
-                                <i class="fas fa-bus fa-2x"></i>
-                            </div>
-                        </div>
-                    </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-bus"></i></div>
+                    <div class="stat-value">{{ total_buses|default:"0" }}</div>
+                    <div class="stat-label">Total Buses</div>
                 </div>
-                
-                <div class="col-md-3 mb-3">
-                    <div class="card bg-success text-white">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h6 class="mb-0">Active Buses</h6>
-                                    <h2 class="mb-0">{{ active_buses|default:"0" }}</h2>
-                                </div>
-                                <i class="fas fa-check-circle fa-2x"></i>
-                            </div>
-                        </div>
-                    </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                    <div class="stat-value">{{ active_buses|default:"0" }}</div>
+                    <div class="stat-label">Active</div>
                 </div>
-                
-                <div class="col-md-3 mb-3">
-                    <div class="card bg-info text-white">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h6 class="mb-0">Total Routes</h6>
-                                    <h2 class="mb-0">{{ total_routes|default:"0" }}</h2>
-                                </div>
-                                <i class="fas fa-route fa-2x"></i>
-                            </div>
-                        </div>
-                    </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-route"></i></div>
+                    <div class="stat-value">{{ total_routes|default:"0" }}</div>
+                    <div class="stat-label">Routes</div>
                 </div>
-                
-                <div class="col-md-3 mb-3">
-                    <div class="card bg-warning text-white">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h6 class="mb-0">Total Bookings</h6>
-                                    <h2 class="mb-0">{{ total_bookings|default:"0" }}</h2>
-                                </div>
-                                <i class="fas fa-ticket-alt fa-2x"></i>
-                            </div>
-                        </div>
-                    </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-ticket-alt"></i></div>
+                    <div class="stat-value">{{ total_bookings|default:"0" }}</div>
+                    <div class="stat-label">Bookings</div>
                 </div>
             </div>
-            
+
             <!-- Statistics Cards Row 2 -->
-            <div class="row mt-2">
-                <div class="col-md-4 mb-3">
-                    <div class="card bg-secondary text-white">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h6 class="mb-0">Active Routes</h6>
-                                    <h2 class="mb-0">{{ active_routes|default:"0" }}</h2>
-                                </div>
-                                <i class="fas fa-road fa-2x"></i>
-                            </div>
-                        </div>
-                    </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-road"></i></div>
+                    <div class="stat-value">{{ active_routes|default:"0" }}</div>
+                    <div class="stat-label">Active Routes</div>
                 </div>
-                
-                <div class="col-md-4 mb-3">
-                    <div class="card bg-danger text-white">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h6 class="mb-0">Total Earnings</h6>
-                                    <h2 class="mb-0">₹{{ total_earnings|floatformat:"0"|default:"0" }}</h2>
-                                </div>
-                                <i class="fas fa-rupee-sign fa-2x"></i>
-                            </div>
-                        </div>
-                    </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-rupee-sign"></i></div>
+                    <div class="stat-value">₹{{ total_earnings|floatformat:"0"|default:"0" }}</div>
+                    <div class="stat-label">Earnings</div>
                 </div>
-                
-                <div class="col-md-4 mb-3">
-                    <div class="card bg-dark text-white">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h6 class="mb-0">Avg per Booking</h6>
-                                    <h2 class="mb-0">
-                                        {% if total_bookings and total_bookings > 0 %}
-                                            ₹{% widthratio total_earnings total_bookings 1 %}
-                                        {% else %}
-                                            ₹0
-                                        {% endif %}
-                                    </h2>
-                                </div>
-                                <i class="fas fa-chart-line fa-2x"></i>
-                            </div>
-                        </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+                    <div class="stat-value">
+                        {% if total_bookings and total_bookings > 0 %}
+                            ₹{% widthratio total_earnings|default:"0" total_bookings 1 %}
+                        {% else %}
+                            ₹0
+                        {% endif %}
                     </div>
+                    <div class="stat-label">Avg/Booking</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-users"></i></div>
+                    <div class="stat-value">{{ recent_bookings|length|default:"0" }}</div>
+                    <div class="stat-label">Recent</div>
                 </div>
             </div>
-            
-            <!-- Recent Buses Section -->
-            <div class="card mt-3">
-                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Recent Buses</h5>
-                    <a href="{% url 'manage_buses' %}" class="btn btn-light btn-sm">View All</a>
+
+            <!-- ===== NEW EARNINGS CHART SECTION ===== -->
+            <div class="chart-container" data-aos="fade-up">
+                <div class="chart-header">
+                    <h5><i class="fas fa-chart-line"></i> Earnings Overview (Last 7 Days)</h5>
+                    <div class="chart-legend">
+                        <div class="legend-item">
+                            <span class="legend-color"></span>
+                            <span>Daily Earnings (₹)</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body">
+                <div class="chart-wrapper">
+                    <canvas id="earningsChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Recent Buses Section -->
+            <div class="section-card" data-aos="fade-up">
+                <div class="section-header">
+                    <h5><i class="fas fa-bus"></i> Recent Buses</h5>
+                    <a href="{% url 'manage_buses' %}" class="btn-view-all">
+                        View All <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+                <div class="section-body">
                     {% if recent_buses %}
                         <div class="table-responsive">
-                            <table class="table table-hover">
+                            <table class="table-custom">
                                 <thead>
                                     <tr>
-                                        <th>Bus Name</th>
+                                        <th>Bus</th>
                                         <th>Number</th>
                                         <th>Type</th>
                                         <th>Seats</th>
@@ -204,34 +1076,43 @@
                                 <tbody>
                                     {% for bus in recent_buses %}
                                     <tr>
-                                        <td>{{ bus.bus_name }}</td>
+                                        <td class="fw-bold">{{ bus.bus_name|truncatechars:15 }}</td>
                                         <td>{{ bus.bus_number }}</td>
                                         <td>
-                                            {% if bus.bus_type == 'ac' %}AC
-                                            {% elif bus.bus_type == 'non_ac' %}Non AC
-                                            {% elif bus.bus_type == 'sleeper' %}Sleeper
-                                            {% elif bus.bus_type == 'seater' %}Seater
-                                            {% elif bus.bus_type == 'ac_sleeper' %}AC Sleeper
-                                            {% elif bus.bus_type == 'luxury' %}Luxury
-                                            {% else %}{{ bus.bus_type }}
+                                            {% if bus.bus_type == 'ac' %}
+                                                <span class="badge-custom badge-ac">AC</span>
+                                            {% elif bus.bus_type == 'non_ac' %}
+                                                <span class="badge-custom badge-non-ac">Non AC</span>
+                                            {% elif bus.bus_type == 'sleeper' %}
+                                                <span class="badge-custom badge-sleeper">Sleeper</span>
+                                            {% elif bus.bus_type == 'seater' %}
+                                                <span class="badge-custom badge-seater">Seater</span>
+                                            {% elif bus.bus_type == 'ac_sleeper' %}
+                                                <span class="badge-custom badge-ac">AC Sleeper</span>
+                                            {% elif bus.bus_type == 'luxury' %}
+                                                <span class="badge-custom badge-luxury">Luxury</span>
                                             {% endif %}
                                         </td>
                                         <td>{{ bus.total_seats }}</td>
                                         <td>
                                             {% if bus.is_active %}
-                                                <span class="badge bg-success">Active</span>
+                                                <span class="badge-custom badge-active">
+                                                    <i class="fas fa-check-circle"></i> Active
+                                                </span>
                                             {% else %}
-                                                <span class="badge bg-danger">Inactive</span>
+                                                <span class="badge-custom badge-inactive">
+                                                    <i class="fas fa-times-circle"></i> Inactive
+                                                </span>
                                             {% endif %}
                                         </td>
                                         <td>
-                                            <a href="{% url 'manage_routes' bus.id %}" class="btn btn-sm btn-info">
-                                                <i class="fas fa-route"></i> Routes
+                                            <a href="{% url 'manage_routes' bus.id %}" class="action-btn-sm info" title="Routes">
+                                                <i class="fas fa-route"></i>
                                             </a>
-                                            <a href="{% url 'bus_seat_layout' bus.id %}" class="btn btn-sm btn-success">
-                                                <i class="fas fa-chair"></i> Seats
+                                            <a href="{% url 'bus_seat_layout' bus.id %}" class="action-btn-sm success" title="Seats">
+                                                <i class="fas fa-chair"></i>
                                             </a>
-                                            <a href="{% url 'edit_bus' bus.id %}" class="btn btn-sm btn-primary">
+                                            <a href="{% url 'edit_bus' bus.id %}" class="action-btn-sm primary" title="Edit">
                                                 <i class="fas fa-edit"></i>
                                             </a>
                                         </td>
@@ -241,25 +1122,30 @@
                             </table>
                         </div>
                     {% else %}
-                        <div class="text-center py-4">
-                            <i class="fas fa-bus fa-3x text-muted mb-3"></i>
-                            <p>You haven't added any buses yet.</p>
-                            <a href="{% url 'add_bus' %}" class="btn btn-primary">Add Your First Bus</a>
+                        <div class="empty-state">
+                            <i class="fas fa-bus"></i>
+                            <h5>No Buses Added</h5>
+                            <p>Add your first bus to get started.</p>
+                            <a href="{% url 'add_bus' %}" class="btn-primary-custom">
+                                <i class="fas fa-plus-circle"></i> Add Bus
+                            </a>
                         </div>
                     {% endif %}
                 </div>
             </div>
-            
+
             <!-- Recent Bookings Section -->
-            <div class="card mt-3">
-                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Recent Bookings</h5>
-                    <a href="{% url 'bus_bookings' %}" class="btn btn-light btn-sm">View All</a>
+            <div class="section-card" data-aos="fade-up">
+                <div class="section-header">
+                    <h5><i class="fas fa-ticket-alt"></i> Recent Bookings</h5>
+                    <a href="{% url 'bus_bookings' %}" class="btn-view-all">
+                        View All <i class="fas fa-arrow-right"></i>
+                    </a>
                 </div>
-                <div class="card-body">
+                <div class="section-body">
                     {% if recent_bookings %}
                         <div class="table-responsive">
-                            <table class="table table-hover">
+                            <table class="table-custom">
                                 <thead>
                                     <tr>
                                         <th>Booking Ref</th>
@@ -273,21 +1159,31 @@
                                 <tbody>
                                     {% for booking in recent_bookings %}
                                     <tr>
-                                        <td>{{ booking.booking_reference }}</td>
-                                        <td>{{ booking.user.username }}</td>
+                                        <td class="fw-bold text-primary">#{{ booking.booking_reference|truncatechars:10 }}</td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="avatar-circle me-2">
+                                                    {{ booking.user.username|first|upper }}
+                                                </div>
+                                                {{ booking.user.username|truncatechars:10 }}
+                                            </div>
+                                        </td>
                                         <td>{{ booking.route.source }} → {{ booking.route.destination }}</td>
                                         <td>
-                                            {% for seat in booking.booked_seats.all %}
-                                                <span class="badge bg-primary">{{ seat.seat.seat_number }}</span>
+                                            {% for seat in booking.booked_seats.all|slice:":2" %}
+                                                <span class="badge-custom badge-ac me-1">{{ seat.seat.seat_number }}</span>
                                             {% endfor %}
+                                            {% if booking.booked_seats.count > 2 %}
+                                                <span class="badge-custom badge-secondary">+{{ booking.booked_seats.count|add:"-2" }}</span>
+                                            {% endif %}
                                         </td>
-                                        <td>₹{{ booking.total_amount }}</td>
+                                        <td class="fw-bold">₹{{ booking.total_amount }}</td>
                                         <td>
-                                            <span class="badge 
-                                                {% if booking.status == 'confirmed' %}bg-success
-                                                {% elif booking.status == 'cancelled' %}bg-danger
-                                                {% elif booking.status == 'completed' %}bg-info
-                                                {% else %}bg-warning{% endif %}">
+                                            <span class="badge-custom 
+                                                {% if booking.status == 'confirmed' %}badge-active
+                                                {% elif booking.status == 'cancelled' %}badge-inactive
+                                                {% elif booking.status == 'completed' %}badge-luxury
+                                                {% else %}badge-seater{% endif %}">
                                                 {{ booking.status|title }}
                                             </span>
                                         </td>
@@ -297,9 +1193,10 @@
                             </table>
                         </div>
                     {% else %}
-                        <div class="text-center py-4">
-                            <i class="fas fa-ticket-alt fa-3x text-muted mb-3"></i>
-                            <p>No bookings yet.</p>
+                        <div class="empty-state">
+                            <i class="fas fa-ticket-alt"></i>
+                            <h5>No Bookings Yet</h5>
+                            <p>Bookings will appear once customers start booking.</p>
                         </div>
                     {% endif %}
                 </div>
@@ -308,58 +1205,85 @@
     </div>
 </div>
 
-<style>
-.card {
-    transition: transform 0.2s, box-shadow 0.2s;
-    border: none;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
+<!-- AOS Animation Library -->
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-}
+<script>
+// Initialize AOS
+AOS.init({
+    duration: 600,
+    once: true,
+    offset: 50
+});
 
-.btn-block {
-    display: block;
-    width: 100%;
-}
-
-.table td, .table th {
-    vertical-align: middle;
-}
-
-.badge {
-    font-size: 0.8rem;
-    padding: 5px 10px;
-}
-
-.bg-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-}
-
-.bg-success {
-    background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%) !important;
-}
-
-.bg-info {
-    background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%) !important;
-}
-
-.bg-warning {
-    background: linear-gradient(135deg, #f6d365 0%, #fda085 100%) !important;
-}
-
-.bg-danger {
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) !important;
-}
-
-.bg-secondary {
-    background: linear-gradient(135deg, #757f9a 0%, #d7dde8 100%) !important;
-}
-
-.bg-dark {
-    background: linear-gradient(135deg, #2c3e50 0%, #4ca1af 100%) !important;
-}
-</style>
+// ===== EARNINGS CHART =====
+document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('earningsChart').getContext('2d');
+    
+    // Sample data - replace with actual data from your backend
+    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    const earningsData = [1200, 1900, 1500, 2500, 2200, 3000, 2800];
+    
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: days,
+            datasets: [{
+                label: 'Earnings (₹)',
+                data: earningsData,
+                borderColor: '#4361ee',
+                backgroundColor: 'rgba(67, 97, 238, 0.1)',
+                borderWidth: 3,
+                pointBackgroundColor: '#4361ee',
+                pointBorderColor: 'white',
+                pointBorderWidth: 2,
+                pointRadius: 5,
+                pointHoverRadius: 7,
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    backgroundColor: '#1e293b',
+                    titleColor: 'white',
+                    bodyColor: '#cbd5e1',
+                    padding: 12,
+                    cornerRadius: 8,
+                    callbacks: {
+                        label: function(context) {
+                            return `₹${context.raw.toLocaleString()}`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(0,0,0,0.05)',
+                        drawBorder: false
+                    },
+                    ticks: {
+                        callback: function(value) {
+                            return '₹' + value;
+                        }
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
 {% endblock %}
