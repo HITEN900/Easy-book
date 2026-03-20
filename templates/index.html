@@ -12,7 +12,6 @@
 <style>
     /* ===== PROFESSIONAL DESIGN SYSTEM ===== */
     :root {
-        /* Color Palette */
         --primary: #2563eb;
         --primary-dark: #1d4ed8;
         --primary-light: #3b82f6;
@@ -29,19 +28,16 @@
         --light-200: #e2e8f0;
         --light-300: #cbd5e1;
         
-        /* Gradients */
         --gradient-primary: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
         --gradient-dark: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
         --gradient-accent: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
         
-        /* Shadows */
         --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
         --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
         --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
         --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
         --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
         
-        /* Border Radius */
         --radius-sm: 0.375rem;
         --radius-md: 0.5rem;
         --radius-lg: 1rem;
@@ -431,7 +427,7 @@
         font-size: 0.95rem;
     }
 
-    /* ===== FIXED ROUTES SLIDER ===== */
+    /* ===== ROUTES SLIDER ===== */
     .routes {
         padding: 6rem 0;
         background: white;
@@ -598,12 +594,6 @@
         transform: scale(1.1);
     }
 
-    .slider-btn:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-        pointer-events: none;
-    }
-
     .slider-dots {
         display: flex;
         gap: 0.5rem;
@@ -631,18 +621,6 @@
         color: white;
         position: relative;
         overflow: hidden;
-    }
-
-    .offers::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        right: -20%;
-        width: 800px;
-        height: 800px;
-        background: rgba(255, 255, 255, 0.05);
-        border-radius: 50%;
-        transform: rotate(45deg);
     }
 
     .offers-grid {
@@ -928,7 +906,302 @@
         font-size: 0.875rem;
     }
 
-    /* ===== RESPONSIVE ===== */
+    /* ===== AI CHAT ASSISTANT WITH VOICE ===== */
+    .chat-widget {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        z-index: 1000;
+    }
+
+    .chat-button {
+        width: 60px;
+        height: 60px;
+        background: var(--gradient-primary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: var(--shadow-xl);
+        transition: all 0.3s ease;
+        animation: pulse 2s infinite;
+    }
+
+    .chat-button i {
+        font-size: 1.8rem;
+        color: white;
+    }
+
+    .chat-button:hover {
+        transform: scale(1.1);
+        box-shadow: var(--shadow-2xl);
+    }
+
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
+
+    .chat-container {
+        position: absolute;
+        bottom: 80px;
+        right: 0;
+        width: 380px;
+        height: 550px;
+        background: white;
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-2xl);
+        display: none;
+        flex-direction: column;
+        overflow: hidden;
+        animation: slideUp 0.3s ease;
+    }
+
+    .chat-container.open {
+        display: flex;
+    }
+
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .chat-header {
+        background: var(--gradient-primary);
+        padding: 15px 20px;
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .chat-header h4 {
+        font-size: 1.1rem;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .chat-header i {
+        font-size: 1.3rem;
+    }
+
+    .voice-controls {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+
+    .voice-button {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        border-radius: 50%;
+        width: 35px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .voice-button:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(1.05);
+    }
+
+    .voice-button.listening {
+        background: var(--danger);
+        animation: pulse 1s infinite;
+    }
+
+    .voice-button.speaking {
+        background: var(--success);
+        animation: pulse 1s infinite;
+    }
+
+    .stop-voice-btn {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        border-radius: 50%;
+        width: 35px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .stop-voice-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(1.05);
+    }
+
+    .close-chat {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .close-chat:hover {
+        transform: rotate(90deg);
+    }
+
+    .chat-messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px;
+        background: var(--light);
+    }
+
+    .message {
+        margin-bottom: 15px;
+        display: flex;
+        animation: fadeIn 0.3s ease;
+    }
+
+    .message.bot {
+        justify-content: flex-start;
+    }
+
+    .message.user {
+        justify-content: flex-end;
+    }
+
+    .message-content {
+        max-width: 80%;
+        padding: 12px 16px;
+        border-radius: 18px;
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+
+    .message.bot .message-content {
+        background: white;
+        color: var(--dark);
+        border-bottom-left-radius: 4px;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .message.user .message-content {
+        background: var(--gradient-primary);
+        color: white;
+        border-bottom-right-radius: 4px;
+    }
+
+    .chat-input {
+        padding: 15px;
+        background: white;
+        border-top: 1px solid var(--light-200);
+        display: flex;
+        gap: 10px;
+    }
+
+    .chat-input input {
+        flex: 1;
+        padding: 12px 15px;
+        border: 2px solid var(--light-200);
+        border-radius: 50px;
+        font-size: 0.9rem;
+        transition: all 0.3s;
+    }
+
+    .chat-input input:focus {
+        border-color: var(--primary);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .send-btn {
+        width: 45px;
+        height: 45px;
+        background: var(--gradient-primary);
+        border: none;
+        border-radius: 50%;
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .send-btn:hover {
+        transform: scale(1.05);
+        box-shadow: var(--shadow-md);
+    }
+
+    .typing-indicator {
+        display: flex;
+        gap: 4px;
+        padding: 12px 16px;
+        background: white;
+        border-radius: 18px;
+        width: fit-content;
+    }
+
+    .typing-indicator span {
+        width: 8px;
+        height: 8px;
+        background: var(--primary);
+        border-radius: 50%;
+        animation: typing 1.4s infinite;
+    }
+
+    .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes typing {
+        0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+        30% { transform: translateY(-10px); opacity: 1; }
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Voice Wave Animation */
+    .voice-wave {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+        height: 30px;
+    }
+
+    .voice-wave span {
+        width: 4px;
+        height: 20px;
+        background: var(--primary);
+        border-radius: 2px;
+        animation: wave 1s ease-in-out infinite;
+    }
+
+    .voice-wave span:nth-child(1) { animation-delay: 0s; }
+    .voice-wave span:nth-child(2) { animation-delay: 0.2s; }
+    .voice-wave span:nth-child(3) { animation-delay: 0.4s; }
+    .voice-wave span:nth-child(4) { animation-delay: 0.6s; }
+    .voice-wave span:nth-child(5) { animation-delay: 0.8s; }
+
+    @keyframes wave {
+        0%, 100% { height: 10px; }
+        50% { height: 25px; }
+    }
+
+    /* Responsive */
     @media (max-width: 1024px) {
         .search-form {
             grid-template-columns: 1fr;
@@ -977,21 +1250,12 @@
             height: 2.5rem;
             font-size: 1rem;
         }
-    }
-
-    /* ===== ANIMATIONS ===== */
-    .fade-up {
-        animation: fadeUp 1s ease;
-    }
-
-    @keyframes fadeUp {
-        from {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
+        
+        .chat-container {
+            width: 320px;
+            height: 480px;
+            bottom: 70px;
+            right: -10px;
         }
     }
 </style>
@@ -1152,7 +1416,7 @@
     </div>
 </section>
 
-<!-- Popular Routes Slider - FIXED -->
+<!-- Popular Routes Slider -->
 <section class="routes">
     <div class="container">
         <div class="text-center">
@@ -1567,6 +1831,56 @@
     </div>
 </section>
 
+<!-- AI Chat Assistant with Voice -->
+<div class="chat-widget">
+    <div class="chat-button" id="chatButton">
+        <i class="fas fa-robot"></i>
+    </div>
+    
+    <div class="chat-container" id="chatContainer">
+        <div class="chat-header">
+            <h4><i class="fas fa-robot"></i> EasyBook Assistant</h4>
+            <div class="voice-controls">
+                <button class="voice-button" id="voiceButton" title="Speak your question">
+                    <i class="fas fa-microphone"></i>
+                </button>
+                <button class="stop-voice-btn" id="stopVoiceButton" title="Stop speaking">
+                    <i class="fas fa-stop"></i>
+                </button>
+                <button class="close-chat" id="closeChat">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot">
+                <div class="message-content">
+                    👋 Hello! I'm your EasyBook assistant. I can help you with:
+                    <br>• How to book a bus
+                    <br>• Cancellation policies
+                    <br>• Refund process
+                    <br>• Seat selection
+                    <br>• Payment methods
+                    <br>• And more! Ask me anything.
+                    <br><br>
+                    🎤 You can use voice commands:
+                    <br>• Click the microphone to speak your question
+                    <br>• Click the stop button to stop the voice response
+                    <br>• The voice will be in a friendly female voice
+                </div>
+            </div>
+        </div>
+        
+        <div class="chat-input">
+            <input type="text" id="chatInput" placeholder="Type your question..." onkeypress="handleKeyPress(event)">
+            <button class="send-btn" onclick="sendMessage()">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
 <!-- AOS Animation Library -->
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
@@ -1645,7 +1959,7 @@ if (heroSlider) {
     });
 }
 
-// ===== FIXED ROUTES SLIDER =====
+// ===== ROUTES SLIDER =====
 let currentRouteSlide = 0;
 const routeItems = document.querySelectorAll('.route-item');
 const routeDots = document.querySelectorAll('.slider-dot');
@@ -1656,7 +1970,6 @@ const nextBtn = document.getElementById('nextRouteBtn');
 function updateRouteSlider() {
     if (!routeItems.length || !routeSlider) return;
     
-    // Calculate how many items to show based on screen width
     let itemsPerView = 3;
     if (window.innerWidth <= 768) {
         itemsPerView = 1;
@@ -1666,15 +1979,12 @@ function updateRouteSlider() {
     
     const maxSlides = Math.max(0, routeItems.length - itemsPerView);
     
-    // Ensure current slide is within bounds
     currentRouteSlide = Math.min(currentRouteSlide, maxSlides);
     currentRouteSlide = Math.max(currentRouteSlide, 0);
     
-    // Calculate slide width (item width + gap)
-    const slideWidth = routeItems[0].offsetWidth + 24; // 24px is the gap
+    const slideWidth = routeItems[0].offsetWidth + 24;
     routeSlider.style.transform = `translateX(-${currentRouteSlide * slideWidth}px)`;
     
-    // Update dots (number of dots = number of slides)
     const numDots = Math.ceil(routeItems.length / itemsPerView);
     routeDots.forEach((dot, i) => {
         if (i < numDots) {
@@ -1685,74 +1995,341 @@ function updateRouteSlider() {
         }
     });
     
-    // Update button states
-    if (prevBtn) {
-        prevBtn.disabled = currentRouteSlide === 0;
-    }
-    if (nextBtn) {
-        nextBtn.disabled = currentRouteSlide >= maxSlides;
-    }
+    if (prevBtn) prevBtn.disabled = currentRouteSlide === 0;
+    if (nextBtn) nextBtn.disabled = currentRouteSlide >= maxSlides;
 }
 
 function slideRoutes(direction) {
     if (!routeItems.length) return;
     
     let itemsPerView = 3;
-    if (window.innerWidth <= 768) {
-        itemsPerView = 1;
-    } else if (window.innerWidth <= 1024) {
-        itemsPerView = 2;
-    }
+    if (window.innerWidth <= 768) itemsPerView = 1;
+    else if (window.innerWidth <= 1024) itemsPerView = 2;
     
     const maxSlides = Math.max(0, routeItems.length - itemsPerView);
     currentRouteSlide += direction;
     currentRouteSlide = Math.min(Math.max(currentRouteSlide, 0), maxSlides);
-    
     updateRouteSlider();
 }
 
 function goToRouteSlide(index) {
     let itemsPerView = 3;
-    if (window.innerWidth <= 768) {
-        itemsPerView = 1;
-    } else if (window.innerWidth <= 1024) {
-        itemsPerView = 2;
-    }
+    if (window.innerWidth <= 768) itemsPerView = 1;
+    else if (window.innerWidth <= 1024) itemsPerView = 2;
     
     const maxSlides = Math.max(0, routeItems.length - itemsPerView);
     currentRouteSlide = Math.min(index, maxSlides);
     updateRouteSlider();
 }
 
-// Initialize route slider
 if (routeItems.length > 0) {
     updateRouteSlider();
-    
-    // Update on window resize
-    window.addEventListener('resize', () => {
-        updateRouteSlider();
-    });
-    
-    // Auto slide routes every 5 seconds
+    window.addEventListener('resize', () => updateRouteSlider());
     setInterval(() => {
         let itemsPerView = 3;
-        if (window.innerWidth <= 768) {
-            itemsPerView = 1;
-        } else if (window.innerWidth <= 1024) {
-            itemsPerView = 2;
-        }
+        if (window.innerWidth <= 768) itemsPerView = 1;
+        else if (window.innerWidth <= 1024) itemsPerView = 2;
         const maxSlides = Math.max(0, routeItems.length - itemsPerView);
-        
-        if (currentRouteSlide < maxSlides) {
-            slideRoutes(1);
-        } else {
-            currentRouteSlide = 0;
-            updateRouteSlider();
-        }
+        if (currentRouteSlide < maxSlides) slideRoutes(1);
+        else { currentRouteSlide = 0; updateRouteSlider(); }
     }, 5000);
 }
 
-// Initialize first slide
 showSlide(0);
+
+// ===== AI CHAT ASSISTANT WITH VOICE (FULLY CONTROLLABLE) =====
+const chatButton = document.getElementById('chatButton');
+const chatContainer = document.getElementById('chatContainer');
+const closeChat = document.getElementById('closeChat');
+const chatInput = document.getElementById('chatInput');
+const chatMessages = document.getElementById('chatMessages');
+const voiceButton = document.getElementById('voiceButton');
+const stopVoiceButton = document.getElementById('stopVoiceButton');
+
+// Speech recognition setup
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+let recognition = null;
+let isListening = false;
+let isSpeaking = false;
+let currentUtterance = null;
+
+// Female voice selection
+let selectedVoice = null;
+
+// Get available voices and select a female voice
+function loadVoices() {
+    const voices = window.speechSynthesis.getVoices();
+    // Try to find a female voice
+    const femaleVoices = voices.filter(voice => 
+        voice.name.toLowerCase().includes('female') || 
+        voice.name.toLowerCase().includes('samantha') ||
+        voice.name.toLowerCase().includes('victoria') ||
+        voice.name.toLowerCase().includes('google uk english female') ||
+        voice.lang.includes('en-IN') && voice.name.includes('Female')
+    );
+    
+    if (femaleVoices.length > 0) {
+        selectedVoice = femaleVoices[0];
+    } else {
+        // Fallback to any English voice
+        selectedVoice = voices.find(voice => voice.lang.startsWith('en')) || voices[0];
+    }
+}
+
+// Load voices when available
+if ('speechSynthesis' in window) {
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+    loadVoices();
+}
+
+if (SpeechRecognition) {
+    recognition = new SpeechRecognition();
+    recognition.lang = 'en-IN';
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    
+    recognition.onstart = () => {
+        isListening = true;
+        voiceButton.classList.add('listening');
+        voiceButton.innerHTML = '<i class="fas fa-microphone-alt"></i>';
+        
+        // Add listening message
+        addMessage("🎤 Listening... Please speak now.", 'bot');
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    };
+    
+    recognition.onend = () => {
+        isListening = false;
+        voiceButton.classList.remove('listening');
+        voiceButton.innerHTML = '<i class="fas fa-microphone"></i>';
+    };
+    
+    recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        chatInput.value = transcript;
+        sendMessage();
+    };
+    
+    recognition.onerror = (event) => {
+        console.error('Speech recognition error:', event.error);
+        addMessage("Sorry, I couldn't hear you. Please try again or type your question.", 'bot');
+        voiceButton.classList.remove('listening');
+        voiceButton.innerHTML = '<i class="fas fa-microphone"></i>';
+        isListening = false;
+    };
+} else {
+    voiceButton.style.opacity = '0.5';
+    voiceButton.style.cursor = 'not-allowed';
+    voiceButton.title = 'Speech recognition not supported in this browser';
+    stopVoiceButton.style.opacity = '0.5';
+    stopVoiceButton.style.cursor = 'not-allowed';
+}
+
+// Stop voice function
+function stopVoice() {
+    if (window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+        isSpeaking = false;
+        if (currentUtterance) {
+            currentUtterance.onend = null;
+            currentUtterance = null;
+        }
+        voiceButton.classList.remove('speaking');
+        addMessage("🔇 Voice stopped.", 'bot');
+    }
+}
+
+// Speak response with female voice
+function speakResponse(text) {
+    if (!window.speechSynthesis) return;
+    
+    // Stop any ongoing speech
+    stopVoice();
+    
+    // Create new utterance
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'en-IN';
+    utterance.rate = 0.9;
+    utterance.pitch = 1.1; // Slightly higher pitch for female voice
+    
+    // Set selected voice if available
+    if (selectedVoice) {
+        utterance.voice = selectedVoice;
+    }
+    
+    currentUtterance = utterance;
+    isSpeaking = true;
+    voiceButton.classList.add('speaking');
+    voiceButton.innerHTML = '<i class="fas fa-volume-up"></i>';
+    
+    utterance.onend = () => {
+        isSpeaking = false;
+        voiceButton.classList.remove('speaking');
+        voiceButton.innerHTML = '<i class="fas fa-microphone"></i>';
+        currentUtterance = null;
+    };
+    
+    utterance.onerror = () => {
+        isSpeaking = false;
+        voiceButton.classList.remove('speaking');
+        voiceButton.innerHTML = '<i class="fas fa-microphone"></i>';
+        currentUtterance = null;
+    };
+    
+    window.speechSynthesis.speak(utterance);
+}
+
+// Voice button click handler
+if (voiceButton) {
+    voiceButton.addEventListener('click', () => {
+        if (!SpeechRecognition) {
+            alert("Voice assistant is not supported in your browser. Please use Chrome, Edge, or Safari.");
+            return;
+        }
+        
+        // If currently speaking, stop and start listening
+        if (isSpeaking) {
+            stopVoice();
+        }
+        
+        if (isListening) {
+            recognition.stop();
+        } else {
+            recognition.start();
+        }
+    });
+}
+
+// Stop voice button handler
+if (stopVoiceButton) {
+    stopVoiceButton.addEventListener('click', () => {
+        stopVoice();
+        addMessage("🔊 Voice response stopped.", 'bot');
+    });
+}
+
+// Knowledge base for AI responses
+const knowledgeBase = {
+    'how to book a bus': "To book a bus:\n1. Enter your source and destination cities\n2. Select your journey date\n3. Click 'Search Buses'\n4. Choose a bus and select seats\n5. Enter passenger details\n6. Make payment and get confirmation!",
+    'book a bus': "To book a bus:\n1. Enter your source and destination cities\n2. Select your journey date\n3. Click 'Search Buses'\n4. Choose a bus and select seats\n5. Enter passenger details\n6. Make payment and get confirmation!",
+    'booking process': "To book a bus:\n1. Enter your source and destination cities\n2. Select your journey date\n3. Click 'Search Buses'\n4. Choose a bus and select seats\n5. Enter passenger details\n6. Make payment and get confirmation!",
+    'cancellation policy': "You can cancel your booking up to 4 hours before departure. Full refund will be credited to your original payment method within 5-7 business days.",
+    'refund policy': "Refunds are processed to your original payment method within 5-7 business days after cancellation.",
+    'payment methods': "We accept UPI (Google Pay, PhonePe, Paytm, BHIM), Credit/Debit Cards, Net Banking, and Wallet payments.",
+    'select seats': "After choosing a bus, you'll see a seat layout. Click on available seats to select them. Window seats offer better view, aisle seats offer easy access.",
+    'login': "Click on 'Login' at the top right corner. Enter your username/email and password to access your account.",
+    'signup': "Click on 'Sign Up' to create a new account. You can sign up as a Customer or Bus Owner.",
+    'bus owner': "To register as a bus owner, click on 'Register Your Bus Now' on the homepage. Fill in your business details and license information.",
+    'popular routes': "Popular routes include Mumbai-Pune, Delhi-Jaipur, Bangalore-Mysore, Chennai-Pondicherry, Hyderabad-Bangalore, and Ahmedabad-Surat.",
+    'help': "I can help you with booking, cancellation, refunds, payments, seat selection, and account issues. What would you like to know?",
+    'hello': "Hello! How can I help you today? You can type or click the microphone to speak your question!",
+    'hi': "Hi there! Welcome to EasyBook. How can I assist you today?",
+    'thanks': "You're welcome! Happy to help. Have a great journey! 🚌",
+    'bye': "Goodbye! Have a safe and happy journey! Come back soon! 🚌",
+};
+
+function sendMessage() {
+    const message = chatInput.value.trim();
+    if (!message) return;
+    
+    addMessage(message, 'user');
+    chatInput.value = '';
+    
+    showTypingIndicator();
+    
+    setTimeout(() => {
+        removeTypingIndicator();
+        const response = getAIResponse(message);
+        addMessage(response, 'bot');
+        
+        // Speak the response with female voice
+        speakResponse(response);
+        
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }, 500);
+}
+
+function handleKeyPress(event) {
+    if (event.key === 'Enter') {
+        sendMessage();
+    }
+}
+
+function addMessage(text, sender) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${sender}`;
+    messageDiv.innerHTML = `<div class="message-content">${formatMessage(text)}</div>`;
+    chatMessages.appendChild(messageDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function showTypingIndicator() {
+    const typingDiv = document.createElement('div');
+    typingDiv.className = 'message bot';
+    typingDiv.id = 'typingIndicator';
+    typingDiv.innerHTML = `
+        <div class="typing-indicator">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    `;
+    chatMessages.appendChild(typingDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function removeTypingIndicator() {
+    const indicator = document.getElementById('typingIndicator');
+    if (indicator) indicator.remove();
+}
+
+function formatMessage(text) {
+    return text.replace(/\n/g, '<br>');
+}
+
+function getAIResponse(message) {
+    const lowerMsg = message.toLowerCase().trim();
+    
+    for (const [key, response] of Object.entries(knowledgeBase)) {
+        if (lowerMsg.includes(key.toLowerCase())) {
+            return response;
+        }
+    }
+    
+    if (lowerMsg.includes('book')) return knowledgeBase['how to book a bus'];
+    if (lowerMsg.includes('cancel')) return knowledgeBase['cancellation policy'];
+    if (lowerMsg.includes('refund')) return knowledgeBase['refund policy'];
+    if (lowerMsg.includes('pay')) return knowledgeBase['payment methods'];
+    if (lowerMsg.includes('seat')) return knowledgeBase['select seats'];
+    if (lowerMsg.includes('login')) return knowledgeBase['login'];
+    if (lowerMsg.includes('sign')) return knowledgeBase['signup'];
+    if (lowerMsg.includes('owner')) return knowledgeBase['bus owner'];
+    if (lowerMsg.includes('route')) return knowledgeBase['popular routes'];
+    
+    return "I'm here to help! You can ask me about:\n• Booking a bus\n• Cancellation policy\n• Refunds\n• Payment methods\n• Seat selection\n• Account issues\n• Bus owner registration\n\n🎤 Click the microphone button to speak your question!";
+}
+
+// Chat widget controls
+chatButton.addEventListener('click', () => {
+    chatContainer.classList.toggle('open');
+});
+
+closeChat.addEventListener('click', () => {
+    chatContainer.classList.remove('open');
+    if (recognition && isListening) recognition.stop();
+    stopVoice();
+});
+
+document.addEventListener('click', (event) => {
+    if (!chatContainer.contains(event.target) && !chatButton.contains(event.target) && chatContainer.classList.contains('open')) {
+        chatContainer.classList.remove('open');
+        if (recognition && isListening) recognition.stop();
+        stopVoice();
+    }
+});
+
+chatContainer.addEventListener('click', (event) => {
+    event.stopPropagation();
+});
 </script>
 {% endblock %}

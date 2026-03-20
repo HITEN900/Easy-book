@@ -2,425 +2,436 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Easy Book</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>EasyBook</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800;900&display=swap');
-*{margin:0;padding:0;box-sizing:border-box;}
-html,body{width:100%;height:100%;overflow:hidden;font-family:'Poppins',sans-serif;}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 100%; height: 100%; overflow: hidden; }
 
-/* ── CINEMATIC BARS ── */
-.bar-top,.bar-bottom{
-  position:fixed;left:0;width:100%;height:80px;background:#000;z-index:200;
-  transition:height 1.2s cubic-bezier(.77,0,.18,1);
-}
-.bar-top{top:0;}
-.bar-bottom{bottom:0;}
-.bars-open .bar-top,.bars-open .bar-bottom{height:0;}
-
-/* ── SKY CANVAS ── */
-#skyCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;}
-
-/* ── SCENE ── */
-.scene{position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;}
-
-.mountains{
-  position:absolute;bottom:38%;left:0;width:200%;height:30%;
-  background:
-    radial-gradient(ellipse 300px 200px at 15% 100%,#1a1a2e 0%,transparent 70%),
-    radial-gradient(ellipse 400px 250px at 35% 100%,#16213e 0%,transparent 70%),
-    radial-gradient(ellipse 350px 220px at 55% 100%,#1a1a2e 0%,transparent 70%),
-    radial-gradient(ellipse 280px 180px at 75% 100%,#0f3460 0%,transparent 70%),
-    radial-gradient(ellipse 320px 200px at 90% 100%,#16213e 0%,transparent 70%);
-  animation:parallaxFar 25s linear infinite;
-}
-@keyframes parallaxFar{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-
-.city{
-  position:absolute;bottom:35%;left:0;width:200%;height:22%;
-  background:
-    linear-gradient(180deg,transparent 20%,#0d1b2a 20%,#0d1b2a 100%) 5%   100%/3%   80%  no-repeat,
-    linear-gradient(180deg,transparent 10%,#0d1b2a 10%,#0d1b2a 100%) 9%   100%/2.5% 95%  no-repeat,
-    linear-gradient(180deg,transparent 30%,#111    30%,#111    100%) 13%  100%/4%   70%  no-repeat,
-    linear-gradient(180deg,transparent 5%, #0d1b2a  5%,#0d1b2a 100%) 19%  100%/3.5% 99%  no-repeat,
-    linear-gradient(180deg,transparent 20%,#111    20%,#111    100%) 24%  100%/2%   80%  no-repeat,
-    linear-gradient(180deg,transparent 15%,#0d1b2a 15%,#0d1b2a 100%) 28% 100%/5%   88%  no-repeat,
-    linear-gradient(180deg,transparent 35%,#111    35%,#111    100%) 35%  100%/3%   65%  no-repeat,
-    linear-gradient(180deg,transparent 8%, #0d1b2a  8%,#0d1b2a 100%) 40%  100%/4%   96%  no-repeat,
-    linear-gradient(180deg,transparent 25%,#111    25%,#111    100%) 46%  100%/2.5% 75%  no-repeat,
-    linear-gradient(180deg,transparent 12%,#0d1b2a 12%,#0d1b2a 100%) 50% 100%/3.5% 90%  no-repeat,
-    linear-gradient(180deg,transparent 28%,#111    28%,#111    100%) 55%  100%/2%   72%  no-repeat,
-    linear-gradient(180deg,transparent 18%,#0d1b2a 18%,#0d1b2a 100%) 59% 100%/4.5% 84%  no-repeat;
-  animation:parallaxCity 18s linear infinite;
-}
-@keyframes parallaxCity{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-
-.city-lights{position:absolute;bottom:35%;left:0;width:200%;height:22%;animation:parallaxCity 18s linear infinite;}
-.city-lights::before,.city-lights::after{
-  content:'';position:absolute;width:100%;height:100%;
-  background:
-    radial-gradient(circle 2px at  6% 30%,#ffd700 0%,transparent 100%),
-    radial-gradient(circle 2px at 10% 15%,#fff    0%,transparent 100%),
-    radial-gradient(circle 2px at 20% 22%,#ffd700 0%,transparent 100%),
-    radial-gradient(circle 2px at 22%  8%,#fff    0%,transparent 100%),
-    radial-gradient(circle 2px at 30% 18%,#ffd700 0%,transparent 100%),
-    radial-gradient(circle 2px at 41% 10%,#fff    0%,transparent 100%),
-    radial-gradient(circle 2px at 51% 14%,#ffd700 0%,transparent 100%),
-    radial-gradient(circle 2px at 56% 25%,#fff    0%,transparent 100%),
-    radial-gradient(circle 2px at 60% 20%,#ffd700 0%,transparent 100%);
-  animation:twinkle 2s ease-in-out infinite alternate;
-}
-.city-lights::after{animation-delay:1s;}
-@keyframes twinkle{0%{opacity:0.6}100%{opacity:1}}
-
-.trees{
-  position:absolute;bottom:35%;left:0;width:300%;height:12%;
-  background:
-    linear-gradient(180deg,transparent 0%,#0a3d0a 40%,#071f07 100%) 2%  100%/1.5% 100% no-repeat,
-    linear-gradient(180deg,transparent 0%,#0a3d0a 40%,#071f07 100%) 5%  100%/1.2% 80%  no-repeat,
-    linear-gradient(180deg,transparent 0%,#0a3d0a 40%,#071f07 100%) 8%  100%/1.8% 100% no-repeat,
-    linear-gradient(180deg,transparent 0%,#0a3d0a 40%,#071f07 100%) 12% 100%/1.3% 90%  no-repeat,
-    linear-gradient(180deg,transparent 0%,#0a3d0a 40%,#071f07 100%) 15% 100%/1.6% 100% no-repeat,
-    linear-gradient(180deg,transparent 0%,#0a3d0a 40%,#071f07 100%) 18% 100%/1.1% 75%  no-repeat,
-    linear-gradient(180deg,transparent 0%,#0a3d0a 40%,#071f07 100%) 22% 100%/1.9% 100% no-repeat,
-    linear-gradient(180deg,transparent 0%,#0a3d0a 40%,#071f07 100%) 26% 100%/1.4% 85%  no-repeat,
-    linear-gradient(180deg,transparent 0%,#0a3d0a 40%,#071f07 100%) 30% 100%/1.7% 100% no-repeat,
-    linear-gradient(180deg,transparent 0%,#0a3d0a 40%,#071f07 100%) 34% 100%/1.2% 80%  no-repeat;
-  animation:parallaxTrees 6s linear infinite;
-}
-@keyframes parallaxTrees{0%{transform:translateX(0)}100%{transform:translateX(-33.33%)}}
-
-.road-layer{position:absolute;bottom:0;left:0;width:100%;height:38%;background:linear-gradient(180deg,#1a1a2e 0%,#0d0d1a 20%,#111 100%);}
-.road-surface{position:absolute;bottom:0;left:0;width:100%;height:60%;background:linear-gradient(180deg,#1c1c1c 0%,#111 100%);}
-.road-lines{position:absolute;bottom:0;left:0;width:100%;height:60%;overflow:hidden;}
-.road-lines::before{
-  content:'';position:absolute;bottom:0;left:50%;
-  width:4px;height:100%;
-  background:repeating-linear-gradient(180deg,#ffd700 0px,#ffd700 40px,transparent 40px,transparent 80px);
-  transform:translateX(-50%);
-  animation:roadScroll 0.4s linear infinite;
-}
-.road-lines::after{
-  content:'';position:absolute;bottom:0;left:0;width:100%;height:100%;
-  background:
-    repeating-linear-gradient(180deg,rgba(255,255,255,0.07) 0px,rgba(255,255,255,0.07) 2px,transparent 2px,transparent 80px) 15% 0/1px 100%,
-    repeating-linear-gradient(180deg,rgba(255,255,255,0.07) 0px,rgba(255,255,255,0.07) 2px,transparent 2px,transparent 80px) 85% 0/1px 100%;
-  animation:roadScroll 0.4s linear infinite;
-}
-@keyframes roadScroll{from{background-position:50% 0px,15% 0px,85% 0px}to{background-position:50% 80px,15% 80px,85% 80px}}
-
-.ground-glow{
-  position:absolute;bottom:35%;left:0;width:100%;height:6%;
-  background:linear-gradient(180deg,rgba(255,200,50,0) 0%,rgba(255,200,50,0.06) 100%);
-  animation:glowPulse 2s ease-in-out infinite;
-}
-@keyframes glowPulse{0%,100%{opacity:0.6}50%{opacity:1}}
-
-/* ── BUS — fully left to right ── */
-.bus-stage{
-  position:absolute;bottom:36%;left:0;
-  animation:busEnter 6s linear forwards;
-}
-@keyframes busEnter{
-  0%   {left:-30%;opacity:0}
-  5%   {opacity:1}
-  100% {left:110%}
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: #F8F9FF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.bus-svg{
-  width:clamp(160px,26vw,240px);
-  filter:drop-shadow(0 8px 24px rgba(0,0,0,0.7)) drop-shadow(0 0 8px rgba(255,215,0,0.15));
-  animation:busBob 2s ease-in-out infinite;
+/* ── BACKGROUND SHAPES ── */
+.bg-circle-1 {
+  position: fixed;
+  top: -140px; right: -100px;
+  width: 420px; height: 420px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(59,130,246,0.1) 0%, transparent 70%);
+  pointer-events: none;
+  animation: bgFloat1 6s ease-in-out infinite;
 }
-@keyframes busBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
-
-.headlight-beam{
-  position:absolute;right:-40%;top:28%;
-  width:160%;height:28%;
-  background:linear-gradient(90deg,rgba(255,240,150,0.18) 0%,rgba(255,240,150,0.04) 60%,transparent 100%);
-  clip-path:polygon(0 40%,100% 0%,100% 100%,0 60%);
-  animation:beamPulse 1.5s ease-in-out infinite;
-  pointer-events:none;
+.bg-circle-2 {
+  position: fixed;
+  bottom: -120px; left: -80px;
+  width: 360px; height: 360px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 70%);
+  pointer-events: none;
+  animation: bgFloat2 7s ease-in-out infinite;
 }
-@keyframes beamPulse{0%,100%{opacity:0.7}50%{opacity:1}}
-
-/* ── SMOKE CANVAS ── */
-#smokeCanvas{position:absolute;top:0;left:0;width:100%;height:100%;z-index:50;pointer-events:none;}
-
-/* ── TITLE OVERLAY ── */
-.title-overlay{
-  position:fixed;top:0;left:0;width:100%;height:100%;
-  z-index:100;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  pointer-events:none;
-  animation:titleFadeIn 1s ease 1.2s both;
+.bg-circle-3 {
+  position: fixed;
+  top: 40%; left: -60px;
+  width: 200px; height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(34,197,94,0.06) 0%, transparent 70%);
+  pointer-events: none;
 }
-@keyframes titleFadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes bgFloat1 { 0%,100%{transform:translate(0,0);} 50%{transform:translate(-20px,20px);} }
+@keyframes bgFloat2 { 0%,100%{transform:translate(0,0);} 50%{transform:translate(20px,-20px);} }
 
-.title-badge{
-  font-size:clamp(0.6rem,1.5vw,0.75rem);
-  letter-spacing:5px;color:rgba(255,215,0,0.7);
-  text-transform:uppercase;margin-bottom:clamp(8px,2vh,16px);
-  animation:badgePulse 3s ease-in-out infinite;
-}
-@keyframes badgePulse{0%,100%{opacity:0.6}50%{opacity:1}}
-
-.title-main{
-  font-size:clamp(2.5rem,10vw,5.5rem);
-  font-weight:900;line-height:1;letter-spacing:-2px;
-  background:linear-gradient(135deg,#fff 0%,#ffd700 45%,#ff9f43 100%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  filter:drop-shadow(0 0 40px rgba(255,215,0,0.3));
-  animation:titleGlow 3s ease-in-out infinite;
-  margin-bottom:clamp(6px,1.5vh,14px);
-}
-@keyframes titleGlow{
-  0%,100%{filter:drop-shadow(0 0 20px rgba(255,215,0,0.3))}
-  50%{filter:drop-shadow(0 0 50px rgba(255,150,0,0.5))}
-}
-.title-main span{-webkit-text-fill-color:#ffd700;}
-
-.title-sub{
-  font-size:clamp(0.85rem,2.5vw,1.3rem);
-  color:rgba(255,255,255,0.55);
-  font-weight:300;letter-spacing:clamp(3px,1vw,8px);
-  margin-bottom:clamp(24px,6vh,50px);
-  text-transform:uppercase;
+/* ── MAIN CARD ── */
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 20px;
+  width: 100%;
+  max-width: 420px;
 }
 
-.progress-wrap{
-  width:clamp(200px,40vw,380px);
-  display:flex;flex-direction:column;align-items:center;gap:10px;
-}
-.progress-track{
-  width:100%;height:2px;
-  background:rgba(255,255,255,0.08);border-radius:2px;overflow:hidden;
-  box-shadow:0 0 10px rgba(255,215,0,0.1);
-}
-.progress-fill{
-  height:100%;width:0%;
-  background:linear-gradient(90deg,#ffd700,#ff6b6b,#ffd700);
-  background-size:200% 100%;
-  animation:pfill 5.5s ease-out forwards,pgradient 2s linear infinite;
-  border-radius:2px;box-shadow:0 0 12px #ffd700;
-}
-@keyframes pfill{0%{width:0%}100%{width:100%}}
-@keyframes pgradient{0%{background-position:0%}100%{background-position:200%}}
-
-.progress-text{
-  font-size:clamp(0.65rem,1.5vw,0.8rem);
-  color:rgba(255,255,255,0.3);
-  letter-spacing:3px;text-transform:uppercase;
-  transition:opacity 0.2s;
+/* ── ILLUSTRATION ── */
+.illustration {
+  position: relative;
+  width: clamp(180px, 55vw, 260px);
+  height: clamp(130px, 38vw, 180px);
+  margin-bottom: 40px;
+  opacity: 0;
+  animation: popIn 0.8s cubic-bezier(0.34,1.56,0.64,1) 0.3s forwards;
 }
 
-/* Skip */
-.skip-btn{
-  position:fixed;bottom:clamp(12px,3vh,28px);right:clamp(12px,3vw,28px);
-  padding:clamp(7px,1.5vh,12px) clamp(18px,4vw,32px);
-  background:rgba(255,255,255,0.03);color:rgba(255,255,255,0.5);
-  border:1px solid rgba(255,215,0,0.15);border-radius:50px;
-  font-size:clamp(0.7rem,1.8vw,0.85rem);font-family:'Poppins',sans-serif;
-  font-weight:500;cursor:pointer;z-index:300;
-  backdrop-filter:blur(10px);text-decoration:none;letter-spacing:2px;
-  transition:all 0.3s;pointer-events:all;
+/* Road */
+.road {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 28px;
+  background: #E2E8F0;
+  border-radius: 14px;
 }
-.skip-btn:hover{background:rgba(255,215,0,0.1);color:#ffd700;border-color:rgba(255,215,0,0.4);}
+.road-dashes {
+  position: absolute;
+  bottom: 11px;
+  left: 16px; right: 16px;
+  height: 3px;
+  background: repeating-linear-gradient(
+    90deg,
+    #CBD5E1 0px, #CBD5E1 18px,
+    transparent 18px, transparent 30px
+  );
+  border-radius: 2px;
+  overflow: hidden;
+}
+.road-dashes::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(
+    90deg,
+    #94A3B8 0px, #94A3B8 18px,
+    transparent 18px, transparent 30px
+  );
+  animation: dashMove 0.5s linear infinite;
+}
+@keyframes dashMove { to { transform: translateX(-30px); } }
+
+/* Bus SVG */
+.bus-svg-wrap {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: busRock 2.5s ease-in-out infinite;
+}
+@keyframes busRock {
+  0%,100% { transform: translateX(-50%) translateY(0); }
+  50%      { transform: translateX(-50%) translateY(-5px); }
+}
+
+/* Trees */
+.tree-left, .tree-right {
+  position: absolute;
+  bottom: 24px;
+}
+.tree-left  { left: 0; }
+.tree-right { right: 0; }
+
+/* Sun */
+.sun {
+  position: absolute;
+  top: 0; right: 20px;
+  width: 46px; height: 46px;
+  background: radial-gradient(circle, #FCD34D 40%, rgba(252,211,77,0) 70%);
+  border-radius: 50%;
+  animation: sunPulse 3s ease-in-out infinite;
+}
+.sun::after {
+  content: '';
+  position: absolute; inset: -8px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(252,211,77,0.3);
+  animation: sunRing 3s ease-in-out infinite;
+}
+@keyframes sunPulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.08);} }
+@keyframes sunRing  { 0%,100%{opacity:0.5;transform:scale(1);} 50%{opacity:1;transform:scale(1.15);} }
+
+/* Clouds */
+.cloud {
+  position: absolute;
+  top: 12px;
+  border-radius: 50px;
+  background: white;
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.06));
+  animation: cloudDrift linear infinite;
+}
+.cloud-1 { left: 10px; width: 54px; height: 18px; top: 18px; animation-duration: 18s; animation-delay: 0s; }
+.cloud-2 { left: 70px; width: 36px; height: 12px; top: 8px; animation-duration: 14s; animation-delay: -6s; opacity: 0.7; }
+@keyframes cloudDrift { 0%{transform:translateX(0);} 50%{transform:translateX(8px);} 100%{transform:translateX(0);} }
+
+/* ── LOGO + BRAND ── */
+.brand-row {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 10px;
+  opacity: 0;
+  animation: fadeUp 0.7s ease 0.9s forwards;
+}
+.brand-icon {
+  width: 44px; height: 44px;
+  background: linear-gradient(135deg, #3B82F6, #6366F1);
+  border-radius: 13px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 16px rgba(59,130,246,0.3);
+  flex-shrink: 0;
+}
+.brand-name {
+  font-size: clamp(1.8rem, 6vw, 2.3rem);
+  font-weight: 800;
+  color: #0F172A;
+  letter-spacing: -0.5px;
+  line-height: 1;
+}
+.brand-name span { color: #3B82F6; }
+
+.sub-text {
+  font-size: clamp(0.78rem, 2.5vw, 0.9rem);
+  font-weight: 400;
+  color: #94A3B8;
+  letter-spacing: 0.01em;
+  margin-bottom: 44px;
+  opacity: 0;
+  animation: fadeUp 0.7s ease 1.1s forwards;
+}
+
+/* ── PROGRESS ── */
+.progress-wrap {
+  width: clamp(180px, 55vw, 240px);
+  opacity: 0;
+  animation: fadeUp 0.7s ease 1.3s forwards;
+}
+.progress-track {
+  width: 100%;
+  height: 4px;
+  background: #E2E8F0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #3B82F6, #6366F1);
+  box-shadow: 0 0 8px rgba(59,130,246,0.4);
+  animation: barFill 5s ease-in-out 1.5s forwards;
+}
+@keyframes barFill {
+  0%  { width:0%; }
+  25% { width:35%; }
+  55% { width:62%; }
+  80% { width:82%; }
+  100%{ width:100%; }
+}
+.progress-status {
+  margin-top: 12px;
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: #CBD5E1;
+  text-align: center;
+  transition: opacity 0.3s;
+}
+
+/* ── SKIP ── */
+.skip-btn {
+  display: inline-block;
+  margin-top: 32px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #94A3B8;
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  padding: 8px 20px;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 50px;
+  background: white;
+  transition: all 0.22s ease;
+  opacity: 0;
+  animation: fadeUp 0.7s ease 2s forwards;
+}
+.skip-btn:hover {
+  color: #3B82F6;
+  border-color: #BFDBFE;
+  background: #EFF6FF;
+}
+
+/* ── BOTTOM BADGE ── */
+.badge {
+  position: fixed;
+  bottom: clamp(16px,3vh,28px); left: 50%;
+  transform: translateX(-50%);
+  display: flex; align-items: center; gap: 6px;
+  padding: 7px 16px;
+  background: white;
+  border: 1px solid #F1F5F9;
+  border-radius: 50px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  opacity: 0;
+  animation: fadeUp 0.7s ease 2.2s forwards;
+  white-space: nowrap;
+}
+.badge-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #22C55E;
+  animation: liveDot 2s ease-in-out infinite;
+}
+@keyframes liveDot { 0%,100%{opacity:0.5;transform:scale(1);} 50%{opacity:1;transform:scale(1.3);} }
+.badge-text {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #64748B;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(12px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+@keyframes popIn {
+  from { opacity:0; transform:scale(0.88); }
+  to   { opacity:1; transform:scale(1); }
+}
 </style>
 </head>
 <body>
 
-<canvas id="skyCanvas"></canvas>
+<div class="bg-circle-1"></div>
+<div class="bg-circle-2"></div>
+<div class="bg-circle-3"></div>
 
-<div class="scene">
-  <div class="mountains"></div>
-  <div class="city"></div>
-  <div class="city-lights"></div>
-  <div class="trees"></div>
-  <div class="road-layer">
-    <div class="road-surface"></div>
-    <div class="road-lines"></div>
-  </div>
-  <div class="ground-glow"></div>
+<div class="card">
 
-  <div class="bus-stage" id="busStage">
-    <div class="headlight-beam"></div>
-    <svg class="bus-svg" viewBox="0 0 240 90" xmlns="http://www.w3.org/2000/svg">
-      <ellipse cx="120" cy="88" rx="100" ry="4" fill="rgba(0,0,0,0.4)"/>
-      <rect x="8" y="22" width="224" height="58" rx="8" fill="#f5f5f5"/>
-      <rect x="16" y="14" width="210" height="18" rx="10" fill="#ebebeb"/>
-      <rect x="8" y="22" width="224" height="58" rx="8" fill="url(#bodyGrad)"/>
-      <rect x="8" y="50" width="224" height="6" fill="url(#stripeGrad)"/>
-      <rect x="22" y="26" width="26" height="20" rx="4" fill="#1a2a3a"/>
-      <rect x="55" y="26" width="26" height="20" rx="4" fill="#1a2a3a"/>
-      <rect x="88" y="26" width="26" height="20" rx="4" fill="#1a2a3a"/>
-      <rect x="121" y="26" width="26" height="20" rx="4" fill="#1a2a3a"/>
-      <rect x="154" y="26" width="26" height="20" rx="4" fill="#1a2a3a"/>
-      <rect x="22" y="26" width="8" height="20" rx="4" fill="rgba(255,255,255,0.08)"/>
-      <rect x="55" y="26" width="8" height="20" rx="4" fill="rgba(255,255,255,0.08)"/>
-      <rect x="88" y="26" width="8" height="20" rx="4" fill="rgba(255,255,255,0.08)"/>
-      <rect x="121" y="26" width="8" height="20" rx="4" fill="rgba(255,255,255,0.08)"/>
-      <rect x="154" y="26" width="8" height="20" rx="4" fill="rgba(255,255,255,0.08)"/>
-      <rect x="186" y="50" width="22" height="28" rx="3" fill="#ddd"/>
-      <rect x="186" y="50" width="22" height="28" rx="3" fill="url(#doorGrad)"/>
-      <circle cx="193" cy="64" r="2" fill="#ffd700"/>
-      <rect x="8" y="22" width="14" height="58" rx="4" fill="#e0e0e0"/>
-      <rect x="8" y="34" width="14" height="12" rx="3" fill="#ffd700" opacity="0.9"/>
-      <rect x="220" y="22" width="12" height="58" rx="4" fill="#e0e0e0"/>
-      <rect x="220" y="34" width="12" height="12" rx="3" fill="#ff4444" opacity="0.7"/>
-      <text x="100" y="72" font-family="Poppins,sans-serif" font-size="8" font-weight="700" fill="#4361ee" text-anchor="middle">EASY BOOK</text>
-      <rect x="28" y="74" width="36" height="8" rx="4" fill="#bbb"/>
-      <rect x="168" y="74" width="36" height="8" rx="4" fill="#bbb"/>
-      <circle cx="46" cy="82" r="12" fill="#222"/>
-      <circle cx="46" cy="82" r="8"  fill="#333"/>
-      <circle cx="46" cy="82" r="3"  fill="#ffd700"/>
-      <line x1="38" y1="82" x2="54" y2="82" stroke="#ffd700" stroke-width="1.5" opacity="0.6"/>
-      <line x1="46" y1="74" x2="46" y2="90" stroke="#ffd700" stroke-width="1.5" opacity="0.6"/>
-      <circle cx="186" cy="82" r="12" fill="#222"/>
-      <circle cx="186" cy="82" r="8"  fill="#333"/>
-      <circle cx="186" cy="82" r="3"  fill="#ffd700"/>
-      <line x1="178" y1="82" x2="194" y2="82" stroke="#ffd700" stroke-width="1.5" opacity="0.6"/>
-      <line x1="186" y1="74" x2="186" y2="90" stroke="#ffd700" stroke-width="1.5" opacity="0.6"/>
-      <circle cx="12" cy="40" r="5" fill="#fff9c4" filter="url(#glow)"/>
-      <defs>
-        <linearGradient id="bodyGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0"   stop-color="rgba(255,255,255,0.3)"/>
-          <stop offset="0.5" stop-color="rgba(255,255,255,0)"/>
-          <stop offset="1"   stop-color="rgba(0,0,0,0.15)"/>
-        </linearGradient>
-        <linearGradient id="stripeGrad" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0"   stop-color="#4361ee"/>
-          <stop offset="0.3" stop-color="#667eea"/>
-          <stop offset="0.6" stop-color="#4cc9f0"/>
-          <stop offset="1"   stop-color="#4361ee"/>
-        </linearGradient>
-        <linearGradient id="doorGrad" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stop-color="rgba(0,0,0,0.1)"/>
-          <stop offset="1" stop-color="rgba(0,0,0,0)"/>
-        </linearGradient>
-        <filter id="glow" x="-100%" y="-100%" width="300%" height="300%">
-          <feGaussianBlur stdDeviation="3" result="blur"/>
-          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-        </filter>
-      </defs>
+  <!-- Illustration -->
+  <div class="illustration">
+    <!-- Sun -->
+    <div class="sun"></div>
+    <!-- Clouds -->
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+
+    <!-- Trees left -->
+    <svg class="tree-left" width="28" height="44" viewBox="0 0 28 44" fill="none">
+      <rect x="12" y="30" width="4" height="14" rx="2" fill="#CBD5E1"/>
+      <ellipse cx="14" cy="22" rx="10" ry="14" fill="#86EFAC"/>
+      <ellipse cx="14" cy="16" rx="7"  ry="10" fill="#4ADE80"/>
     </svg>
+
+    <!-- Trees right -->
+    <svg class="tree-right" width="22" height="36" viewBox="0 0 22 36" fill="none">
+      <rect x="9" y="24" width="4" height="12" rx="2" fill="#CBD5E1"/>
+      <ellipse cx="11" cy="17" rx="8" ry="11" fill="#86EFAC"/>
+      <ellipse cx="11" cy="11" rx="5.5" ry="8" fill="#4ADE80"/>
+    </svg>
+
+    <!-- Bus -->
+    <div class="bus-svg-wrap">
+      <svg width="140" height="62" viewBox="0 0 140 62" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Body -->
+        <rect x="4" y="8" width="132" height="42" rx="10" fill="white"/>
+        <rect x="4" y="8" width="132" height="42" rx="10" fill="url(#busBody)"/>
+        <!-- Blue stripe -->
+        <rect x="4" y="32" width="132" height="5" fill="url(#stripe)"/>
+        <!-- Roof -->
+        <rect x="10" y="4" width="120" height="8" rx="5" fill="#F1F5F9"/>
+        <!-- Windows -->
+        <rect x="14" y="13" width="20" height="15" rx="4" fill="#BFDBFE"/>
+        <rect x="40" y="13" width="20" height="15" rx="4" fill="#BFDBFE"/>
+        <rect x="66" y="13" width="20" height="15" rx="4" fill="#BFDBFE"/>
+        <rect x="92" y="13" width="20" height="15" rx="4" fill="#BFDBFE"/>
+        <!-- Window glare -->
+        <rect x="14" y="13" width="6"  height="15" rx="3" fill="rgba(255,255,255,0.5)"/>
+        <rect x="40" y="13" width="6"  height="15" rx="3" fill="rgba(255,255,255,0.5)"/>
+        <rect x="66" y="13" width="6"  height="15" rx="3" fill="rgba(255,255,255,0.5)"/>
+        <rect x="92" y="13" width="6"  height="15" rx="3" fill="rgba(255,255,255,0.5)"/>
+        <!-- Door -->
+        <rect x="116" y="30" width="14" height="19" rx="3" fill="#E0F2FE"/>
+        <rect x="122" y="30" width="1.5" height="19" fill="rgba(59,130,246,0.2)"/>
+        <!-- Front headlight -->
+        <rect x="5"  y="18" width="8"  height="6" rx="3" fill="#FCD34D" opacity="0.9"/>
+        <!-- Rear light -->
+        <rect x="127" y="18" width="7" height="6" rx="3" fill="#FCA5A5" opacity="0.8"/>
+        <!-- Brand text -->
+        <text x="58" y="46" font-family="'Plus Jakarta Sans',sans-serif" font-size="6" font-weight="700" fill="#3B82F6" text-anchor="middle" letter-spacing="1.5">EASYBOOK</text>
+        <!-- Wheels -->
+        <circle cx="32"  cy="52" r="12" fill="#334155"/>
+        <circle cx="32"  cy="52" r="7"  fill="#475569"/>
+        <circle cx="32"  cy="52" r="3"  fill="#94A3B8"/>
+        <circle cx="108" cy="52" r="12" fill="#334155"/>
+        <circle cx="108" cy="52" r="7"  fill="#475569"/>
+        <circle cx="108" cy="52" r="3"  fill="#94A3B8"/>
+        <!-- Axle bar -->
+        <rect x="18" y="48" width="28" height="5" rx="2.5" fill="#1E293B"/>
+        <rect x="94" y="48" width="28" height="5" rx="2.5" fill="#1E293B"/>
+        <defs>
+          <linearGradient id="busBody" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="rgba(255,255,255,0.9)"/>
+            <stop offset="1" stop-color="rgba(226,232,240,0.6)"/>
+          </linearGradient>
+          <linearGradient id="stripe" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0"   stop-color="#3B82F6"/>
+            <stop offset="0.5" stop-color="#6366F1"/>
+            <stop offset="1"   stop-color="#3B82F6"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+
+    <!-- Road -->
+    <div class="road">
+      <div class="road-dashes"></div>
+    </div>
   </div>
 
-  <canvas id="smokeCanvas"></canvas>
-</div>
+  <!-- Brand -->
+  <div class="brand-row">
+    <div class="brand-icon">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M3 16V8a2 2 0 012-2h14a2 2 0 012 2v8" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        <path d="M1 16h22M7 20a1 1 0 100-2 1 1 0 000 2zM17 20a1 1 0 100-2 1 1 0 000 2z" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        <path d="M8 10h8M8 13h5" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="brand-name">Easy<span>Book</span></div>
+  </div>
 
-<div class="title-overlay">
-  <div class="title-badge">🇮🇳 India's Premium Bus Travel</div>
-  <div class="title-main">Easy<span>Book</span></div>
-  <div class="title-sub">Your Journey Awaits</div>
+  <p class="sub-text">Book bus tickets in seconds</p>
+
+  <!-- Progress -->
   <div class="progress-wrap">
     <div class="progress-track">
       <div class="progress-fill"></div>
     </div>
-    <div class="progress-text" id="progressText">Preparing your journey...</div>
+    <p class="progress-status" id="statusEl">Getting things ready...</p>
   </div>
+
+  <a href="{% url 'home' %}" class="skip-btn">Skip intro →</a>
 </div>
 
-<a href="{% url 'home' %}" class="skip-btn">Skip →</a>
+<!-- Live badge -->
+<div class="badge">
+  <div class="badge-dot"></div>
+  <span class="badge-text">500+ routes live</span>
+</div>
 
 <script>
-// Cinematic open
-document.body.insertAdjacentHTML('afterbegin','<div class="bar-top"></div><div class="bar-bottom"></div>');
-requestAnimationFrame(()=>setTimeout(()=>document.body.classList.add('bars-open'),80));
+const msgs = [
+  'Getting things ready...',
+  'Loading routes across India...',
+  'Checking seat availability...',
+  'Setting up your dashboard...',
+  "You're all set! 🎉"
+];
+let i = 0;
+const el = document.getElementById('statusEl');
+const timer = setInterval(() => {
+  el.style.opacity = '0';
+  setTimeout(() => {
+    i = Math.min(i + 1, msgs.length - 1);
+    el.textContent = msgs[i];
+    el.style.opacity = '1';
+    el.style.transition = 'opacity 0.3s';
+  }, 300);
+  if (i >= msgs.length - 1) clearInterval(timer);
+}, 1100);
 
-// Stars
-const sky=document.getElementById('skyCanvas');
-const skCtx=sky.getContext('2d');
-function resizeSky(){sky.width=window.innerWidth;sky.height=window.innerHeight;}
-resizeSky();window.addEventListener('resize',resizeSky);
-const stars=[];
-for(let i=0;i<220;i++){
-  stars.push({x:Math.random()*window.innerWidth,y:Math.random()*window.innerHeight*0.62,r:Math.random()*1.4+0.3,a:Math.random(),speed:Math.random()*0.018+0.005});
-}
-function drawSky(){
-  skCtx.clearRect(0,0,sky.width,sky.height);
-  const g=skCtx.createLinearGradient(0,0,0,sky.height*0.65);
-  g.addColorStop(0,'#000818');g.addColorStop(0.5,'#050d1a');g.addColorStop(1,'#0d1b2a');
-  skCtx.fillStyle=g;skCtx.fillRect(0,0,sky.width,sky.height);
-  stars.forEach(s=>{
-    s.a+=s.speed;
-    const al=0.35+0.65*Math.abs(Math.sin(s.a));
-    skCtx.beginPath();skCtx.arc(s.x,s.y,s.r,0,Math.PI*2);
-    skCtx.fillStyle=`rgba(255,255,255,${al})`;skCtx.fill();
-  });
-  requestAnimationFrame(drawSky);
-}
-drawSky();
-
-// Smoke
-const sc=document.getElementById('smokeCanvas');
-const sCtx=sc.getContext('2d');
-function resizeSmoke(){sc.width=sc.parentElement.offsetWidth;sc.height=sc.parentElement.offsetHeight;}
-resizeSmoke();window.addEventListener('resize',resizeSmoke);
-const bs=document.getElementById('busStage');
-let sParticles=[];
-class SP{
-  constructor(x,y){
-    this.x=x;this.y=y;
-    this.vx=(Math.random()-0.7)*0.9;
-    this.vy=-(Math.random()*1.5+0.8);
-    this.r=Math.random()*5+3;
-    this.maxR=this.r*(Math.random()*4+4);
-    this.life=0;this.maxLife=Math.floor(Math.random()*100+100);
-    const g=Math.floor(Math.random()*50+165);
-    this.col=`${g},${g},${g+10}`;
-    this.twist=(Math.random()-0.5)*0.03;
-  }
-  update(){
-    this.life++;this.x+=this.vx;this.y+=this.vy;
-    this.vy*=0.97;this.vx+=this.twist+(Math.random()-0.5)*0.12;
-    this.r+=(this.maxR-this.r)*0.015;
-  }
-  alpha(){
-    const t=this.life/this.maxLife;
-    return t<0.2?(t/0.2)*0.38:((1-t)/0.8)*0.36;
-  }
-  draw(){
-    const a=this.alpha();
-    const g=sCtx.createRadialGradient(this.x,this.y,0,this.x,this.y,this.r);
-    g.addColorStop(0,`rgba(${this.col},${a})`);
-    g.addColorStop(0.45,`rgba(${this.col},${a*0.55})`);
-    g.addColorStop(1,`rgba(${this.col},0)`);
-    sCtx.beginPath();sCtx.arc(this.x,this.y,this.r,0,Math.PI*2);
-    sCtx.fillStyle=g;sCtx.fill();
-  }
-  dead(){return this.life>=this.maxLife;}
-}
-function getOrigin(){
-  const br=bs.getBoundingClientRect(),pr=sc.parentElement.getBoundingClientRect();
-  return{x:br.left-pr.left+br.width*0.10,y:br.top-pr.top+8};
-}
-let ft=0;
-function smokeLoop(){
-  sCtx.clearRect(0,0,sc.width,sc.height);
-  ft++;
-  if(ft%3===0){
-    const{x,y}=getOrigin();
-    for(let i=0;i<3;i++) sParticles.push(new SP(x+(Math.random()-0.5)*8,y+(Math.random()-0.5)*5));
-  }
-  sParticles=sParticles.filter(p=>!p.dead());
-  sParticles.forEach(p=>{p.update();p.draw();});
-  requestAnimationFrame(smokeLoop);
-}
-smokeLoop();
-
-// Progress text
-const ptexts=["Preparing your journey...","Loading destinations...","Almost ready...","All aboard! 🚌"];
-let pi=0;
-const pEl=document.getElementById('progressText');
-setInterval(()=>{
-  pi=(pi+1)%ptexts.length;
-  pEl.style.opacity='0';
-  setTimeout(()=>{pEl.textContent=ptexts[pi];pEl.style.opacity='1';},200);
-},1300);
-
-// Redirect
-setTimeout(()=>{window.location.href="{% url 'home' %}";},5800);
+setTimeout(() => { window.location.href = "{% url 'home' %}"; }, 6000);
 </script>
 </body>
 </html>
