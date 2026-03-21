@@ -1201,6 +1201,51 @@
         50% { height: 25px; }
     }
 
+    /* Navigation Toast */
+    .navigation-toast {
+        position: fixed;
+        bottom: 100px;
+        right: 30px;
+        background: white;
+        border-radius: var(--radius-lg);
+        padding: 12px 20px;
+        box-shadow: var(--shadow-xl);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        z-index: 1001;
+        animation: slideInRight 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
+        border-left: 4px solid var(--primary);
+    }
+
+    @keyframes slideInRight {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    @keyframes fadeOut {
+        to {
+            opacity: 0;
+            visibility: hidden;
+        }
+    }
+
+    .navigation-toast i {
+        font-size: 1.2rem;
+        color: var(--primary);
+    }
+
+    .navigation-toast span {
+        font-size: 0.9rem;
+        color: var(--dark);
+    }
+
     /* Responsive */
     @media (max-width: 1024px) {
         .search-form {
@@ -1256,6 +1301,13 @@
             height: 480px;
             bottom: 70px;
             right: -10px;
+        }
+        
+        .navigation-toast {
+            bottom: 90px;
+            right: 20px;
+            left: 20px;
+            width: auto;
         }
     }
 </style>
@@ -1831,7 +1883,7 @@
     </div>
 </section>
 
-<!-- AI Chat Assistant with Voice -->
+<!-- AI Chat Assistant with Voice Navigation -->
 <div class="chat-widget">
     <div class="chat-button" id="chatButton">
         <i class="fas fa-robot"></i>
@@ -1864,21 +1916,34 @@
                     <br>• Payment methods
                     <br>• And more! Ask me anything.
                     <br><br>
-                    🎤 You can use voice commands:
-                    <br>• Click the microphone to speak your question
-                    <br>• Click the stop button to stop the voice response
-                    <br>• The voice will be in a friendly female voice
+                    🎤 <strong>Voice Navigation Commands:</strong>
+                    <br>• "Go to search" - Search buses
+                    <br>• "Go to my bookings" - View tickets
+                    <br>• "Cancel my ticket" - Cancel booking
+                    <br>• "Login" - Go to login page
+                    <br>• "Sign up" - Create account
+                    <br>• "Profile" - View profile
+                    <br>• "Dashboard" - Go to dashboard
+                    <br>• "Support" - Contact support
+                    <br><br>
+                    🎙️ Just say what you want to do!
                 </div>
             </div>
         </div>
         
         <div class="chat-input">
-            <input type="text" id="chatInput" placeholder="Type your question..." onkeypress="handleKeyPress(event)">
+            <input type="text" id="chatInput" placeholder="Type your question or command..." onkeypress="handleKeyPress(event)">
             <button class="send-btn" onclick="sendMessage()">
                 <i class="fas fa-paper-plane"></i>
             </button>
         </div>
     </div>
+</div>
+
+<!-- Navigation Toast -->
+<div id="navigationToast" class="navigation-toast" style="display: none;">
+    <i class="fas fa-location-arrow"></i>
+    <span id="toastMessage">Navigating...</span>
 </div>
 
 <!-- AOS Animation Library -->
@@ -2037,7 +2102,7 @@ if (routeItems.length > 0) {
 
 showSlide(0);
 
-// ===== AI CHAT ASSISTANT WITH VOICE (FULLY CONTROLLABLE) =====
+// ===== VOICE NAVIGATION ASSISTANT =====
 const chatButton = document.getElementById('chatButton');
 const chatContainer = document.getElementById('chatContainer');
 const closeChat = document.getElementById('closeChat');
@@ -2045,6 +2110,101 @@ const chatInput = document.getElementById('chatInput');
 const chatMessages = document.getElementById('chatMessages');
 const voiceButton = document.getElementById('voiceButton');
 const stopVoiceButton = document.getElementById('stopVoiceButton');
+
+// Navigation URLs mapping
+const navigationMap = {
+    // Search related
+    'search': '/bookings/search/',
+    'search buses': '/bookings/search/',
+    'find bus': '/bookings/search/',
+    'bus search': '/bookings/search/',
+    'find buses': '/bookings/search/',
+    
+    // Bookings related
+    'my bookings': '/bookings/my-bookings/',
+    'view bookings': '/bookings/my-bookings/',
+    'my tickets': '/bookings/my-bookings/',
+    'tickets': '/bookings/my-bookings/',
+    'booking': '/bookings/my-bookings/',
+    'bookings': '/bookings/my-bookings/',
+    
+    // Cancel related
+    'cancel': '/bookings/my-bookings/',
+    'cancel booking': '/bookings/my-bookings/',
+    'cancel ticket': '/bookings/my-bookings/',
+    'cancellation': '/bookings/my-bookings/',
+    
+    // Login/Signup related
+    'login': '/accounts/login/',
+    'sign in': '/accounts/login/',
+    'log in': '/accounts/login/',
+    'signup': '/accounts/signup/',
+    'sign up': '/accounts/signup/',
+    'register': '/accounts/signup/',
+    'create account': '/accounts/signup/',
+    
+    // Profile/Dashboard
+    'profile': '/accounts/profile/',
+    'my profile': '/accounts/profile/',
+    'account': '/accounts/profile/',
+    'dashboard': '/accounts/dashboard/',
+    'my dashboard': '/accounts/dashboard/',
+    
+    // Support
+    'support': '/support/',
+    'help': '/support/',
+    'contact': '/support/',
+    'customer support': '/support/',
+    
+    // Home
+    'home': '/home/',
+    'main': '/home/',
+    'homepage': '/home/',
+};
+
+function showToast(message, redirectUrl) {
+    const toast = document.getElementById('navigationToast');
+    const toastMessage = document.getElementById('toastMessage');
+    toastMessage.textContent = message;
+    toast.style.display = 'flex';
+    
+    setTimeout(() => {
+        toast.style.display = 'none';
+        if (redirectUrl) {
+            window.location.href = redirectUrl;
+        }
+    }, 3000);
+}
+
+function navigateToPage(command) {
+    const lowerCommand = command.toLowerCase().trim();
+    
+    // Check for navigation commands
+    for (const [keyword, url] of Object.entries(navigationMap)) {
+        if (lowerCommand.includes(keyword)) {
+            showToast(`🔍 Navigating to ${keyword}...`, url);
+            return true;
+        }
+    }
+    
+    // Check for specific actions
+    if (lowerCommand.includes('cancel') && lowerCommand.includes('ticket')) {
+        showToast('🎫 Taking you to your bookings to cancel...', '/bookings/my-bookings/');
+        return true;
+    }
+    
+    if (lowerCommand.includes('view') && (lowerCommand.includes('ticket') || lowerCommand.includes('booking'))) {
+        showToast('🎟️ Taking you to your bookings...', '/bookings/my-bookings/');
+        return true;
+    }
+    
+    if (lowerCommand.includes('book') && lowerCommand.includes('bus')) {
+        showToast('🚌 Taking you to bus search...', '/bookings/search/');
+        return true;
+    }
+    
+    return false;
+}
 
 // Speech recognition setup
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -2056,10 +2216,8 @@ let currentUtterance = null;
 // Female voice selection
 let selectedVoice = null;
 
-// Get available voices and select a female voice
 function loadVoices() {
     const voices = window.speechSynthesis.getVoices();
-    // Try to find a female voice
     const femaleVoices = voices.filter(voice => 
         voice.name.toLowerCase().includes('female') || 
         voice.name.toLowerCase().includes('samantha') ||
@@ -2071,12 +2229,10 @@ function loadVoices() {
     if (femaleVoices.length > 0) {
         selectedVoice = femaleVoices[0];
     } else {
-        // Fallback to any English voice
         selectedVoice = voices.find(voice => voice.lang.startsWith('en')) || voices[0];
     }
 }
 
-// Load voices when available
 if ('speechSynthesis' in window) {
     window.speechSynthesis.onvoiceschanged = loadVoices;
     loadVoices();
@@ -2092,9 +2248,7 @@ if (SpeechRecognition) {
         isListening = true;
         voiceButton.classList.add('listening');
         voiceButton.innerHTML = '<i class="fas fa-microphone-alt"></i>';
-        
-        // Add listening message
-        addMessage("🎤 Listening... Please speak now.", 'bot');
+        addMessage("🎤 Listening... Please speak your command or question.", 'bot');
         chatMessages.scrollTop = chatMessages.scrollHeight;
     };
     
@@ -2107,7 +2261,18 @@ if (SpeechRecognition) {
     recognition.onresult = (event) => {
         const transcript = event.results[0][0].transcript;
         chatInput.value = transcript;
-        sendMessage();
+        
+        // Check if it's a navigation command
+        const navigated = navigateToPage(transcript);
+        
+        if (navigated) {
+            addMessage(transcript, 'user');
+            addMessage("🚀 Redirecting you to the requested page...", 'bot');
+            chatInput.value = '';
+        } else {
+            // Process as normal question
+            sendMessage();
+        }
     };
     
     recognition.onerror = (event) => {
@@ -2125,7 +2290,6 @@ if (SpeechRecognition) {
     stopVoiceButton.style.cursor = 'not-allowed';
 }
 
-// Stop voice function
 function stopVoice() {
     if (window.speechSynthesis) {
         window.speechSynthesis.cancel();
@@ -2139,20 +2303,16 @@ function stopVoice() {
     }
 }
 
-// Speak response with female voice
 function speakResponse(text) {
     if (!window.speechSynthesis) return;
     
-    // Stop any ongoing speech
     stopVoice();
     
-    // Create new utterance
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'en-IN';
     utterance.rate = 0.9;
-    utterance.pitch = 1.1; // Slightly higher pitch for female voice
+    utterance.pitch = 1.1;
     
-    // Set selected voice if available
     if (selectedVoice) {
         utterance.voice = selectedVoice;
     }
@@ -2179,7 +2339,6 @@ function speakResponse(text) {
     window.speechSynthesis.speak(utterance);
 }
 
-// Voice button click handler
 if (voiceButton) {
     voiceButton.addEventListener('click', () => {
         if (!SpeechRecognition) {
@@ -2187,7 +2346,6 @@ if (voiceButton) {
             return;
         }
         
-        // If currently speaking, stop and start listening
         if (isSpeaking) {
             stopVoice();
         }
@@ -2200,7 +2358,6 @@ if (voiceButton) {
     });
 }
 
-// Stop voice button handler
 if (stopVoiceButton) {
     stopVoiceButton.addEventListener('click', () => {
         stopVoice();
@@ -2213,19 +2370,19 @@ const knowledgeBase = {
     'how to book a bus': "To book a bus:\n1. Enter your source and destination cities\n2. Select your journey date\n3. Click 'Search Buses'\n4. Choose a bus and select seats\n5. Enter passenger details\n6. Make payment and get confirmation!",
     'book a bus': "To book a bus:\n1. Enter your source and destination cities\n2. Select your journey date\n3. Click 'Search Buses'\n4. Choose a bus and select seats\n5. Enter passenger details\n6. Make payment and get confirmation!",
     'booking process': "To book a bus:\n1. Enter your source and destination cities\n2. Select your journey date\n3. Click 'Search Buses'\n4. Choose a bus and select seats\n5. Enter passenger details\n6. Make payment and get confirmation!",
-    'cancellation policy': "You can cancel your booking up to 4 hours before departure. Full refund will be credited to your original payment method within 5-7 business days.",
+    'cancellation policy': "You can cancel your booking up to 4 hours before departure. Full refund will be credited to your original payment method within 5-7 business days. Just say 'Cancel my ticket' to go to your bookings!",
     'refund policy': "Refunds are processed to your original payment method within 5-7 business days after cancellation.",
     'payment methods': "We accept UPI (Google Pay, PhonePe, Paytm, BHIM), Credit/Debit Cards, Net Banking, and Wallet payments.",
     'select seats': "After choosing a bus, you'll see a seat layout. Click on available seats to select them. Window seats offer better view, aisle seats offer easy access.",
-    'login': "Click on 'Login' at the top right corner. Enter your username/email and password to access your account.",
-    'signup': "Click on 'Sign Up' to create a new account. You can sign up as a Customer or Bus Owner.",
-    'bus owner': "To register as a bus owner, click on 'Register Your Bus Now' on the homepage. Fill in your business details and license information.",
+    'login': "Say 'Login' or click the login button at the top right to access your account.",
+    'signup': "Say 'Sign up' to create a new account. You can sign up as a Customer or Bus Owner.",
+    'bus owner': "To register as a bus owner, say 'Register' or click 'Register Your Bus Now' on the homepage.",
     'popular routes': "Popular routes include Mumbai-Pune, Delhi-Jaipur, Bangalore-Mysore, Chennai-Pondicherry, Hyderabad-Bangalore, and Ahmedabad-Surat.",
-    'help': "I can help you with booking, cancellation, refunds, payments, seat selection, and account issues. What would you like to know?",
-    'hello': "Hello! How can I help you today? You can type or click the microphone to speak your question!",
-    'hi': "Hi there! Welcome to EasyBook. How can I assist you today?",
+    'help': "I can help you with:\n• Booking a bus (say 'Book a bus')\n• Cancellation (say 'Cancel my ticket')\n• Refunds\n• Payment methods\n• Seat selection\n• Account issues\n• Navigation to any page!",
+    'hello': "Hello! How can I help you today? Try saying 'Search buses', 'My bookings', or 'Login'!",
+    'hi': "Hi there! Welcome to EasyBook. You can say 'Search buses', 'View tickets', or 'Login' to get started!",
     'thanks': "You're welcome! Happy to help. Have a great journey! 🚌",
-    'bye': "Goodbye! Have a safe and happy journey! Come back soon! 🚌",
+    'bye': "Goodbye! Safe travels! Say 'Search buses' when you're ready to book! 🚌",
 };
 
 function sendMessage() {
@@ -2235,16 +2392,20 @@ function sendMessage() {
     addMessage(message, 'user');
     chatInput.value = '';
     
+    // Check if it's a navigation command first
+    const navigated = navigateToPage(message);
+    
+    if (navigated) {
+        return;
+    }
+    
     showTypingIndicator();
     
     setTimeout(() => {
         removeTypingIndicator();
         const response = getAIResponse(message);
         addMessage(response, 'bot');
-        
-        // Speak the response with female voice
         speakResponse(response);
-        
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }, 500);
 }
@@ -2306,7 +2467,7 @@ function getAIResponse(message) {
     if (lowerMsg.includes('owner')) return knowledgeBase['bus owner'];
     if (lowerMsg.includes('route')) return knowledgeBase['popular routes'];
     
-    return "I'm here to help! You can ask me about:\n• Booking a bus\n• Cancellation policy\n• Refunds\n• Payment methods\n• Seat selection\n• Account issues\n• Bus owner registration\n\n🎤 Click the microphone button to speak your question!";
+    return "I'm here to help! You can:\n• Say 'Search buses' to find buses\n• Say 'My bookings' to view tickets\n• Say 'Cancel my ticket' to cancel\n• Say 'Login' or 'Sign up'\n• Ask me about policies, payments, or seats!\n\nWhat would you like to do?";
 }
 
 // Chat widget controls
