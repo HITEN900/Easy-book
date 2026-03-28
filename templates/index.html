@@ -4,13 +4,10 @@
 {% block title %}EasyBook - India's Leading Bus Booking Platform{% endblock %}
 
 {% block extra_css %}
-<!-- Google Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<!-- AOS Animation Library -->
 <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
 <style>
-    /* ===== PROFESSIONAL DESIGN SYSTEM ===== */
     :root {
         --primary: #2563eb;
         --primary-dark: #1d4ed8;
@@ -27,17 +24,14 @@
         --light: #f8fafc;
         --light-200: #e2e8f0;
         --light-300: #cbd5e1;
-        
         --gradient-primary: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
         --gradient-dark: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
         --gradient-accent: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
-        
         --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
         --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
         --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
         --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
         --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
-        
         --radius-sm: 0.375rem;
         --radius-md: 0.5rem;
         --radius-lg: 1rem;
@@ -45,11 +39,7 @@
         --radius-2xl: 2rem;
     }
 
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
         font-family: 'Inter', sans-serif;
@@ -58,11 +48,7 @@
         overflow-x: hidden;
     }
 
-    /* ===== TYPOGRAPHY ===== */
-    h1, h2, h3, h4, h5, h6 {
-        font-weight: 700;
-        line-height: 1.2;
-    }
+    h1, h2, h3, h4, h5, h6 { font-weight: 700; line-height: 1.2; }
 
     .section-tag {
         display: inline-block;
@@ -92,6 +78,146 @@
         margin: 0 auto;
     }
 
+    /* =====================================================
+       TRAVEL TICKER STRIP  —  scrolls LEFT → RIGHT
+       Items appear from the left edge and exit right.
+       Achieved by starting at -50% width and ending at 0.
+    ====================================================== */
+    .ticker-outer {
+        width: 100%;
+        background: linear-gradient(90deg, #1a3fcc 0%, #2563eb 40%, #5b21d1 72%, #7c3aed 100%);
+        border-bottom: 2px solid rgba(255,255,255,0.12);
+        position: relative;
+        z-index: 100;
+        overflow: hidden;
+        /* soft fade masks on both edges */
+        -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 5%, #000 95%, transparent 100%);
+        mask-image: linear-gradient(to right, transparent 0%, #000 5%, #000 95%, transparent 100%);
+    }
+
+    .ticker-track {
+        display: inline-flex;
+        align-items: center;
+        white-space: nowrap;
+        padding: 0.6rem 0;
+        /* LEFT-TO-RIGHT scroll: start off-screen to left (-50%), move to 0 */
+        animation: scroll-ltr 65s linear infinite;
+        will-change: transform;
+    }
+
+    .ticker-outer:hover .ticker-track {
+        animation-play-state: paused;
+    }
+
+    @keyframes scroll-ltr {
+        0%   { transform: translateX(-50%); }
+        100% { transform: translateX(0%); }
+    }
+
+    /* ── chip ── */
+    .t-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 0 1.8rem;
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: rgba(255,255,255,0.93);
+        letter-spacing: 0.02em;
+        flex-shrink: 0;
+        cursor: default;
+        transition: color 0.2s;
+        border-right: 1.5px solid rgba(255,255,255,0.18);
+        line-height: 1.4;
+    }
+    .t-chip:last-child { border-right: none; }
+    .t-chip:hover { color: #fde68a; }
+
+    /* ── animated icons ── */
+    .t-bus {
+        display: inline-block;
+        font-size: 1rem;
+        animation: bus-drive 1.6s ease-in-out infinite;
+    }
+    @keyframes bus-drive {
+        0%,100% { transform: translateX(0); }
+        40%      { transform: translateX(4px); }
+        70%      { transform: translateX(-2px); }
+    }
+
+    .t-plane {
+        display: inline-block;
+        font-size: 0.95rem;
+        animation: plane-soar 2.2s ease-in-out infinite;
+    }
+    @keyframes plane-soar {
+        0%,100% { transform: translateY(0) rotate(-5deg); }
+        50%     { transform: translateY(-5px) rotate(3deg); }
+    }
+
+    .t-star {
+        display: inline-block;
+        font-size: 0.9rem;
+        animation: star-pulse 1.4s ease-in-out infinite;
+    }
+    @keyframes star-pulse {
+        0%,100% { transform: scale(1); }
+        50%     { transform: scale(1.35); }
+    }
+
+    /* green live dot */
+    .t-live-dot {
+        display: inline-block;
+        width: 8px; height: 8px;
+        border-radius: 50%;
+        background: #4ade80;
+        box-shadow: 0 0 0 0 rgba(74,222,128,0.6);
+        animation: live-ping 1.3s ease-out infinite;
+        flex-shrink: 0;
+    }
+    @keyframes live-ping {
+        0%  { box-shadow: 0 0 0 0 rgba(74,222,128,0.7); }
+        70% { box-shadow: 0 0 0 7px rgba(74,222,128,0); }
+        100%{ box-shadow: 0 0 0 0 rgba(74,222,128,0); }
+    }
+
+    /* price pill */
+    .t-price {
+        display: inline-block;
+        background: rgba(255,255,255,0.18);
+        border-radius: 100px;
+        padding: 1px 9px;
+        font-size: 0.76rem;
+        font-weight: 700;
+        color: #fff;
+        margin-left: 3px;
+    }
+
+    /* promo code pill */
+    .t-promo {
+        display: inline-block;
+        background: rgba(253,230,138,0.2);
+        border: 1px solid rgba(253,230,138,0.45);
+        border-radius: 100px;
+        padding: 1px 9px;
+        font-size: 0.76rem;
+        font-weight: 700;
+        color: #fde68a;
+        margin-left: 3px;
+        letter-spacing: 0.04em;
+    }
+
+    /* thin arrow between city names */
+    .t-arr {
+        color: rgba(255,255,255,0.5);
+        margin: 0 2px;
+        font-size: 0.78rem;
+    }
+
+    @media (max-width: 768px) {
+        .t-chip { font-size: 0.76rem; padding: 0 1.1rem; }
+    }
+
     /* ===== HERO SLIDER ===== */
     .hero {
         position: relative;
@@ -100,17 +226,12 @@
         overflow: hidden;
     }
 
-    .hero-slider {
-        height: 100%;
-        position: relative;
-    }
+    .hero-slider { height: 100%; position: relative; }
 
     .hero-slide {
         position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
         opacity: 0;
         visibility: hidden;
         transition: opacity 1s ease, visibility 1s ease;
@@ -118,19 +239,14 @@
         background-position: center;
     }
 
-    .hero-slide.active {
-        opacity: 1;
-        visibility: visible;
-    }
+    .hero-slide.active { opacity: 1; visibility: visible; }
 
     .hero-slide::before {
         content: '';
         position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.7) 50%, rgba(15, 23, 42, 0.5) 100%);
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: linear-gradient(135deg, rgba(15,23,42,0.9) 0%, rgba(30,41,59,0.7) 50%, rgba(15,23,42,0.5) 100%);
         z-index: 1;
     }
 
@@ -148,9 +264,9 @@
 
     .hero-badge {
         display: inline-block;
-        background: rgba(255, 255, 255, 0.15);
+        background: rgba(255,255,255,0.15);
         backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255,255,255,0.2);
         padding: 0.75rem 1.5rem;
         border-radius: 100px;
         font-weight: 600;
@@ -188,10 +304,7 @@
         animation: fadeInUp 1s ease 0.6s both;
     }
 
-    .hero-cta:hover {
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-xl);
-    }
+    .hero-cta:hover { transform: translateY(-2px); box-shadow: var(--shadow-xl); }
 
     .hero-controls {
         position: absolute;
@@ -204,28 +317,23 @@
     }
 
     .hero-dot {
-        width: 3rem;
-        height: 0.25rem;
-        background: rgba(255, 255, 255, 0.3);
+        width: 3rem; height: 0.25rem;
+        background: rgba(255,255,255,0.3);
         border-radius: 1rem;
         cursor: pointer;
         transition: all 0.3s ease;
     }
 
-    .hero-dot.active {
-        background: white;
-        width: 5rem;
-    }
+    .hero-dot.active { background: white; width: 5rem; }
 
     .hero-arrow {
         position: absolute;
         top: 50%;
         transform: translateY(-50%);
-        width: 3rem;
-        height: 3rem;
-        background: rgba(255, 255, 255, 0.15);
+        width: 3rem; height: 3rem;
+        background: rgba(255,255,255,0.15);
         backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255,255,255,0.2);
         border-radius: 50%;
         display: flex;
         align-items: center;
@@ -237,23 +345,13 @@
         z-index: 10;
     }
 
-    .hero-arrow:hover {
-        background: white;
-        color: var(--primary);
-    }
-
+    .hero-arrow:hover { background: white; color: var(--primary); }
     .hero-arrow.prev { left: 2rem; }
     .hero-arrow.next { right: 2rem; }
 
     @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
     }
 
     /* ===== SEARCH SECTION ===== */
@@ -288,10 +386,7 @@
         transition: all 0.3s ease;
     }
 
-    .search-tab.active {
-        background: var(--primary);
-        color: white;
-    }
+    .search-tab.active { background: var(--primary); color: white; }
 
     .search-form {
         display: grid;
@@ -299,9 +394,7 @@
         gap: 1rem;
     }
 
-    .form-group {
-        position: relative;
-    }
+    .form-group { position: relative; }
 
     .form-group i {
         position: absolute;
@@ -346,10 +439,7 @@
         white-space: nowrap;
     }
 
-    .btn-search:hover {
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-xl);
-    }
+    .btn-search:hover { transform: translateY(-2px); box-shadow: var(--shadow-xl); }
 
     /* ===== FEATURES SECTION ===== */
     .features {
@@ -377,27 +467,18 @@
     .feature-card::before {
         content: '';
         position: absolute;
-        top: 0;
-        left: 0;
-        width: 4px;
-        height: 0;
+        top: 0; left: 0;
+        width: 4px; height: 0;
         background: var(--gradient-primary);
         transition: height 0.3s ease;
     }
 
-    .feature-card:hover {
-        transform: translateY(-5px);
-        box-shadow: var(--shadow-xl);
-    }
-
-    .feature-card:hover::before {
-        height: 100%;
-    }
+    .feature-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-xl); }
+    .feature-card:hover::before { height: 100%; }
 
     .feature-icon {
-        width: 4rem;
-        height: 4rem;
-        background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(124, 58, 237, 0.1));
+        width: 4rem; height: 4rem;
+        background: linear-gradient(135deg, rgba(37,99,235,0.1), rgba(124,58,237,0.1));
         border-radius: var(--radius-lg);
         display: flex;
         align-items: center;
@@ -414,31 +495,13 @@
         transform: scale(1.1) rotate(5deg);
     }
 
-    .feature-title {
-        font-size: 1.25rem;
-        font-weight: 700;
-        margin-bottom: 0.75rem;
-        color: var(--dark);
-    }
-
-    .feature-text {
-        color: var(--dark-600);
-        line-height: 1.7;
-        font-size: 0.95rem;
-    }
+    .feature-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.75rem; color: var(--dark); }
+    .feature-text { color: var(--dark-600); line-height: 1.7; font-size: 0.95rem; }
 
     /* ===== ROUTES SLIDER ===== */
-    .routes {
-        padding: 6rem 0;
-        background: white;
-        overflow: hidden;
-    }
+    .routes { padding: 6rem 0; background: white; overflow: hidden; }
 
-    .routes-slider-container {
-        position: relative;
-        margin-top: 3rem;
-        padding: 0 20px;
-    }
+    .routes-slider-container { position: relative; margin-top: 3rem; padding: 0 20px; }
 
     .routes-slider {
         display: flex;
@@ -447,10 +510,7 @@
         will-change: transform;
     }
 
-    .route-item {
-        flex: 0 0 calc(33.333% - 1rem);
-        min-width: 300px;
-    }
+    .route-item { flex: 0 0 calc(33.333% - 1rem); min-width: 300px; }
 
     .route-card {
         background: white;
@@ -464,32 +524,21 @@
         height: 100%;
     }
 
-    .route-card:hover {
-        transform: translateY(-5px);
-        box-shadow: var(--shadow-xl);
-    }
+    .route-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-xl); }
 
-    .route-image {
-        height: 200px;
-        position: relative;
-        overflow: hidden;
-    }
+    .route-image { height: 200px; position: relative; overflow: hidden; }
 
     .route-image img {
-        width: 100%;
-        height: 100%;
+        width: 100%; height: 100%;
         object-fit: cover;
         transition: transform 0.5s ease;
     }
 
-    .route-card:hover .route-image img {
-        transform: scale(1.1);
-    }
+    .route-card:hover .route-image img { transform: scale(1.1); }
 
     .route-badge {
         position: absolute;
-        top: 1rem;
-        right: 1rem;
+        top: 1rem; right: 1rem;
         background: var(--gradient-primary);
         color: white;
         padding: 0.5rem 1rem;
@@ -500,9 +549,7 @@
         box-shadow: var(--shadow-md);
     }
 
-    .route-content {
-        padding: 1.5rem;
-    }
+    .route-content { padding: 1.5rem; }
 
     .route-cities {
         display: flex;
@@ -511,29 +558,10 @@
         margin-bottom: 1rem;
     }
 
-    .city {
-        text-align: center;
-        flex: 1;
-    }
-
-    .city-name {
-        font-weight: 700;
-        font-size: 1.25rem;
-        color: var(--dark);
-        margin-bottom: 0.25rem;
-    }
-
-    .city-code {
-        color: var(--dark-600);
-        font-size: 0.875rem;
-        text-transform: uppercase;
-    }
-
-    .route-arrow {
-        color: var(--primary);
-        font-size: 1.5rem;
-        margin: 0 0.5rem;
-    }
+    .city { text-align: center; flex: 1; }
+    .city-name { font-weight: 700; font-size: 1.25rem; color: var(--dark); margin-bottom: 0.25rem; }
+    .city-code { color: var(--dark-600); font-size: 0.875rem; text-transform: uppercase; }
+    .route-arrow { color: var(--primary); font-size: 1.5rem; margin: 0 0.5rem; }
 
     .route-meta {
         display: flex;
@@ -543,26 +571,9 @@
         border-top: 2px dashed var(--light-200);
     }
 
-    .route-price {
-        font-size: 1.5rem;
-        font-weight: 800;
-        color: var(--primary);
-        line-height: 1;
-    }
-
-    .route-price small {
-        font-size: 0.875rem;
-        font-weight: 400;
-        color: var(--dark-600);
-        display: block;
-    }
-
-    .route-duration {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        color: var(--dark-600);
-    }
+    .route-price { font-size: 1.5rem; font-weight: 800; color: var(--primary); line-height: 1; }
+    .route-price small { font-size: 0.875rem; font-weight: 400; color: var(--dark-600); display: block; }
+    .route-duration { display: flex; align-items: center; gap: 0.5rem; color: var(--dark-600); }
 
     .slider-nav {
         display: flex;
@@ -573,8 +584,7 @@
     }
 
     .slider-btn {
-        width: 3rem;
-        height: 3rem;
+        width: 3rem; height: 3rem;
         border: 2px solid var(--primary);
         border-radius: 50%;
         background: transparent;
@@ -594,25 +604,17 @@
         transform: scale(1.1);
     }
 
-    .slider-dots {
-        display: flex;
-        gap: 0.5rem;
-    }
+    .slider-dots { display: flex; gap: 0.5rem; }
 
     .slider-dot {
-        width: 0.5rem;
-        height: 0.5rem;
+        width: 0.5rem; height: 0.5rem;
         border-radius: 50%;
         background: var(--light-300);
         cursor: pointer;
         transition: all 0.3s ease;
     }
 
-    .slider-dot.active {
-        width: 2rem;
-        border-radius: 1rem;
-        background: var(--primary);
-    }
+    .slider-dot.active { width: 2rem; border-radius: 1rem; background: var(--primary); }
 
     /* ===== OFFERS SECTION ===== */
     .offers {
@@ -633,9 +635,9 @@
     }
 
     .offer-card {
-        background: rgba(255, 255, 255, 0.1);
+        background: rgba(255,255,255,0.1);
         backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255,255,255,0.2);
         border-radius: var(--radius-xl);
         padding: 2rem;
         transition: all 0.3s ease;
@@ -644,30 +646,17 @@
 
     .offer-card:hover {
         transform: translateY(-5px);
-        background: rgba(255, 255, 255, 0.2);
+        background: rgba(255,255,255,0.2);
         box-shadow: var(--shadow-xl);
     }
 
-    .offer-icon {
-        font-size: 3rem;
-        margin-bottom: 1rem;
-    }
-
-    .offer-title {
-        font-size: 1.25rem;
-        font-weight: 700;
-        margin-bottom: 0.75rem;
-    }
-
-    .offer-description {
-        font-size: 0.95rem;
-        opacity: 0.9;
-        margin-bottom: 1.5rem;
-    }
+    .offer-icon { font-size: 3rem; margin-bottom: 1rem; }
+    .offer-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.75rem; }
+    .offer-description { font-size: 0.95rem; opacity: 0.9; margin-bottom: 1.5rem; }
 
     .offer-code {
         display: inline-block;
-        background: rgba(0, 0, 0, 0.3);
+        background: rgba(0,0,0,0.3);
         padding: 0.5rem 1.5rem;
         border-radius: 100px;
         font-weight: 600;
@@ -676,10 +665,7 @@
     }
 
     /* ===== APP SECTION ===== */
-    .app-section {
-        padding: 6rem 0;
-        background: white;
-    }
+    .app-section { padding: 6rem 0; background: white; }
 
     .app-card {
         background: var(--gradient-dark);
@@ -690,32 +676,14 @@
         overflow: hidden;
     }
 
-    .app-content {
-        position: relative;
-        z-index: 2;
-    }
-
-    .app-title {
-        font-size: 2.5rem;
-        font-weight: 800;
-        margin-bottom: 1rem;
-    }
-
-    .app-description {
-        font-size: 1.125rem;
-        opacity: 0.9;
-        margin-bottom: 2rem;
-        max-width: 500px;
-    }
-
-    .app-buttons {
-        display: flex;
-        gap: 1rem;
-    }
+    .app-content { position: relative; z-index: 2; }
+    .app-title { font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem; }
+    .app-description { font-size: 1.125rem; opacity: 0.9; margin-bottom: 2rem; max-width: 500px; }
+    .app-buttons { display: flex; gap: 1rem; }
 
     .app-btn {
-        background: rgba(255, 255, 255, 0.15);
-        border: 1px solid rgba(255, 255, 255, 0.3);
+        background: rgba(255,255,255,0.15);
+        border: 1px solid rgba(255,255,255,0.3);
         color: white;
         padding: 1rem 2rem;
         border-radius: 100px;
@@ -727,15 +695,8 @@
         font-weight: 600;
     }
 
-    .app-btn:hover {
-        background: white;
-        color: var(--dark);
-        transform: translateY(-2px);
-    }
-
-    .app-btn i {
-        font-size: 1.5rem;
-    }
+    .app-btn:hover { background: white; color: var(--dark); transform: translateY(-2px); }
+    .app-btn i { font-size: 1.5rem; }
 
     .qr-code {
         background: white;
@@ -746,17 +707,10 @@
         box-shadow: var(--shadow-2xl);
     }
 
-    .qr-code img {
-        width: 120px;
-        height: 120px;
-        border-radius: var(--radius-md);
-    }
+    .qr-code img { width: 120px; height: 120px; border-radius: var(--radius-md); }
 
     /* ===== TESTIMONIALS ===== */
-    .testimonials {
-        padding: 6rem 0;
-        background: linear-gradient(135deg, #f8fafc, #f1f5f9);
-    }
+    .testimonials { padding: 6rem 0; background: linear-gradient(135deg, #f8fafc, #f1f5f9); }
 
     .testimonials-grid {
         display: grid;
@@ -773,33 +727,13 @@
         transition: all 0.3s ease;
     }
 
-    .testimonial-card:hover {
-        transform: translateY(-5px);
-        box-shadow: var(--shadow-xl);
-    }
-
-    .testimonial-rating {
-        color: #fbbf24;
-        margin-bottom: 1rem;
-        font-size: 1.1rem;
-    }
-
-    .testimonial-text {
-        color: var(--dark-700);
-        line-height: 1.7;
-        margin-bottom: 1.5rem;
-        font-style: italic;
-    }
-
-    .testimonial-author {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-    }
+    .testimonial-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-xl); }
+    .testimonial-rating { color: #fbbf24; margin-bottom: 1rem; font-size: 1.1rem; }
+    .testimonial-text { color: var(--dark-700); line-height: 1.7; margin-bottom: 1.5rem; font-style: italic; }
+    .testimonial-author { display: flex; align-items: center; gap: 1rem; }
 
     .author-avatar {
-        width: 3rem;
-        height: 3rem;
+        width: 3rem; height: 3rem;
         background: var(--gradient-primary);
         border-radius: 50%;
         display: flex;
@@ -810,21 +744,11 @@
         font-size: 1.25rem;
     }
 
-    .author-info h4 {
-        font-weight: 700;
-        margin-bottom: 0.25rem;
-        color: var(--dark);
-    }
-
-    .author-info p {
-        color: var(--dark-600);
-        font-size: 0.875rem;
-    }
+    .author-info h4 { font-weight: 700; margin-bottom: 0.25rem; color: var(--dark); }
+    .author-info p { color: var(--dark-600); font-size: 0.875rem; }
 
     /* ===== CTA SECTION ===== */
-    .cta-section {
-        padding: 6rem 0;
-    }
+    .cta-section { padding: 6rem 0; }
 
     .cta-card {
         background: var(--gradient-primary);
@@ -836,24 +760,8 @@
         overflow: hidden;
     }
 
-    .cta-title {
-        font-size: 2.5rem;
-        font-weight: 800;
-        margin-bottom: 1rem;
-        position: relative;
-        z-index: 2;
-    }
-
-    .cta-description {
-        font-size: 1.125rem;
-        opacity: 0.95;
-        margin-bottom: 2rem;
-        max-width: 600px;
-        margin-left: auto;
-        margin-right: auto;
-        position: relative;
-        z-index: 2;
-    }
+    .cta-title { font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem; position: relative; z-index: 2; }
+    .cta-description { font-size: 1.125rem; opacity: 0.95; margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto; position: relative; z-index: 2; }
 
     .cta-btn {
         background: white;
@@ -873,16 +781,10 @@
         z-index: 2;
     }
 
-    .cta-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-xl);
-    }
+    .cta-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-xl); }
 
     /* ===== STATS SECTION ===== */
-    .stats {
-        padding: 4rem 0;
-        background: linear-gradient(135deg, #f8fafc, #f1f5f9);
-    }
+    .stats { padding: 4rem 0; background: linear-gradient(135deg, #f8fafc, #f1f5f9); }
 
     .stats-grid {
         display: grid;
@@ -891,32 +793,14 @@
         text-align: center;
     }
 
-    .stat-value {
-        font-size: 3rem;
-        font-weight: 800;
-        color: var(--primary);
-        margin-bottom: 0.5rem;
-    }
+    .stat-value { font-size: 3rem; font-weight: 800; color: var(--primary); margin-bottom: 0.5rem; }
+    .stat-label { color: var(--dark-600); font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.875rem; }
 
-    .stat-label {
-        color: var(--dark-600);
-        font-weight: 500;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        font-size: 0.875rem;
-    }
-
-    /* ===== AI CHAT ASSISTANT WITH VOICE ===== */
-    .chat-widget {
-        position: fixed;
-        bottom: 30px;
-        right: 30px;
-        z-index: 1000;
-    }
+    /* ===== AI CHAT ASSISTANT ===== */
+    .chat-widget { position: fixed; bottom: 30px; right: 30px; z-index: 1000; }
 
     .chat-button {
-        width: 60px;
-        height: 60px;
+        width: 60px; height: 60px;
         background: var(--gradient-primary);
         border-radius: 50%;
         display: flex;
@@ -928,15 +812,8 @@
         animation: pulse 2s infinite;
     }
 
-    .chat-button i {
-        font-size: 1.8rem;
-        color: white;
-    }
-
-    .chat-button:hover {
-        transform: scale(1.1);
-        box-shadow: var(--shadow-2xl);
-    }
+    .chat-button i { font-size: 1.8rem; color: white; }
+    .chat-button:hover { transform: scale(1.1); box-shadow: var(--shadow-2xl); }
 
     @keyframes pulse {
         0%, 100% { transform: scale(1); }
@@ -945,10 +822,8 @@
 
     .chat-container {
         position: absolute;
-        bottom: 80px;
-        right: 0;
-        width: 380px;
-        height: 550px;
+        bottom: 80px; right: 0;
+        width: 380px; height: 550px;
         background: white;
         border-radius: var(--radius-xl);
         box-shadow: var(--shadow-2xl);
@@ -958,19 +833,11 @@
         animation: slideUp 0.3s ease;
     }
 
-    .chat-container.open {
-        display: flex;
-    }
+    .chat-container.open { display: flex; }
 
     @keyframes slideUp {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
     }
 
     .chat-header {
@@ -982,30 +849,15 @@
         align-items: center;
     }
 
-    .chat-header h4 {
-        font-size: 1.1rem;
-        margin: 0;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .chat-header i {
-        font-size: 1.3rem;
-    }
-
-    .voice-controls {
-        display: flex;
-        gap: 8px;
-        align-items: center;
-    }
+    .chat-header h4 { font-size: 1.1rem; margin: 0; display: flex; align-items: center; gap: 8px; }
+    .chat-header i { font-size: 1.3rem; }
+    .voice-controls { display: flex; gap: 8px; align-items: center; }
 
     .voice-button {
-        background: rgba(255, 255, 255, 0.2);
+        background: rgba(255,255,255,0.2);
         border: none;
         border-radius: 50%;
-        width: 35px;
-        height: 35px;
+        width: 35px; height: 35px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -1013,27 +865,15 @@
         transition: all 0.3s;
     }
 
-    .voice-button:hover {
-        background: rgba(255, 255, 255, 0.3);
-        transform: scale(1.05);
-    }
-
-    .voice-button.listening {
-        background: var(--danger);
-        animation: pulse 1s infinite;
-    }
-
-    .voice-button.speaking {
-        background: var(--success);
-        animation: pulse 1s infinite;
-    }
+    .voice-button:hover { background: rgba(255,255,255,0.3); transform: scale(1.05); }
+    .voice-button.listening { background: var(--danger); animation: pulse 1s infinite; }
+    .voice-button.speaking { background: var(--success); animation: pulse 1s infinite; }
 
     .stop-voice-btn {
-        background: rgba(255, 255, 255, 0.2);
+        background: rgba(255,255,255,0.2);
         border: none;
         border-radius: 50%;
-        width: 35px;
-        height: 35px;
+        width: 35px; height: 35px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -1041,44 +881,15 @@
         transition: all 0.3s;
     }
 
-    .stop-voice-btn:hover {
-        background: rgba(255, 255, 255, 0.3);
-        transform: scale(1.05);
-    }
+    .stop-voice-btn:hover { background: rgba(255,255,255,0.3); transform: scale(1.05); }
+    .close-chat { background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer; transition: all 0.3s; }
+    .close-chat:hover { transform: rotate(90deg); }
 
-    .close-chat {
-        background: none;
-        border: none;
-        color: white;
-        font-size: 1.2rem;
-        cursor: pointer;
-        transition: all 0.3s;
-    }
+    .chat-messages { flex: 1; overflow-y: auto; padding: 20px; background: var(--light); }
 
-    .close-chat:hover {
-        transform: rotate(90deg);
-    }
-
-    .chat-messages {
-        flex: 1;
-        overflow-y: auto;
-        padding: 20px;
-        background: var(--light);
-    }
-
-    .message {
-        margin-bottom: 15px;
-        display: flex;
-        animation: fadeIn 0.3s ease;
-    }
-
-    .message.bot {
-        justify-content: flex-start;
-    }
-
-    .message.user {
-        justify-content: flex-end;
-    }
+    .message { margin-bottom: 15px; display: flex; animation: fadeIn 0.3s ease; }
+    .message.bot { justify-content: flex-start; }
+    .message.user { justify-content: flex-end; }
 
     .message-content {
         max-width: 80%;
@@ -1118,15 +929,10 @@
         transition: all 0.3s;
     }
 
-    .chat-input input:focus {
-        border-color: var(--primary);
-        outline: none;
-        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-    }
+    .chat-input input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
 
     .send-btn {
-        width: 45px;
-        height: 45px;
+        width: 45px; height: 45px;
         background: var(--gradient-primary);
         border: none;
         border-radius: 50%;
@@ -1138,10 +944,7 @@
         justify-content: center;
     }
 
-    .send-btn:hover {
-        transform: scale(1.05);
-        box-shadow: var(--shadow-md);
-    }
+    .send-btn:hover { transform: scale(1.05); box-shadow: var(--shadow-md); }
 
     .typing-indicator {
         display: flex;
@@ -1153,8 +956,7 @@
     }
 
     .typing-indicator span {
-        width: 8px;
-        height: 8px;
+        width: 8px; height: 8px;
         background: var(--primary);
         border-radius: 50%;
         animation: typing 1.4s infinite;
@@ -1173,39 +975,9 @@
         to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Voice Wave Animation */
-    .voice-wave {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 3px;
-        height: 30px;
-    }
-
-    .voice-wave span {
-        width: 4px;
-        height: 20px;
-        background: var(--primary);
-        border-radius: 2px;
-        animation: wave 1s ease-in-out infinite;
-    }
-
-    .voice-wave span:nth-child(1) { animation-delay: 0s; }
-    .voice-wave span:nth-child(2) { animation-delay: 0.2s; }
-    .voice-wave span:nth-child(3) { animation-delay: 0.4s; }
-    .voice-wave span:nth-child(4) { animation-delay: 0.6s; }
-    .voice-wave span:nth-child(5) { animation-delay: 0.8s; }
-
-    @keyframes wave {
-        0%, 100% { height: 10px; }
-        50% { height: 25px; }
-    }
-
-    /* Navigation Toast */
     .navigation-toast {
         position: fixed;
-        bottom: 100px;
-        right: 30px;
+        bottom: 100px; right: 30px;
         background: white;
         border-radius: var(--radius-lg);
         padding: 12px 20px;
@@ -1219,164 +991,149 @@
     }
 
     @keyframes slideInRight {
-        from {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-        to {
-            transform: translateX(0);
-            opacity: 1;
-        }
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
     }
 
     @keyframes fadeOut {
-        to {
-            opacity: 0;
-            visibility: hidden;
-        }
+        to { opacity: 0; visibility: hidden; }
     }
 
-    .navigation-toast i {
-        font-size: 1.2rem;
-        color: var(--primary);
-    }
+    .navigation-toast i { font-size: 1.2rem; color: var(--primary); }
+    .navigation-toast span { font-size: 0.9rem; color: var(--dark); }
 
-    .navigation-toast span {
-        font-size: 0.9rem;
-        color: var(--dark);
-    }
-
-    /* Responsive */
+    /* ===== RESPONSIVE ===== */
     @media (max-width: 1024px) {
-        .search-form {
-            grid-template-columns: 1fr;
-        }
-        
-        .app-card {
-            padding: 3rem;
-        }
-        
-        .app-title {
-            font-size: 2rem;
-        }
-        
-        .route-item {
-            flex: 0 0 calc(50% - 1rem);
-        }
+        .search-form { grid-template-columns: 1fr; }
+        .app-card { padding: 3rem; }
+        .app-title { font-size: 2rem; }
+        .route-item { flex: 0 0 calc(50% - 1rem); }
     }
 
     @media (max-width: 768px) {
-        .hero-arrow {
-            display: none;
-        }
-        
-        .route-item {
-            flex: 0 0 calc(100% - 1rem);
-        }
-        
-        .app-buttons {
-            flex-direction: column;
-        }
-        
-        .qr-code {
-            margin-top: 2rem;
-        }
-        
-        .cta-card {
-            padding: 3rem;
-        }
-        
-        .cta-title {
-            font-size: 2rem;
-        }
-        
-        .slider-btn {
-            width: 2.5rem;
-            height: 2.5rem;
-            font-size: 1rem;
-        }
-        
-        .chat-container {
-            width: 320px;
-            height: 480px;
-            bottom: 70px;
-            right: -10px;
-        }
-        
-        .navigation-toast {
-            bottom: 90px;
-            right: 20px;
-            left: 20px;
-            width: auto;
-        }
+        .hero-arrow { display: none; }
+        .route-item { flex: 0 0 calc(100% - 1rem); }
+        .app-buttons { flex-direction: column; }
+        .qr-code { margin-top: 2rem; }
+        .cta-card { padding: 3rem; }
+        .cta-title { font-size: 2rem; }
+        .slider-btn { width: 2.5rem; height: 2.5rem; font-size: 1rem; }
+        .chat-container { width: 320px; height: 480px; bottom: 70px; right: -10px; }
+        .navigation-toast { bottom: 90px; right: 20px; left: 20px; width: auto; }
     }
 </style>
 {% endblock %}
 
 {% block content %}
+
+<!-- =====================================================
+     TRAVEL TICKER — LEFT → RIGHT  (hover to pause)
+====================================================== -->
+<div class="ticker-outer" title="Hover to pause">
+    <div class="ticker-track">
+
+        <!-- ── SET 1 ── -->
+        <span class="t-chip"><span class="t-bus">🚌</span> Mumbai <span class="t-arr">→</span> Pune <span class="t-price">₹299 onwards</span></span>
+        <span class="t-chip"><span class="t-bus">🚌</span> Delhi <span class="t-arr">→</span> Jaipur <span class="t-price">₹399 onwards</span></span>
+        <span class="t-chip"><span class="t-bus">🚌</span> Bangalore <span class="t-arr">→</span> Mysore <span class="t-price">₹199 onwards</span></span>
+        <span class="t-chip"><span class="t-bus">🚌</span> Chennai <span class="t-arr">→</span> Pondicherry <span class="t-price">₹249 onwards</span></span>
+        <span class="t-chip"><span class="t-star">⭐</span>&nbsp;4.8 Rated App &nbsp;·&nbsp; 2M+ Happy Travellers</span>
+        <span class="t-chip"><span class="t-bus">🚌</span> Hyderabad <span class="t-arr">→</span> Bangalore <span class="t-price">₹599 onwards</span></span>
+        <span class="t-chip">✨ First booking? Use <span class="t-promo">FIRST20</span> — 20% OFF!</span>
+        <span class="t-chip"><span class="t-bus">🚌</span> Ahmedabad <span class="t-arr">→</span> Surat <span class="t-price">₹199 onwards</span></span>
+        <span class="t-chip"><span class="t-plane">✈️</span>&nbsp;Connecting 500+ Cities across India</span>
+        <span class="t-chip"><span class="t-bus">🚌</span> Kolkata <span class="t-arr">→</span> Digha <span class="t-price">₹349 onwards</span></span>
+        <span class="t-chip">🎉 Weekend rides? Use <span class="t-promo">WEEKEND15</span> — 15% OFF!</span>
+        <span class="t-chip"><span class="t-bus">🚌</span> Pune <span class="t-arr">→</span> Goa <span class="t-price">₹799 onwards</span></span>
+        <span class="t-chip"><span class="t-live-dot"></span>&nbsp;&nbsp;Live Bus Tracking — Know exactly where your bus is</span>
+        <span class="t-chip"><span class="t-bus">🚌</span> Kochi <span class="t-arr">→</span> Trivandrum <span class="t-price">₹299 onwards</span></span>
+        <span class="t-chip">🛡️ Safe &amp; Verified Operators — Travel with confidence</span>
+        <span class="t-chip"><span class="t-bus">🚌</span> Nagpur <span class="t-arr">→</span> Mumbai <span class="t-price">₹449 onwards</span></span>
+        <span class="t-chip">👥 Group of 4+? Use <span class="t-promo">GROUP25</span> — 25% OFF!</span>
+        <span class="t-chip"><span class="t-bus">🚌</span> Lucknow <span class="t-arr">→</span> Delhi <span class="t-price">₹349 onwards</span></span>
+        <span class="t-chip">💺 Volvo AC · Sleeper · Luxury Coaches available</span>
+        <span class="t-chip"><span class="t-bus">🚌</span> Chandigarh <span class="t-arr">→</span> Delhi <span class="t-price">₹249 onwards</span></span>
+        <span class="t-chip">💳 UPI · Cards · Net Banking · Wallets accepted</span>
+        <span class="t-chip"><span class="t-bus">🚌</span> Indore <span class="t-arr">→</span> Bhopal <span class="t-price">₹179 onwards</span></span>
+        <span class="t-chip">🎓 Student? Use <span class="t-promo">STUDENT10</span> — 10% OFF!</span>
+        <span class="t-chip"><span class="t-bus">🚌</span> Jaipur <span class="t-arr">→</span> Udaipur <span class="t-price">₹299 onwards</span></span>
+        <span class="t-chip">🔄 Free cancellation up to 4 hrs before departure</span>
+        <span class="t-chip"><span class="t-bus">🚌</span> Coimbatore <span class="t-arr">→</span> Chennai <span class="t-price">₹499 onwards</span></span>
+        <span class="t-chip">⚡ Book in under 60 seconds — Instant confirmation!</span>
+        <span class="t-chip"><span class="t-bus">🚌</span> Visakhapatnam <span class="t-arr">→</span> Hyderabad <span class="t-price">₹699 onwards</span></span>
+        <span class="t-chip">🌊 Scenic coastal &amp; hill-station routes available</span>
+
+        <!-- ── SET 2 — exact duplicate for seamless loop ── -->
+        <span class="t-chip"><span class="t-bus">🚌</span> Mumbai <span class="t-arr">→</span> Pune <span class="t-price">₹299 onwards</span></span>
+        <span class="t-chip"><span class="t-bus">🚌</span> Delhi <span class="t-arr">→</span> Jaipur <span class="t-price">₹399 onwards</span></span>
+        <span class="t-chip"><span class="t-bus">🚌</span> Bangalore <span class="t-arr">→</span> Mysore <span class="t-price">₹199 onwards</span></span>
+        <span class="t-chip"><span class="t-bus">🚌</span> Chennai <span class="t-arr">→</span> Pondicherry <span class="t-price">₹249 onwards</span></span>
+        <span class="t-chip"><span class="t-star">⭐</span>&nbsp;4.8 Rated App &nbsp;·&nbsp; 2M+ Happy Travellers</span>
+        <span class="t-chip"><span class="t-bus">🚌</span> Hyderabad <span class="t-arr">→</span> Bangalore <span class="t-price">₹599 onwards</span></span>
+        <span class="t-chip">✨ First booking? Use <span class="t-promo">FIRST20</span> — 20% OFF!</span>
+        <span class="t-chip"><span class="t-bus">🚌</span> Ahmedabad <span class="t-arr">→</span> Surat <span class="t-price">₹199 onwards</span></span>
+        <span class="t-chip"><span class="t-plane">✈️</span>&nbsp;Connecting 500+ Cities across India</span>
+        <span class="t-chip"><span class="t-bus">🚌</span> Kolkata <span class="t-arr">→</span> Digha <span class="t-price">₹349 onwards</span></span>
+        <span class="t-chip">🎉 Weekend rides? Use <span class="t-promo">WEEKEND15</span> — 15% OFF!</span>
+        <span class="t-chip"><span class="t-bus">🚌</span> Pune <span class="t-arr">→</span> Goa <span class="t-price">₹799 onwards</span></span>
+        <span class="t-chip"><span class="t-live-dot"></span>&nbsp;&nbsp;Live Bus Tracking — Know exactly where your bus is</span>
+        <span class="t-chip"><span class="t-bus">🚌</span> Kochi <span class="t-arr">→</span> Trivandrum <span class="t-price">₹299 onwards</span></span>
+        <span class="t-chip">🛡️ Safe &amp; Verified Operators — Travel with confidence</span>
+        <span class="t-chip"><span class="t-bus">🚌</span> Nagpur <span class="t-arr">→</span> Mumbai <span class="t-price">₹449 onwards</span></span>
+        <span class="t-chip">👥 Group of 4+? Use <span class="t-promo">GROUP25</span> — 25% OFF!</span>
+        <span class="t-chip"><span class="t-bus">🚌</span> Lucknow <span class="t-arr">→</span> Delhi <span class="t-price">₹349 onwards</span></span>
+        <span class="t-chip">💺 Volvo AC · Sleeper · Luxury Coaches available</span>
+        <span class="t-chip"><span class="t-bus">🚌</span> Chandigarh <span class="t-arr">→</span> Delhi <span class="t-price">₹249 onwards</span></span>
+        <span class="t-chip">💳 UPI · Cards · Net Banking · Wallets accepted</span>
+        <span class="t-chip"><span class="t-bus">🚌</span> Indore <span class="t-arr">→</span> Bhopal <span class="t-price">₹179 onwards</span></span>
+        <span class="t-chip">🎓 Student? Use <span class="t-promo">STUDENT10</span> — 10% OFF!</span>
+        <span class="t-chip"><span class="t-bus">🚌</span> Jaipur <span class="t-arr">→</span> Udaipur <span class="t-price">₹299 onwards</span></span>
+        <span class="t-chip">🔄 Free cancellation up to 4 hrs before departure</span>
+        <span class="t-chip"><span class="t-bus">🚌</span> Coimbatore <span class="t-arr">→</span> Chennai <span class="t-price">₹499 onwards</span></span>
+        <span class="t-chip">⚡ Book in under 60 seconds — Instant confirmation!</span>
+        <span class="t-chip"><span class="t-bus">🚌</span> Visakhapatnam <span class="t-arr">→</span> Hyderabad <span class="t-price">₹699 onwards</span></span>
+        <span class="t-chip">🌊 Scenic coastal &amp; hill-station routes available</span>
+
+    </div>
+</div>
+
 <!-- Hero Section -->
 <section class="hero">
     <div class="hero-slider" id="heroSlider">
-        <!-- Slide 1 -->
         <div class="hero-slide active" style="background-image: url('https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?ixlib=rb-4.0.3&auto=format&fit=crop&w=2069&q=80');">
             <div class="hero-content">
                 <span class="hero-badge">🇮🇳 India's Most Trusted</span>
                 <h1 class="hero-title">Your Journey, Our Priority</h1>
                 <p class="hero-subtitle">Experience luxury travel with India's largest bus network. 5000+ daily buses across 1000+ cities.</p>
-                <a href="#search" class="hero-cta">
-                    <span>Book Your Ride</span>
-                    <i class="fas fa-arrow-right"></i>
-                </a>
+                <a href="#search" class="hero-cta"><span>Book Your Ride</span><i class="fas fa-arrow-right"></i></a>
             </div>
         </div>
-        
-        <!-- Slide 2 -->
         <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1570125909232-eb263c188f7e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2071&q=80');">
             <div class="hero-content">
                 <span class="hero-badge">⚡ Lightning Fast</span>
                 <h1 class="hero-title">Book in Under 60 Seconds</h1>
                 <p class="hero-subtitle">Instant confirmation • Safe & Secure Payments • 24/7 Customer Support</p>
-                <a href="#search" class="hero-cta">
-                    <span>Get Started</span>
-                    <i class="fas fa-arrow-right"></i>
-                </a>
+                <a href="#search" class="hero-cta"><span>Get Started</span><i class="fas fa-arrow-right"></i></a>
             </div>
         </div>
-        
-        <!-- Slide 3 -->
         <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1548013146-72479768bada?ixlib=rb-4.0.3&auto=format&fit=crop&w=2076&q=80');">
             <div class="hero-content">
                 <span class="hero-badge">✨ Luxury Fleet</span>
                 <h1 class="hero-title">Travel in Style & Comfort</h1>
                 <p class="hero-subtitle">Volvo AC • Sleeper • Luxury Coaches • Premium Experience</p>
-                <a href="#search" class="hero-cta">
-                    <span>Explore Now</span>
-                    <i class="fas fa-arrow-right"></i>
-                </a>
+                <a href="#search" class="hero-cta"><span>Explore Now</span><i class="fas fa-arrow-right"></i></a>
             </div>
         </div>
-        
-        <!-- Slide 4 -->
         <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1522932462653-658cb4a6e6a4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2071&q=80');">
             <div class="hero-content">
                 <span class="hero-badge">🌊 Scenic Routes</span>
                 <h1 class="hero-title">Explore Beautiful Destinations</h1>
                 <p class="hero-subtitle">Coastal routes • Hill stations • Cultural cities • Weekend getaways</p>
-                <a href="#search" class="hero-cta">
-                    <span>Start Exploring</span>
-                    <i class="fas fa-arrow-right"></i>
-                </a>
+                <a href="#search" class="hero-cta"><span>Start Exploring</span><i class="fas fa-arrow-right"></i></a>
             </div>
         </div>
-        
-        <!-- Controls -->
-        <div class="hero-arrow prev" onclick="changeSlide(-1)">
-            <i class="fas fa-chevron-left"></i>
-        </div>
-        <div class="hero-arrow next" onclick="changeSlide(1)">
-            <i class="fas fa-chevron-right"></i>
-        </div>
-        
+        <div class="hero-arrow prev" onclick="changeSlide(-1)"><i class="fas fa-chevron-left"></i></div>
+        <div class="hero-arrow next" onclick="changeSlide(1)"><i class="fas fa-chevron-right"></i></div>
         <div class="hero-controls" id="heroControls">
             <span class="hero-dot active" onclick="goToSlide(0)"></span>
             <span class="hero-dot" onclick="goToSlide(1)"></span>
@@ -1393,26 +1150,21 @@
             <div class="search-tabs">
                 <span class="search-tab active">Bus Tickets</span>
             </div>
-            
             <form class="search-form" id="searchForm" action="{% url 'search_buses' %}" method="GET">
                 <div class="form-group">
                     <i class="fas fa-map-marker-alt"></i>
                     <input type="text" class="form-control" name="from" placeholder="From (e.g., Mumbai)" required>
                 </div>
-                
                 <div class="form-group">
                     <i class="fas fa-map-marker-alt"></i>
                     <input type="text" class="form-control" name="to" placeholder="To (e.g., Pune)" required>
                 </div>
-                
                 <div class="form-group">
                     <i class="fas fa-calendar-alt"></i>
                     <input type="date" class="form-control" name="date" id="journeyDate" required>
                 </div>
-                
                 <button type="submit" class="btn-search">
-                    <i class="fas fa-search"></i>
-                    <span>Search</span>
+                    <i class="fas fa-search"></i><span>Search</span>
                 </button>
             </form>
         </div>
@@ -1427,38 +1179,32 @@
             <h2 class="section-title">Travel with Confidence</h2>
             <p class="section-subtitle">Experience the difference with India's most trusted bus booking platform</p>
         </div>
-        
         <div class="features-grid">
             <div class="feature-card" data-aos="fade-up">
                 <div class="feature-icon"><i class="fas fa-bus"></i></div>
                 <h3 class="feature-title">Wide Network</h3>
                 <p class="feature-text">5000+ buses • 1000+ routes • 500+ cities across India. Connect with the best operators.</p>
             </div>
-            
             <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
                 <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
                 <h3 class="feature-title">Safe Travel</h3>
                 <p class="feature-text">Verified operators • Sanitized buses • Trained staff • COVID-safe protocols.</p>
             </div>
-            
             <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
                 <div class="feature-icon"><i class="fas fa-headset"></i></div>
                 <h3 class="feature-title">24/7 Support</h3>
                 <p class="feature-text">Round-the-clock customer care • Live tracking • Instant help via chat & phone.</p>
             </div>
-            
             <div class="feature-card" data-aos="fade-up">
                 <div class="feature-icon"><i class="fas fa-wallet"></i></div>
                 <h3 class="feature-title">Best Prices</h3>
                 <p class="feature-text">Price match guarantee • No hidden charges • Exclusive offers & discounts.</p>
             </div>
-            
             <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
                 <div class="feature-icon"><i class="fas fa-mobile-alt"></i></div>
                 <h3 class="feature-title">Easy Booking</h3>
                 <p class="feature-text">3-step booking • Multiple payment options • Instant confirmation • Digital tickets.</p>
             </div>
-            
             <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
                 <div class="feature-icon"><i class="fas fa-ticket-alt"></i></div>
                 <h3 class="feature-title">Instant Refunds</h3>
@@ -1476,10 +1222,8 @@
             <h2 class="section-title">Most Booked Journeys</h2>
             <p class="section-subtitle">Discover the most loved routes by our customers</p>
         </div>
-        
         <div class="routes-slider-container">
             <div class="routes-slider" id="routesSlider">
-                <!-- Route 1 -->
                 <div class="route-item">
                     <a href="{% url 'search_buses' %}?from=Mumbai&to=Pune" class="route-card">
                         <div class="route-image">
@@ -1488,31 +1232,17 @@
                         </div>
                         <div class="route-content">
                             <div class="route-cities">
-                                <div class="city">
-                                    <div class="city-name">Mumbai</div>
-                                    <div class="city-code">BOM</div>
-                                </div>
+                                <div class="city"><div class="city-name">Mumbai</div><div class="city-code">BOM</div></div>
                                 <div class="route-arrow"><i class="fas fa-long-arrow-alt-right"></i></div>
-                                <div class="city">
-                                    <div class="city-name">Pune</div>
-                                    <div class="city-code">PNQ</div>
-                                </div>
+                                <div class="city"><div class="city-name">Pune</div><div class="city-code">PNQ</div></div>
                             </div>
                             <div class="route-meta">
-                                <div class="route-price">
-                                    ₹299
-                                    <small>onwards</small>
-                                </div>
-                                <div class="route-duration">
-                                    <i class="far fa-clock"></i>
-                                    <span>3h 30m</span>
-                                </div>
+                                <div class="route-price">₹299<small>onwards</small></div>
+                                <div class="route-duration"><i class="far fa-clock"></i><span>3h 30m</span></div>
                             </div>
                         </div>
                     </a>
                 </div>
-                
-                <!-- Route 2 -->
                 <div class="route-item">
                     <a href="{% url 'search_buses' %}?from=Delhi&to=Jaipur" class="route-card">
                         <div class="route-image">
@@ -1521,31 +1251,17 @@
                         </div>
                         <div class="route-content">
                             <div class="route-cities">
-                                <div class="city">
-                                    <div class="city-name">Delhi</div>
-                                    <div class="city-code">DEL</div>
-                                </div>
+                                <div class="city"><div class="city-name">Delhi</div><div class="city-code">DEL</div></div>
                                 <div class="route-arrow"><i class="fas fa-long-arrow-alt-right"></i></div>
-                                <div class="city">
-                                    <div class="city-name">Jaipur</div>
-                                    <div class="city-code">JAI</div>
-                                </div>
+                                <div class="city"><div class="city-name">Jaipur</div><div class="city-code">JAI</div></div>
                             </div>
                             <div class="route-meta">
-                                <div class="route-price">
-                                    ₹399
-                                    <small>onwards</small>
-                                </div>
-                                <div class="route-duration">
-                                    <i class="far fa-clock"></i>
-                                    <span>5h 30m</span>
-                                </div>
+                                <div class="route-price">₹399<small>onwards</small></div>
+                                <div class="route-duration"><i class="far fa-clock"></i><span>5h 30m</span></div>
                             </div>
                         </div>
                     </a>
                 </div>
-                
-                <!-- Route 3 -->
                 <div class="route-item">
                     <a href="{% url 'search_buses' %}?from=Bangalore&to=Mysore" class="route-card">
                         <div class="route-image">
@@ -1554,31 +1270,17 @@
                         </div>
                         <div class="route-content">
                             <div class="route-cities">
-                                <div class="city">
-                                    <div class="city-name">Bangalore</div>
-                                    <div class="city-code">BLR</div>
-                                </div>
+                                <div class="city"><div class="city-name">Bangalore</div><div class="city-code">BLR</div></div>
                                 <div class="route-arrow"><i class="fas fa-long-arrow-alt-right"></i></div>
-                                <div class="city">
-                                    <div class="city-name">Mysore</div>
-                                    <div class="city-code">MYS</div>
-                                </div>
+                                <div class="city"><div class="city-name">Mysore</div><div class="city-code">MYS</div></div>
                             </div>
                             <div class="route-meta">
-                                <div class="route-price">
-                                    ₹199
-                                    <small>onwards</small>
-                                </div>
-                                <div class="route-duration">
-                                    <i class="far fa-clock"></i>
-                                    <span>3h 15m</span>
-                                </div>
+                                <div class="route-price">₹199<small>onwards</small></div>
+                                <div class="route-duration"><i class="far fa-clock"></i><span>3h 15m</span></div>
                             </div>
                         </div>
                     </a>
                 </div>
-                
-                <!-- Route 4 -->
                 <div class="route-item">
                     <a href="{% url 'search_buses' %}?from=Chennai&to=Pondicherry" class="route-card">
                         <div class="route-image">
@@ -1587,31 +1289,17 @@
                         </div>
                         <div class="route-content">
                             <div class="route-cities">
-                                <div class="city">
-                                    <div class="city-name">Chennai</div>
-                                    <div class="city-code">MAA</div>
-                                </div>
+                                <div class="city"><div class="city-name">Chennai</div><div class="city-code">MAA</div></div>
                                 <div class="route-arrow"><i class="fas fa-long-arrow-alt-right"></i></div>
-                                <div class="city">
-                                    <div class="city-name">Pondicherry</div>
-                                    <div class="city-code">PNY</div>
-                                </div>
+                                <div class="city"><div class="city-name">Pondicherry</div><div class="city-code">PNY</div></div>
                             </div>
                             <div class="route-meta">
-                                <div class="route-price">
-                                    ₹249
-                                    <small>onwards</small>
-                                </div>
-                                <div class="route-duration">
-                                    <i class="far fa-clock"></i>
-                                    <span>4h 00m</span>
-                                </div>
+                                <div class="route-price">₹249<small>onwards</small></div>
+                                <div class="route-duration"><i class="far fa-clock"></i><span>4h 00m</span></div>
                             </div>
                         </div>
                     </a>
                 </div>
-                
-                <!-- Route 5 -->
                 <div class="route-item">
                     <a href="{% url 'search_buses' %}?from=Hyderabad&to=Bangalore" class="route-card">
                         <div class="route-image">
@@ -1620,31 +1308,17 @@
                         </div>
                         <div class="route-content">
                             <div class="route-cities">
-                                <div class="city">
-                                    <div class="city-name">Hyderabad</div>
-                                    <div class="city-code">HYD</div>
-                                </div>
+                                <div class="city"><div class="city-name">Hyderabad</div><div class="city-code">HYD</div></div>
                                 <div class="route-arrow"><i class="fas fa-long-arrow-alt-right"></i></div>
-                                <div class="city">
-                                    <div class="city-name">Bangalore</div>
-                                    <div class="city-code">BLR</div>
-                                </div>
+                                <div class="city"><div class="city-name">Bangalore</div><div class="city-code">BLR</div></div>
                             </div>
                             <div class="route-meta">
-                                <div class="route-price">
-                                    ₹599
-                                    <small>onwards</small>
-                                </div>
-                                <div class="route-duration">
-                                    <i class="far fa-clock"></i>
-                                    <span>8h 00m</span>
-                                </div>
+                                <div class="route-price">₹599<small>onwards</small></div>
+                                <div class="route-duration"><i class="far fa-clock"></i><span>8h 00m</span></div>
                             </div>
                         </div>
                     </a>
                 </div>
-                
-                <!-- Route 6 -->
                 <div class="route-item">
                     <a href="{% url 'search_buses' %}?from=Ahmedabad&to=Surat" class="route-card">
                         <div class="route-image">
@@ -1653,43 +1327,26 @@
                         </div>
                         <div class="route-content">
                             <div class="route-cities">
-                                <div class="city">
-                                    <div class="city-name">Ahmedabad</div>
-                                    <div class="city-code">AMD</div>
-                                </div>
+                                <div class="city"><div class="city-name">Ahmedabad</div><div class="city-code">AMD</div></div>
                                 <div class="route-arrow"><i class="fas fa-long-arrow-alt-right"></i></div>
-                                <div class="city">
-                                    <div class="city-name">Surat</div>
-                                    <div class="city-code">STV</div>
-                                </div>
+                                <div class="city"><div class="city-name">Surat</div><div class="city-code">STV</div></div>
                             </div>
                             <div class="route-meta">
-                                <div class="route-price">
-                                    ₹199
-                                    <small>onwards</small>
-                                </div>
-                                <div class="route-duration">
-                                    <i class="far fa-clock"></i>
-                                    <span>4h 30m</span>
-                                </div>
+                                <div class="route-price">₹199<small>onwards</small></div>
+                                <div class="route-duration"><i class="far fa-clock"></i><span>4h 30m</span></div>
                             </div>
                         </div>
                     </a>
                 </div>
             </div>
-            
             <div class="slider-nav">
-                <button class="slider-btn" id="prevRouteBtn" onclick="slideRoutes(-1)">
-                    <i class="fas fa-chevron-left"></i>
-                </button>
+                <button class="slider-btn" id="prevRouteBtn" onclick="slideRoutes(-1)"><i class="fas fa-chevron-left"></i></button>
                 <div class="slider-dots" id="routeDots">
                     <span class="slider-dot active" onclick="goToRouteSlide(0)"></span>
                     <span class="slider-dot" onclick="goToRouteSlide(1)"></span>
                     <span class="slider-dot" onclick="goToRouteSlide(2)"></span>
                 </div>
-                <button class="slider-btn" id="nextRouteBtn" onclick="slideRoutes(1)">
-                    <i class="fas fa-chevron-right"></i>
-                </button>
+                <button class="slider-btn" id="nextRouteBtn" onclick="slideRoutes(1)"><i class="fas fa-chevron-right"></i></button>
             </div>
         </div>
     </div>
@@ -1703,7 +1360,6 @@
             <h2 class="section-title text-white">Exclusive Deals</h2>
             <p class="section-subtitle text-white-50">Grab exciting discounts on your bus bookings</p>
         </div>
-        
         <div class="offers-grid">
             <div class="offer-card">
                 <div class="offer-icon">🎉</div>
@@ -1711,21 +1367,18 @@
                 <p class="offer-description">Get 20% off on your first booking with EasyBook</p>
                 <span class="offer-code">FIRST20</span>
             </div>
-            
             <div class="offer-card">
                 <div class="offer-icon">🚀</div>
                 <h3 class="offer-title">Weekend Special</h3>
                 <p class="offer-description">15% off on all weekend journeys (Fri-Sun)</p>
                 <span class="offer-code">WEEKEND15</span>
             </div>
-            
             <div class="offer-card">
                 <div class="offer-icon">👥</div>
                 <h3 class="offer-title">Group Booking</h3>
                 <p class="offer-description">Book 4+ tickets & get 25% off on total fare</p>
                 <span class="offer-code">GROUP25</span>
             </div>
-            
             <div class="offer-card">
                 <div class="offer-icon">⭐</div>
                 <h3 class="offer-title">Student Discount</h3>
@@ -1746,26 +1399,18 @@
                         <span class="section-tag" style="color: white; background: rgba(255,255,255,0.2);">Mobile App</span>
                         <h2 class="app-title">Download the EasyBook App</h2>
                         <p class="app-description">Book tickets, track your bus, and get exclusive app-only offers. Available on iOS and Android.</p>
-                        
                         <div class="app-buttons">
                             <a href="#" class="app-btn">
                                 <i class="fab fa-google-play"></i>
-                                <div>
-                                    <small>Get it on</small>
-                                    <strong>Google Play</strong>
-                                </div>
+                                <div><small>Get it on</small><strong>Google Play</strong></div>
                             </a>
                             <a href="#" class="app-btn">
                                 <i class="fab fa-apple"></i>
-                                <div>
-                                    <small>Download on</small>
-                                    <strong>App Store</strong>
-                                </div>
+                                <div><small>Download on</small><strong>App Store</strong></div>
                             </a>
                         </div>
                     </div>
                 </div>
-                
                 <div class="col-lg-5 text-center">
                     <div class="qr-code">
                         <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://easybook.com/download" alt="Download QR Code">
@@ -1785,59 +1430,35 @@
             <h2 class="section-title">What Our Customers Say</h2>
             <p class="section-subtitle">Real stories from happy travelers across India</p>
         </div>
-        
         <div class="testimonials-grid">
             <div class="testimonial-card">
                 <div class="testimonial-rating">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
                 </div>
                 <p class="testimonial-text">"Excellent service! Booked Mumbai to Pune bus and the journey was very comfortable. Will definitely use EasyBook again."</p>
                 <div class="testimonial-author">
                     <div class="author-avatar">R</div>
-                    <div class="author-info">
-                        <h4>Rahul Sharma</h4>
-                        <p>Mumbai</p>
-                    </div>
+                    <div class="author-info"><h4>Rahul Sharma</h4><p>Mumbai</p></div>
                 </div>
             </div>
-            
             <div class="testimonial-card">
                 <div class="testimonial-rating">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
                 </div>
                 <p class="testimonial-text">"The booking process was so smooth! Got great discounts on Delhi-Jaipur route. The bus was on time and very clean."</p>
                 <div class="testimonial-author">
                     <div class="author-avatar">P</div>
-                    <div class="author-info">
-                        <h4>Priya Singh</h4>
-                        <p>Delhi</p>
-                    </div>
+                    <div class="author-info"><h4>Priya Singh</h4><p>Delhi</p></div>
                 </div>
             </div>
-            
             <div class="testimonial-card">
                 <div class="testimonial-rating">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
                 </div>
                 <p class="testimonial-text">"Amazing customer support! Had to change my booking date and they helped me instantly. Highly recommended!"</p>
                 <div class="testimonial-author">
                     <div class="author-avatar">A</div>
-                    <div class="author-info">
-                        <h4>Arjun Kumar</h4>
-                        <p>Bangalore</p>
-                    </div>
+                    <div class="author-info"><h4>Arjun Kumar</h4><p>Bangalore</p></div>
                 </div>
             </div>
         </div>
@@ -1851,9 +1472,7 @@
             <h2 class="cta-title">Are you a Bus Operator?</h2>
             <p class="cta-description">Join EasyBook and reach thousands of customers daily. List your buses for free and grow your business!</p>
             <a href="{% url 'bus_owner_registration' %}" class="cta-btn">
-                <i class="fas fa-bus"></i>
-                <span>Register Your Bus Now</span>
-                <i class="fas fa-arrow-right"></i>
+                <i class="fas fa-bus"></i><span>Register Your Bus Now</span><i class="fas fa-arrow-right"></i>
             </a>
         </div>
     </div>
@@ -1863,48 +1482,26 @@
 <section class="stats">
     <div class="container">
         <div class="stats-grid">
-            <div>
-                <div class="stat-value">5000+</div>
-                <div class="stat-label">Daily Buses</div>
-            </div>
-            <div>
-                <div class="stat-value">1000+</div>
-                <div class="stat-label">Cities</div>
-            </div>
-            <div>
-                <div class="stat-value">2M+</div>
-                <div class="stat-label">Happy Customers</div>
-            </div>
-            <div>
-                <div class="stat-value">4.8★</div>
-                <div class="stat-label">App Rating</div>
-            </div>
+            <div><div class="stat-value">5000+</div><div class="stat-label">Daily Buses</div></div>
+            <div><div class="stat-value">1000+</div><div class="stat-label">Cities</div></div>
+            <div><div class="stat-value">2M+</div><div class="stat-label">Happy Customers</div></div>
+            <div><div class="stat-value">4.8★</div><div class="stat-label">App Rating</div></div>
         </div>
     </div>
 </section>
 
-<!-- AI Chat Assistant with Voice Navigation -->
+<!-- AI Chat Assistant -->
 <div class="chat-widget">
-    <div class="chat-button" id="chatButton">
-        <i class="fas fa-robot"></i>
-    </div>
-    
+    <div class="chat-button" id="chatButton"><i class="fas fa-robot"></i></div>
     <div class="chat-container" id="chatContainer">
         <div class="chat-header">
             <h4><i class="fas fa-robot"></i> EasyBook Assistant</h4>
             <div class="voice-controls">
-                <button class="voice-button" id="voiceButton" title="Speak your question">
-                    <i class="fas fa-microphone"></i>
-                </button>
-                <button class="stop-voice-btn" id="stopVoiceButton" title="Stop speaking">
-                    <i class="fas fa-stop"></i>
-                </button>
-                <button class="close-chat" id="closeChat">
-                    <i class="fas fa-times"></i>
-                </button>
+                <button class="voice-button" id="voiceButton" title="Speak your question"><i class="fas fa-microphone"></i></button>
+                <button class="stop-voice-btn" id="stopVoiceButton" title="Stop speaking"><i class="fas fa-stop"></i></button>
+                <button class="close-chat" id="closeChat"><i class="fas fa-times"></i></button>
             </div>
         </div>
-        
         <div class="chat-messages" id="chatMessages">
             <div class="message bot">
                 <div class="message-content">
@@ -1930,32 +1527,22 @@
                 </div>
             </div>
         </div>
-        
         <div class="chat-input">
             <input type="text" id="chatInput" placeholder="Type your question or command..." onkeypress="handleKeyPress(event)">
-            <button class="send-btn" onclick="sendMessage()">
-                <i class="fas fa-paper-plane"></i>
-            </button>
+            <button class="send-btn" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
         </div>
     </div>
 </div>
 
-<!-- Navigation Toast -->
 <div id="navigationToast" class="navigation-toast" style="display: none;">
     <i class="fas fa-location-arrow"></i>
     <span id="toastMessage">Navigating...</span>
 </div>
 
-<!-- AOS Animation Library -->
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
 <script>
-// Initialize AOS
-AOS.init({
-    duration: 800,
-    once: true,
-    offset: 100
-});
+AOS.init({ duration: 800, once: true, offset: 100 });
 
 // ===== HERO SLIDER =====
 let currentSlide = 0;
@@ -1967,61 +1554,37 @@ function showSlide(index) {
     if (index >= slides.length) currentSlide = 0;
     else if (index < 0) currentSlide = slides.length - 1;
     else currentSlide = index;
-    
-    slides.forEach(slide => slide.classList.remove('active'));
-    dots.forEach(dot => dot.classList.remove('active'));
-    
+    slides.forEach(s => s.classList.remove('active'));
+    dots.forEach(d => d.classList.remove('active'));
     slides[currentSlide].classList.add('active');
     dots[currentSlide].classList.add('active');
 }
 
-function changeSlide(direction) {
-    showSlide(currentSlide + direction);
-    resetTimer();
-}
-
-function goToSlide(index) {
-    showSlide(index);
-    resetTimer();
-}
-
-function nextSlide() {
-    showSlide(currentSlide + 1);
-}
+function changeSlide(direction) { showSlide(currentSlide + direction); resetTimer(); }
+function goToSlide(index) { showSlide(index); resetTimer(); }
+function nextSlide() { showSlide(currentSlide + 1); }
 
 function resetTimer() {
     clearInterval(slideInterval);
     slideInterval = setInterval(nextSlide, 6000);
 }
 
-// Initialize hero slider
-if (slides.length > 0) {
-    slideInterval = setInterval(nextSlide, 6000);
-}
+if (slides.length > 0) slideInterval = setInterval(nextSlide, 6000);
 
-// Set journey date
 const today = new Date().toISOString().split('T')[0];
 document.getElementById('journeyDate').min = today;
 document.getElementById('journeyDate').value = today;
 
-// Search validation
 document.getElementById('searchForm').addEventListener('submit', function(e) {
     const from = document.querySelector('input[name="from"]').value.trim().toLowerCase();
     const to = document.querySelector('input[name="to"]').value.trim().toLowerCase();
-    
-    if (from === to) {
-        e.preventDefault();
-        alert('Source and destination cannot be the same!');
-    }
+    if (from === to) { e.preventDefault(); alert('Source and destination cannot be the same!'); }
 });
 
-// Pause hero slider on hover
 const heroSlider = document.querySelector('.hero-slider');
 if (heroSlider) {
     heroSlider.addEventListener('mouseenter', () => clearInterval(slideInterval));
-    heroSlider.addEventListener('mouseleave', () => {
-        slideInterval = setInterval(nextSlide, 6000);
-    });
+    heroSlider.addEventListener('mouseleave', () => { slideInterval = setInterval(nextSlide, 6000); });
 }
 
 // ===== ROUTES SLIDER =====
@@ -2034,43 +1597,28 @@ const nextBtn = document.getElementById('nextRouteBtn');
 
 function updateRouteSlider() {
     if (!routeItems.length || !routeSlider) return;
-    
     let itemsPerView = 3;
-    if (window.innerWidth <= 768) {
-        itemsPerView = 1;
-    } else if (window.innerWidth <= 1024) {
-        itemsPerView = 2;
-    }
-    
+    if (window.innerWidth <= 768) itemsPerView = 1;
+    else if (window.innerWidth <= 1024) itemsPerView = 2;
     const maxSlides = Math.max(0, routeItems.length - itemsPerView);
-    
     currentRouteSlide = Math.min(currentRouteSlide, maxSlides);
     currentRouteSlide = Math.max(currentRouteSlide, 0);
-    
     const slideWidth = routeItems[0].offsetWidth + 24;
     routeSlider.style.transform = `translateX(-${currentRouteSlide * slideWidth}px)`;
-    
     const numDots = Math.ceil(routeItems.length / itemsPerView);
     routeDots.forEach((dot, i) => {
-        if (i < numDots) {
-            dot.style.display = 'inline-block';
-            dot.classList.toggle('active', i === Math.floor(currentRouteSlide));
-        } else {
-            dot.style.display = 'none';
-        }
+        if (i < numDots) { dot.style.display = 'inline-block'; dot.classList.toggle('active', i === Math.floor(currentRouteSlide)); }
+        else dot.style.display = 'none';
     });
-    
     if (prevBtn) prevBtn.disabled = currentRouteSlide === 0;
     if (nextBtn) nextBtn.disabled = currentRouteSlide >= maxSlides;
 }
 
 function slideRoutes(direction) {
     if (!routeItems.length) return;
-    
     let itemsPerView = 3;
     if (window.innerWidth <= 768) itemsPerView = 1;
     else if (window.innerWidth <= 1024) itemsPerView = 2;
-    
     const maxSlides = Math.max(0, routeItems.length - itemsPerView);
     currentRouteSlide += direction;
     currentRouteSlide = Math.min(Math.max(currentRouteSlide, 0), maxSlides);
@@ -2081,7 +1629,6 @@ function goToRouteSlide(index) {
     let itemsPerView = 3;
     if (window.innerWidth <= 768) itemsPerView = 1;
     else if (window.innerWidth <= 1024) itemsPerView = 2;
-    
     const maxSlides = Math.max(0, routeItems.length - itemsPerView);
     currentRouteSlide = Math.min(index, maxSlides);
     updateRouteSlider();
@@ -2102,7 +1649,7 @@ if (routeItems.length > 0) {
 
 showSlide(0);
 
-// ===== VOICE NAVIGATION ASSISTANT =====
+// ===== VOICE NAVIGATION =====
 const chatButton = document.getElementById('chatButton');
 const chatContainer = document.getElementById('chatContainer');
 const closeChat = document.getElementById('closeChat');
@@ -2111,55 +1658,21 @@ const chatMessages = document.getElementById('chatMessages');
 const voiceButton = document.getElementById('voiceButton');
 const stopVoiceButton = document.getElementById('stopVoiceButton');
 
-// Navigation URLs mapping
 const navigationMap = {
-    // Search related
-    'search': '/bookings/search/',
-    'search buses': '/bookings/search/',
-    'find bus': '/bookings/search/',
-    'bus search': '/bookings/search/',
-    'find buses': '/bookings/search/',
-    
-    // Bookings related
-    'my bookings': '/bookings/my-bookings/',
-    'view bookings': '/bookings/my-bookings/',
-    'my tickets': '/bookings/my-bookings/',
-    'tickets': '/bookings/my-bookings/',
-    'booking': '/bookings/my-bookings/',
-    'bookings': '/bookings/my-bookings/',
-    
-    // Cancel related
-    'cancel': '/bookings/my-bookings/',
-    'cancel booking': '/bookings/my-bookings/',
-    'cancel ticket': '/bookings/my-bookings/',
-    'cancellation': '/bookings/my-bookings/',
-    
-    // Login/Signup related
-    'login': '/accounts/login/',
-    'sign in': '/accounts/login/',
-    'log in': '/accounts/login/',
-    'signup': '/accounts/signup/',
-    'sign up': '/accounts/signup/',
-    'register': '/accounts/signup/',
-    'create account': '/accounts/signup/',
-    
-    // Profile/Dashboard
-    'profile': '/accounts/profile/',
-    'my profile': '/accounts/profile/',
-    'account': '/accounts/profile/',
-    'dashboard': '/accounts/dashboard/',
-    'my dashboard': '/accounts/dashboard/',
-    
-    // Support
-    'support': '/support/',
-    'help': '/support/',
-    'contact': '/support/',
-    'customer support': '/support/',
-    
-    // Home
-    'home': '/home/',
-    'main': '/home/',
-    'homepage': '/home/',
+    'search': '/bookings/search/', 'search buses': '/bookings/search/', 'find bus': '/bookings/search/',
+    'bus search': '/bookings/search/', 'find buses': '/bookings/search/',
+    'my bookings': '/bookings/my-bookings/', 'view bookings': '/bookings/my-bookings/',
+    'my tickets': '/bookings/my-bookings/', 'tickets': '/bookings/my-bookings/',
+    'booking': '/bookings/my-bookings/', 'bookings': '/bookings/my-bookings/',
+    'cancel': '/bookings/my-bookings/', 'cancel booking': '/bookings/my-bookings/',
+    'cancel ticket': '/bookings/my-bookings/', 'cancellation': '/bookings/my-bookings/',
+    'login': '/accounts/login/', 'sign in': '/accounts/login/', 'log in': '/accounts/login/',
+    'signup': '/accounts/signup/', 'sign up': '/accounts/signup/', 'register': '/accounts/signup/',
+    'create account': '/accounts/signup/', 'profile': '/accounts/profile/',
+    'my profile': '/accounts/profile/', 'account': '/accounts/profile/',
+    'dashboard': '/accounts/dashboard/', 'my dashboard': '/accounts/dashboard/',
+    'support': '/support/', 'help': '/support/', 'contact': '/support/',
+    'customer support': '/support/', 'home': '/home/', 'main': '/home/', 'homepage': '/home/',
 };
 
 function showToast(message, redirectUrl) {
@@ -2167,83 +1680,50 @@ function showToast(message, redirectUrl) {
     const toastMessage = document.getElementById('toastMessage');
     toastMessage.textContent = message;
     toast.style.display = 'flex';
-    
-    setTimeout(() => {
-        toast.style.display = 'none';
-        if (redirectUrl) {
-            window.location.href = redirectUrl;
-        }
-    }, 3000);
+    setTimeout(() => { toast.style.display = 'none'; if (redirectUrl) window.location.href = redirectUrl; }, 3000);
 }
 
 function navigateToPage(command) {
     const lowerCommand = command.toLowerCase().trim();
-    
-    // Check for navigation commands
     for (const [keyword, url] of Object.entries(navigationMap)) {
-        if (lowerCommand.includes(keyword)) {
-            showToast(`🔍 Navigating to ${keyword}...`, url);
-            return true;
-        }
+        if (lowerCommand.includes(keyword)) { showToast(`🔍 Navigating to ${keyword}...`, url); return true; }
     }
-    
-    // Check for specific actions
     if (lowerCommand.includes('cancel') && lowerCommand.includes('ticket')) {
-        showToast('🎫 Taking you to your bookings to cancel...', '/bookings/my-bookings/');
-        return true;
+        showToast('🎫 Taking you to your bookings to cancel...', '/bookings/my-bookings/'); return true;
     }
-    
     if (lowerCommand.includes('view') && (lowerCommand.includes('ticket') || lowerCommand.includes('booking'))) {
-        showToast('🎟️ Taking you to your bookings...', '/bookings/my-bookings/');
-        return true;
+        showToast('🎟️ Taking you to your bookings...', '/bookings/my-bookings/'); return true;
     }
-    
     if (lowerCommand.includes('book') && lowerCommand.includes('bus')) {
-        showToast('🚌 Taking you to bus search...', '/bookings/search/');
-        return true;
+        showToast('🚌 Taking you to bus search...', '/bookings/search/'); return true;
     }
-    
     return false;
 }
 
-// Speech recognition setup
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 let recognition = null;
 let isListening = false;
 let isSpeaking = false;
 let currentUtterance = null;
-
-// Female voice selection
 let selectedVoice = null;
 
 function loadVoices() {
     const voices = window.speechSynthesis.getVoices();
-    const femaleVoices = voices.filter(voice => 
-        voice.name.toLowerCase().includes('female') || 
-        voice.name.toLowerCase().includes('samantha') ||
-        voice.name.toLowerCase().includes('victoria') ||
-        voice.name.toLowerCase().includes('google uk english female') ||
-        voice.lang.includes('en-IN') && voice.name.includes('Female')
+    const femaleVoices = voices.filter(v =>
+        v.name.toLowerCase().includes('female') || v.name.toLowerCase().includes('samantha') ||
+        v.name.toLowerCase().includes('victoria') || v.name.toLowerCase().includes('google uk english female') ||
+        (v.lang.includes('en-IN') && v.name.includes('Female'))
     );
-    
-    if (femaleVoices.length > 0) {
-        selectedVoice = femaleVoices[0];
-    } else {
-        selectedVoice = voices.find(voice => voice.lang.startsWith('en')) || voices[0];
-    }
+    selectedVoice = femaleVoices.length > 0 ? femaleVoices[0] : (voices.find(v => v.lang.startsWith('en')) || voices[0]);
 }
 
-if ('speechSynthesis' in window) {
-    window.speechSynthesis.onvoiceschanged = loadVoices;
-    loadVoices();
-}
+if ('speechSynthesis' in window) { window.speechSynthesis.onvoiceschanged = loadVoices; loadVoices(); }
 
 if (SpeechRecognition) {
     recognition = new SpeechRecognition();
     recognition.lang = 'en-IN';
     recognition.continuous = false;
     recognition.interimResults = false;
-    
     recognition.onstart = () => {
         isListening = true;
         voiceButton.classList.add('listening');
@@ -2251,30 +1731,21 @@ if (SpeechRecognition) {
         addMessage("🎤 Listening... Please speak your command or question.", 'bot');
         chatMessages.scrollTop = chatMessages.scrollHeight;
     };
-    
     recognition.onend = () => {
         isListening = false;
         voiceButton.classList.remove('listening');
         voiceButton.innerHTML = '<i class="fas fa-microphone"></i>';
     };
-    
     recognition.onresult = (event) => {
         const transcript = event.results[0][0].transcript;
         chatInput.value = transcript;
-        
-        // Check if it's a navigation command
         const navigated = navigateToPage(transcript);
-        
         if (navigated) {
             addMessage(transcript, 'user');
             addMessage("🚀 Redirecting you to the requested page...", 'bot');
             chatInput.value = '';
-        } else {
-            // Process as normal question
-            sendMessage();
-        }
+        } else { sendMessage(); }
     };
-    
     recognition.onerror = (event) => {
         console.error('Speech recognition error:', event.error);
         addMessage("Sorry, I couldn't hear you. Please try again or type your question.", 'bot');
@@ -2283,21 +1754,15 @@ if (SpeechRecognition) {
         isListening = false;
     };
 } else {
-    voiceButton.style.opacity = '0.5';
-    voiceButton.style.cursor = 'not-allowed';
-    voiceButton.title = 'Speech recognition not supported in this browser';
-    stopVoiceButton.style.opacity = '0.5';
-    stopVoiceButton.style.cursor = 'not-allowed';
+    voiceButton.style.opacity = '0.5'; voiceButton.style.cursor = 'not-allowed';
+    stopVoiceButton.style.opacity = '0.5'; stopVoiceButton.style.cursor = 'not-allowed';
 }
 
 function stopVoice() {
     if (window.speechSynthesis) {
         window.speechSynthesis.cancel();
         isSpeaking = false;
-        if (currentUtterance) {
-            currentUtterance.onend = null;
-            currentUtterance = null;
-        }
+        if (currentUtterance) { currentUtterance.onend = null; currentUtterance = null; }
         voiceButton.classList.remove('speaking');
         addMessage("🔇 Voice stopped.", 'bot');
     }
@@ -2305,67 +1770,36 @@ function stopVoice() {
 
 function speakResponse(text) {
     if (!window.speechSynthesis) return;
-    
     stopVoice();
-    
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'en-IN';
-    utterance.rate = 0.9;
-    utterance.pitch = 1.1;
-    
-    if (selectedVoice) {
-        utterance.voice = selectedVoice;
-    }
-    
-    currentUtterance = utterance;
-    isSpeaking = true;
+    utterance.lang = 'en-IN'; utterance.rate = 0.9; utterance.pitch = 1.1;
+    if (selectedVoice) utterance.voice = selectedVoice;
+    currentUtterance = utterance; isSpeaking = true;
     voiceButton.classList.add('speaking');
     voiceButton.innerHTML = '<i class="fas fa-volume-up"></i>';
-    
     utterance.onend = () => {
-        isSpeaking = false;
-        voiceButton.classList.remove('speaking');
-        voiceButton.innerHTML = '<i class="fas fa-microphone"></i>';
-        currentUtterance = null;
+        isSpeaking = false; voiceButton.classList.remove('speaking');
+        voiceButton.innerHTML = '<i class="fas fa-microphone"></i>'; currentUtterance = null;
     };
-    
     utterance.onerror = () => {
-        isSpeaking = false;
-        voiceButton.classList.remove('speaking');
-        voiceButton.innerHTML = '<i class="fas fa-microphone"></i>';
-        currentUtterance = null;
+        isSpeaking = false; voiceButton.classList.remove('speaking');
+        voiceButton.innerHTML = '<i class="fas fa-microphone"></i>'; currentUtterance = null;
     };
-    
     window.speechSynthesis.speak(utterance);
 }
 
 if (voiceButton) {
     voiceButton.addEventListener('click', () => {
-        if (!SpeechRecognition) {
-            alert("Voice assistant is not supported in your browser. Please use Chrome, Edge, or Safari.");
-            return;
-        }
-        
-        if (isSpeaking) {
-            stopVoice();
-        }
-        
-        if (isListening) {
-            recognition.stop();
-        } else {
-            recognition.start();
-        }
+        if (!SpeechRecognition) { alert("Voice assistant is not supported in your browser. Please use Chrome, Edge, or Safari."); return; }
+        if (isSpeaking) stopVoice();
+        if (isListening) recognition.stop(); else recognition.start();
     });
 }
 
 if (stopVoiceButton) {
-    stopVoiceButton.addEventListener('click', () => {
-        stopVoice();
-        addMessage("🔊 Voice response stopped.", 'bot');
-    });
+    stopVoiceButton.addEventListener('click', () => { stopVoice(); addMessage("🔊 Voice response stopped.", 'bot'); });
 }
 
-// Knowledge base for AI responses
 const knowledgeBase = {
     'how to book a bus': "To book a bus:\n1. Enter your source and destination cities\n2. Select your journey date\n3. Click 'Search Buses'\n4. Choose a bus and select seats\n5. Enter passenger details\n6. Make payment and get confirmation!",
     'book a bus': "To book a bus:\n1. Enter your source and destination cities\n2. Select your journey date\n3. Click 'Search Buses'\n4. Choose a bus and select seats\n5. Enter passenger details\n6. Make payment and get confirmation!",
@@ -2388,19 +1822,10 @@ const knowledgeBase = {
 function sendMessage() {
     const message = chatInput.value.trim();
     if (!message) return;
-    
     addMessage(message, 'user');
     chatInput.value = '';
-    
-    // Check if it's a navigation command first
-    const navigated = navigateToPage(message);
-    
-    if (navigated) {
-        return;
-    }
-    
+    if (navigateToPage(message)) return;
     showTypingIndicator();
-    
     setTimeout(() => {
         removeTypingIndicator();
         const response = getAIResponse(message);
@@ -2410,11 +1835,7 @@ function sendMessage() {
     }, 500);
 }
 
-function handleKeyPress(event) {
-    if (event.key === 'Enter') {
-        sendMessage();
-    }
-}
+function handleKeyPress(event) { if (event.key === 'Enter') sendMessage(); }
 
 function addMessage(text, sender) {
     const messageDiv = document.createElement('div');
@@ -2426,37 +1847,20 @@ function addMessage(text, sender) {
 
 function showTypingIndicator() {
     const typingDiv = document.createElement('div');
-    typingDiv.className = 'message bot';
-    typingDiv.id = 'typingIndicator';
-    typingDiv.innerHTML = `
-        <div class="typing-indicator">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
-    `;
+    typingDiv.className = 'message bot'; typingDiv.id = 'typingIndicator';
+    typingDiv.innerHTML = `<div class="typing-indicator"><span></span><span></span><span></span></div>`;
     chatMessages.appendChild(typingDiv);
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
-function removeTypingIndicator() {
-    const indicator = document.getElementById('typingIndicator');
-    if (indicator) indicator.remove();
-}
-
-function formatMessage(text) {
-    return text.replace(/\n/g, '<br>');
-}
+function removeTypingIndicator() { const i = document.getElementById('typingIndicator'); if (i) i.remove(); }
+function formatMessage(text) { return text.replace(/\n/g, '<br>'); }
 
 function getAIResponse(message) {
     const lowerMsg = message.toLowerCase().trim();
-    
     for (const [key, response] of Object.entries(knowledgeBase)) {
-        if (lowerMsg.includes(key.toLowerCase())) {
-            return response;
-        }
+        if (lowerMsg.includes(key.toLowerCase())) return response;
     }
-    
     if (lowerMsg.includes('book')) return knowledgeBase['how to book a bus'];
     if (lowerMsg.includes('cancel')) return knowledgeBase['cancellation policy'];
     if (lowerMsg.includes('refund')) return knowledgeBase['refund policy'];
@@ -2466,21 +1870,15 @@ function getAIResponse(message) {
     if (lowerMsg.includes('sign')) return knowledgeBase['signup'];
     if (lowerMsg.includes('owner')) return knowledgeBase['bus owner'];
     if (lowerMsg.includes('route')) return knowledgeBase['popular routes'];
-    
     return "I'm here to help! You can:\n• Say 'Search buses' to find buses\n• Say 'My bookings' to view tickets\n• Say 'Cancel my ticket' to cancel\n• Say 'Login' or 'Sign up'\n• Ask me about policies, payments, or seats!\n\nWhat would you like to do?";
 }
 
-// Chat widget controls
-chatButton.addEventListener('click', () => {
-    chatContainer.classList.toggle('open');
-});
-
+chatButton.addEventListener('click', () => { chatContainer.classList.toggle('open'); });
 closeChat.addEventListener('click', () => {
     chatContainer.classList.remove('open');
     if (recognition && isListening) recognition.stop();
     stopVoice();
 });
-
 document.addEventListener('click', (event) => {
     if (!chatContainer.contains(event.target) && !chatButton.contains(event.target) && chatContainer.classList.contains('open')) {
         chatContainer.classList.remove('open');
@@ -2488,9 +1886,6 @@ document.addEventListener('click', (event) => {
         stopVoice();
     }
 });
-
-chatContainer.addEventListener('click', (event) => {
-    event.stopPropagation();
-});
+chatContainer.addEventListener('click', (event) => { event.stopPropagation(); });
 </script>
 {% endblock %}
