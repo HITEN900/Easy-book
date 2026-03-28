@@ -84,7 +84,6 @@
         overflow: hidden;
         animation: slideUp 0.5s ease;
         border: 1px solid rgba(255,255,255,0.1);
-        backdrop-filter: blur(10px);
     }
 
     @keyframes slideUp {
@@ -279,6 +278,10 @@
         font-size: 0.95rem;
         font-weight: 500;
         transition: all 0.3s ease;
+        cursor: pointer;
+        background: none;
+        border: none;
+        padding: 0;
     }
 
     .forgot-link:hover {
@@ -419,6 +422,206 @@
         to { transform: rotate(360deg); }
     }
 
+    /* ===== FORGOT PASSWORD MODAL STYLES ===== */
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(5px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .modal-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .forgot-modal {
+        background: white;
+        border-radius: var(--radius-xl);
+        max-width: 450px;
+        width: 90%;
+        padding: 0;
+        transform: scale(0.9);
+        transition: transform 0.3s ease;
+        box-shadow: var(--shadow-xl);
+        overflow: hidden;
+    }
+
+    .modal-overlay.active .forgot-modal {
+        transform: scale(1);
+    }
+
+    .modal-header {
+        background: var(--gradient-primary);
+        padding: 30px;
+        text-align: center;
+        position: relative;
+    }
+
+    .modal-header .modal-icon {
+        width: 60px;
+        height: 60px;
+        background: var(--gradient-accent);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 15px;
+        color: white;
+        font-size: 1.8rem;
+    }
+
+    .modal-header h3 {
+        color: white;
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .modal-header p {
+        color: rgba(255, 255, 255, 0.85);
+        font-size: 0.9rem;
+        margin: 0;
+    }
+
+    .modal-body {
+        padding: 30px;
+    }
+
+    .modal-body .form-group {
+        margin-bottom: 25px;
+    }
+
+    .modal-body .form-label {
+        font-weight: 600;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .modal-body .input-group {
+        position: relative;
+    }
+
+    .modal-body .input-icon {
+        left: 15px;
+    }
+
+    .modal-body .form-control {
+        padding: 14px 15px 14px 45px;
+    }
+
+    .modal-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 20px;
+    }
+
+    .btn-cancel {
+        flex: 1;
+        padding: 12px;
+        background: #f1f5f9;
+        border: none;
+        border-radius: var(--radius-lg);
+        font-weight: 600;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        color: var(--dark-700);
+    }
+
+    .btn-cancel:hover {
+        background: #e2e8f0;
+    }
+
+    .btn-submit-reset {
+        flex: 1;
+        padding: 12px;
+        background: var(--gradient-accent);
+        border: none;
+        border-radius: var(--radius-lg);
+        font-weight: 600;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .btn-submit-reset:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(74, 144, 226, 0.4);
+    }
+
+    .btn-submit-reset:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .reset-success {
+        text-align: center;
+        padding: 20px;
+    }
+
+    .reset-success i {
+        font-size: 4rem;
+        color: var(--success);
+        margin-bottom: 15px;
+    }
+
+    .reset-success h4 {
+        color: var(--dark);
+        margin-bottom: 10px;
+    }
+
+    .reset-success p {
+        color: var(--gray);
+        margin-bottom: 20px;
+    }
+
+    .close-modal-btn {
+        background: var(--accent);
+        color: white;
+        border: none;
+        padding: 10px 24px;
+        border-radius: var(--radius-lg);
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .close-modal-btn:hover {
+        background: var(--accent-dark);
+        transform: translateY(-2px);
+    }
+
+    /* Info message styling */
+    .info-message {
+        background: rgba(74, 144, 226, 0.1);
+        border: 1px solid rgba(74, 144, 226, 0.2);
+        color: var(--accent);
+        padding: 12px;
+        border-radius: var(--radius-lg);
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.9rem;
+    }
+
     /* Responsive */
     @media (max-width: 576px) {
         .login-header {
@@ -442,6 +645,18 @@
         .options-row {
             flex-direction: column;
             align-items: flex-start;
+        }
+
+        .modal-header {
+            padding: 25px 20px;
+        }
+
+        .modal-body {
+            padding: 25px 20px;
+        }
+
+        .modal-actions {
+            flex-direction: column;
         }
     }
 </style>
@@ -487,19 +702,19 @@
                     {% endfor %}
                 {% endif %}
 
-                <form method="POST" id="loginForm">
+                <form method="POST" id="loginForm" action="{% url 'login' %}">
                     {% csrf_token %}
 
                     <!-- Username Field -->
                     <div class="form-group">
-                        <label class="form-label" for="username">Username</label>
+                        <label class="form-label" for="username">Username or Email</label>
                         <div class="input-group">
                             <i class="fas fa-user input-icon"></i>
                             <input type="text" 
                                    class="form-control" 
                                    id="username" 
                                    name="username" 
-                                   placeholder="Enter your username"
+                                   placeholder="Enter your username or email"
                                    required
                                    autofocus>
                         </div>
@@ -526,7 +741,9 @@
                             <input type="checkbox" name="remember" id="remember">
                             <span>Remember me</span>
                         </label>
-                        <a href="#" class="forgot-link">Forgot password?</a>
+                        <button type="button" class="forgot-link" onclick="openForgotPasswordModal()">
+                            <i class="fas fa-key"></i> Forgot password?
+                        </button>
                     </div>
 
                     <!-- Submit Button -->
@@ -545,6 +762,61 @@
                         </a>
                     </p>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Forgot Password Modal -->
+<div class="modal-overlay" id="forgotPasswordModal">
+    <div class="forgot-modal">
+        <div class="modal-header">
+            <div class="modal-icon">
+                <i class="fas fa-key"></i>
+            </div>
+            <h3>Reset Password</h3>
+            <p>Enter your email address and we'll send you a link to reset your password</p>
+        </div>
+        <div class="modal-body" id="modalBody">
+            <!-- Form Section -->
+            <div id="resetFormSection">
+                <div class="info-message">
+                    <i class="fas fa-info-circle"></i>
+                    <span>We'll send a password reset link to your registered email address.</span>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="resetEmail">Email Address</label>
+                    <div class="input-group">
+                        <i class="fas fa-envelope input-icon"></i>
+                        <input type="email" 
+                               class="form-control" 
+                               id="resetEmail" 
+                               name="email" 
+                               placeholder="Enter your registered email"
+                               required>
+                    </div>
+                </div>
+                <div id="modalErrorMessage" class="error-message" style="display: none;">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span id="modalErrorText"></span>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeForgotPasswordModal()">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                    <button type="button" class="btn-submit-reset" id="sendResetLinkBtn" onclick="sendResetLink()">
+                        <i class="fas fa-paper-plane"></i> Send Reset Link
+                    </button>
+                </div>
+            </div>
+            <!-- Success Section (hidden initially) -->
+            <div id="resetSuccessSection" style="display: none;" class="reset-success">
+                <i class="fas fa-check-circle"></i>
+                <h4>Reset Link Sent!</h4>
+                <p>If an account exists with this email, you will receive a password reset link shortly.</p>
+                <button type="button" class="close-modal-btn" onclick="closeForgotPasswordModal()">
+                    <i class="fas fa-arrow-left"></i> Back to Login
+                </button>
             </div>
         </div>
     </div>
@@ -576,15 +848,17 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
 setTimeout(function() {
     const errorMessages = document.querySelectorAll('.error-message, .success-message');
     errorMessages.forEach(function(message) {
-        message.style.transition = 'opacity 0.5s ease';
-        message.style.opacity = '0';
-        setTimeout(function() {
-            message.style.display = 'none';
-        }, 500);
+        if (message !== document.getElementById('modalErrorMessage')) {
+            message.style.transition = 'opacity 0.5s ease';
+            message.style.opacity = '0';
+            setTimeout(function() {
+                message.style.display = 'none';
+            }, 500);
+        }
     });
 }, 5000);
 
-// Remember me checkbox - store username
+// Remember me functionality
 document.getElementById('loginForm').addEventListener('submit', function() {
     const remember = document.getElementById('remember').checked;
     const username = document.getElementById('username').value;
@@ -605,7 +879,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Add floating label effect
+// Floating label effect
 document.querySelectorAll('.form-control').forEach(input => {
     input.addEventListener('focus', function() {
         this.closest('.form-group').querySelector('.form-label').style.color = 'var(--accent)';
@@ -614,6 +888,124 @@ document.querySelectorAll('.form-control').forEach(input => {
     input.addEventListener('blur', function() {
         this.closest('.form-group').querySelector('.form-label').style.color = 'var(--dark-800)';
     });
+});
+
+// ===== FORGOT PASSWORD MODAL FUNCTIONS =====
+function openForgotPasswordModal() {
+    const modal = document.getElementById('forgotPasswordModal');
+    const resetFormSection = document.getElementById('resetFormSection');
+    const resetSuccessSection = document.getElementById('resetSuccessSection');
+    const modalErrorMessage = document.getElementById('modalErrorMessage');
+    const resetEmail = document.getElementById('resetEmail');
+    
+    // Reset the modal state
+    resetFormSection.style.display = 'block';
+    resetSuccessSection.style.display = 'none';
+    modalErrorMessage.style.display = 'none';
+    resetEmail.value = '';
+    
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeForgotPasswordModal() {
+    const modal = document.getElementById('forgotPasswordModal');
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+function sendResetLink() {
+    const email = document.getElementById('resetEmail').value.trim();
+    const modalErrorMessage = document.getElementById('modalErrorMessage');
+    const modalErrorText = document.getElementById('modalErrorText');
+    const sendBtn = document.getElementById('sendResetLinkBtn');
+    
+    // Validate email
+    if (!email) {
+        modalErrorText.innerText = 'Please enter your email address.';
+        modalErrorMessage.style.display = 'flex';
+        return;
+    }
+    
+    const emailRegex = /^[^\s@]+@([^\s@]+\.)+[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        modalErrorText.innerText = 'Please enter a valid email address.';
+        modalErrorMessage.style.display = 'flex';
+        return;
+    }
+    
+    // Hide any previous error
+    modalErrorMessage.style.display = 'none';
+    
+    // Disable button and show loading state
+    sendBtn.disabled = true;
+    sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+    
+    // Get CSRF token from cookie
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    
+    const csrftoken = getCookie('csrftoken');
+    
+    // AJAX request to send password reset email using allauth endpoint
+    fetch('/accounts/password/reset/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': csrftoken
+        },
+        body: 'email=' + encodeURIComponent(email)
+    })
+    .then(response => {
+        // Show success state regardless of response (security best practice)
+        const resetFormSection = document.getElementById('resetFormSection');
+        const resetSuccessSection = document.getElementById('resetSuccessSection');
+        
+        resetFormSection.style.display = 'none';
+        resetSuccessSection.style.display = 'block';
+    })
+    .catch(error => {
+        // On network error, still show success for security
+        console.error('Password reset request error:', error);
+        const resetFormSection = document.getElementById('resetFormSection');
+        const resetSuccessSection = document.getElementById('resetSuccessSection');
+        
+        resetFormSection.style.display = 'none';
+        resetSuccessSection.style.display = 'block';
+    })
+    .finally(() => {
+        sendBtn.disabled = false;
+        sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Reset Link';
+    });
+}
+
+// Close modal when clicking outside
+document.getElementById('forgotPasswordModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeForgotPasswordModal();
+    }
+});
+
+// Close modal with Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        const modal = document.getElementById('forgotPasswordModal');
+        if (modal.classList.contains('active')) {
+            closeForgotPasswordModal();
+        }
+    }
 });
 </script>
 {% endblock %}
