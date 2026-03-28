@@ -3,435 +3,693 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>EasyBook</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<title>EasyBook — Book Bus Tickets</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <style>
+:root {
+  --bg-deep:   #020817;
+  --blue:      #3b82f6;
+  --blue-lt:   #60a5fa;
+  --cyan:      #22d3ee;
+  --indigo:    #6366f1;
+  --green:     #34d399;
+  --text:      #f1f5f9;
+  --muted:     #64748b;
+  --border:    rgba(59,130,246,0.18);
+  /* Brand colors from logo */
+  --teal:      #1995AD;
+  --orange:    #F9A828;
+}
+
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html, body { width: 100%; height: 100%; overflow: hidden; }
-
-body {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  background: #F8F9FF;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  background: var(--bg-deep);
+  font-family: 'DM Sans', sans-serif;
+  color: var(--text);
 }
 
-/* ── BACKGROUND SHAPES ── */
-.bg-circle-1 {
-  position: fixed;
-  top: -140px; right: -100px;
-  width: 420px; height: 420px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(59,130,246,0.1) 0%, transparent 70%);
-  pointer-events: none;
-  animation: bgFloat1 6s ease-in-out infinite;
+/* ─── LAYERED BACKGROUND ─── */
+.bg-layer {
+  position: fixed; inset: 0; z-index: 0;
+  background:
+    radial-gradient(ellipse 110% 60% at 20% 0%,   rgba(25,149,173,0.16) 0%, transparent 55%),
+    radial-gradient(ellipse 80%  50% at 80% 100%,  rgba(249,168,40,0.09) 0%, transparent 55%),
+    linear-gradient(160deg, #020c1f 0%, #020817 40%, #060214 100%);
 }
-.bg-circle-2 {
-  position: fixed;
-  bottom: -120px; left: -80px;
-  width: 360px; height: 360px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 70%);
-  pointer-events: none;
-  animation: bgFloat2 7s ease-in-out infinite;
-}
-.bg-circle-3 {
-  position: fixed;
-  top: 40%; left: -60px;
-  width: 200px; height: 200px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(34,197,94,0.06) 0%, transparent 70%);
-  pointer-events: none;
-}
-@keyframes bgFloat1 { 0%,100%{transform:translate(0,0);} 50%{transform:translate(-20px,20px);} }
-@keyframes bgFloat2 { 0%,100%{transform:translate(0,0);} 50%{transform:translate(20px,-20px);} }
 
-/* ── MAIN CARD ── */
-.card {
+.bg-grid {
+  position: fixed; inset: 0; z-index: 0;
+  background-image:
+    linear-gradient(rgba(25,149,173,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(25,149,173,0.06) 1px, transparent 1px);
+  background-size: 52px 52px;
+  mask-image: radial-gradient(ellipse 90% 90% at 50% 50%, black 20%, transparent 80%);
+}
+
+/* Aurora glows */
+.aurora {
+  position: fixed; z-index: 1;
+  border-radius: 50%;
+  filter: blur(110px);
+  pointer-events: none;
+}
+.aurora-1 {
+  width: 600px; height: 300px;
+  top: -80px; left: -100px;
+  background: radial-gradient(ellipse, rgba(25,149,173,0.2) 0%, transparent 70%);
+  animation: aShift1 14s ease-in-out infinite;
+}
+.aurora-2 {
+  width: 400px; height: 250px;
+  bottom: -60px; right: -80px;
+  background: radial-gradient(ellipse, rgba(249,168,40,0.12) 0%, transparent 70%);
+  animation: aShift2 18s ease-in-out infinite;
+}
+.aurora-3 {
+  width: 280px; height: 180px;
+  bottom: 30%; left: 62%;
+  background: radial-gradient(ellipse, rgba(25,149,173,0.08) 0%, transparent 70%);
+  animation: aShift2 11s ease-in-out infinite reverse;
+}
+@keyframes aShift1 { 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(40px,30px) scale(1.1);} }
+@keyframes aShift2 { 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(-30px,-20px) scale(1.08);} }
+
+/* Shooting stars */
+.shoot {
+  position: fixed; z-index: 2;
+  height: 1.5px; border-radius: 9px;
+  background: linear-gradient(90deg, transparent, var(--teal), transparent);
+  opacity: 0; pointer-events: none;
+}
+.shoot-1 { top:18%; left:-10%; width:180px; animation:shootAnim 7s linear 2.5s infinite; transform:rotate(-20deg); }
+.shoot-2 { top:36%; left:-5%;  width:120px; animation:shootAnim 7s linear  5s  infinite; transform:rotate(-15deg); }
+@keyframes shootAnim {
+  0% {opacity:0;left:-15%;}  5%{opacity:1;}
+  60%{opacity:0;left:115%;} 100%{opacity:0;left:115%;}
+}
+
+/* Corner accents */
+.corner {
+  position: fixed; width: 55px; height: 55px;
+  pointer-events: none; z-index: 5;
+}
+.corner-tl { top:20px; left:20px;  border-top:1px solid rgba(25,149,173,0.25); border-left:1px solid rgba(25,149,173,0.25); }
+.corner-br { bottom:20px; right:20px; border-bottom:1px solid rgba(25,149,173,0.25); border-right:1px solid rgba(25,149,173,0.25); }
+
+canvas#stars {
+  position: fixed; inset: 0; z-index: 1; pointer-events: none;
+}
+
+/* ─── MAIN STAGE ─── */
+.stage {
+  position: relative; z-index: 10;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  width: 100%; height: 100vh;
+  padding: 24px;
+}
+
+/* ─── SCENE (road illustration) ─── */
+.scene {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 20px;
-  width: 100%;
-  max-width: 420px;
-}
-
-/* ── ILLUSTRATION ── */
-.illustration {
-  position: relative;
-  width: clamp(180px, 55vw, 260px);
-  height: clamp(130px, 38vw, 180px);
-  margin-bottom: 40px;
+  width: clamp(260px, 70vw, 390px);
+  height: clamp(100px, 26vw, 150px);
+  margin-bottom: 36px;
   opacity: 0;
-  animation: popIn 0.8s cubic-bezier(0.34,1.56,0.64,1) 0.3s forwards;
+  animation: popIn 0.9s cubic-bezier(0.34,1.56,0.64,1) 0.3s forwards;
+}
+
+/* Mountains */
+.mountains {
+  position: absolute;
+  bottom: 22px; left: 0; right: 0;
+  height: 55px; pointer-events: none;
+}
+
+/* City skyline */
+.skyline {
+  position: absolute; bottom: 22px;
+  pointer-events: none;
+}
+
+/* Headlight beam */
+.hbeam {
+  position: absolute; bottom: 28px; left: 4px;
+  width: 110px; height: 20px;
+  background: linear-gradient(90deg, rgba(249,168,40,0.35), transparent);
+  clip-path: polygon(0 50%, 100% 0%, 100% 100%);
+  animation: hbPulse 2.2s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes hbPulse { 0%,100%{opacity:0.6;} 50%{opacity:1;} }
+
+/* Exhaust puffs */
+.puff {
+  position: absolute; bottom: 42px; left: 8px;
+  width: 9px; height: 9px; border-radius: 50%;
+  background: rgba(148,163,184,0.2);
+  animation: puffUp 1.8s ease-out infinite;
+}
+.p2{animation-delay:.6s;} .p3{animation-delay:1.2s;}
+@keyframes puffUp {
+  0% {opacity:.6;transform:scale(1) translate(0,0);}
+  100%{opacity:0;transform:scale(3.2) translate(-18px,-22px);}
+}
+
+/* Sparkles */
+.sp { position:absolute; border-radius:50%; animation:spFade 2.5s ease-in-out infinite; }
+.sp1{top:6px;  right:18px; width:4px; height:4px; background:var(--teal);   animation-delay:0s;}
+.sp2{top:0px;  right:56px; width:3px; height:3px; background:var(--orange); animation-delay:.8s;}
+.sp3{top:16px; left:58px;  width:2px; height:2px; background:#fff;          animation-delay:1.5s;}
+@keyframes spFade { 0%,100%{opacity:0;transform:scale(0);} 50%{opacity:1;transform:scale(1);} }
+
+/* Bus wrapper */
+.bus-wrap {
+  position: absolute;
+  bottom: 22px; left: 50%;
+  transform: translateX(-50%);
+  animation: busFloat 3s ease-in-out infinite;
+  filter:
+    drop-shadow(0 6px 22px rgba(25,149,173,0.45))
+    drop-shadow(0 2px 6px rgba(0,0,0,0.6));
+}
+@keyframes busFloat {
+  0%,100%{transform:translateX(-50%) translateY(0) rotate(0deg);}
+  33%    {transform:translateX(-50%) translateY(-5px) rotate(0.3deg);}
+  66%    {transform:translateX(-50%) translateY(-3px) rotate(-0.2deg);}
 }
 
 /* Road */
 .road {
   position: absolute;
   bottom: 0; left: 0; right: 0;
-  height: 28px;
-  background: #E2E8F0;
-  border-radius: 14px;
-}
-.road-dashes {
-  position: absolute;
-  bottom: 11px;
-  left: 16px; right: 16px;
-  height: 3px;
-  background: repeating-linear-gradient(
-    90deg,
-    #CBD5E1 0px, #CBD5E1 18px,
-    transparent 18px, transparent 30px
-  );
-  border-radius: 2px;
-  overflow: hidden;
-}
-.road-dashes::after {
-  content: '';
-  position: absolute; inset: 0;
-  background: repeating-linear-gradient(
-    90deg,
-    #94A3B8 0px, #94A3B8 18px,
-    transparent 18px, transparent 30px
-  );
-  animation: dashMove 0.5s linear infinite;
-}
-@keyframes dashMove { to { transform: translateX(-30px); } }
-
-/* Bus SVG */
-.bus-svg-wrap {
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  animation: busRock 2.5s ease-in-out infinite;
-}
-@keyframes busRock {
-  0%,100% { transform: translateX(-50%) translateY(0); }
-  50%      { transform: translateX(-50%) translateY(-5px); }
-}
-
-/* Trees */
-.tree-left, .tree-right {
-  position: absolute;
-  bottom: 24px;
-}
-.tree-left  { left: 0; }
-.tree-right { right: 0; }
-
-/* Sun */
-.sun {
-  position: absolute;
-  top: 0; right: 20px;
-  width: 46px; height: 46px;
-  background: radial-gradient(circle, #FCD34D 40%, rgba(252,211,77,0) 70%);
-  border-radius: 50%;
-  animation: sunPulse 3s ease-in-out infinite;
-}
-.sun::after {
-  content: '';
-  position: absolute; inset: -8px;
-  border-radius: 50%;
-  border: 1.5px solid rgba(252,211,77,0.3);
-  animation: sunRing 3s ease-in-out infinite;
-}
-@keyframes sunPulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.08);} }
-@keyframes sunRing  { 0%,100%{opacity:0.5;transform:scale(1);} 50%{opacity:1;transform:scale(1.15);} }
-
-/* Clouds */
-.cloud {
-  position: absolute;
-  top: 12px;
-  border-radius: 50px;
-  background: white;
-  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.06));
-  animation: cloudDrift linear infinite;
-}
-.cloud-1 { left: 10px; width: 54px; height: 18px; top: 18px; animation-duration: 18s; animation-delay: 0s; }
-.cloud-2 { left: 70px; width: 36px; height: 12px; top: 8px; animation-duration: 14s; animation-delay: -6s; opacity: 0.7; }
-@keyframes cloudDrift { 0%{transform:translateX(0);} 50%{transform:translateX(8px);} 100%{transform:translateX(0);} }
-
-/* ── LOGO + BRAND ── */
-.brand-row {
-  display: flex; align-items: center; gap: 12px;
-  margin-bottom: 10px;
-  opacity: 0;
-  animation: fadeUp 0.7s ease 0.9s forwards;
-}
-.brand-icon {
-  width: 44px; height: 44px;
-  background: linear-gradient(135deg, #3B82F6, #6366F1);
+  height: 26px;
+  background: linear-gradient(180deg, #1a2744 0%, #0d1726 100%);
   border-radius: 13px;
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 4px 16px rgba(59,130,246,0.3);
-  flex-shrink: 0;
-}
-.brand-name {
-  font-size: clamp(1.8rem, 6vw, 2.3rem);
-  font-weight: 800;
-  color: #0F172A;
-  letter-spacing: -0.5px;
-  line-height: 1;
-}
-.brand-name span { color: #3B82F6; }
-
-.sub-text {
-  font-size: clamp(0.78rem, 2.5vw, 0.9rem);
-  font-weight: 400;
-  color: #94A3B8;
-  letter-spacing: 0.01em;
-  margin-bottom: 44px;
-  opacity: 0;
-  animation: fadeUp 0.7s ease 1.1s forwards;
-}
-
-/* ── PROGRESS ── */
-.progress-wrap {
-  width: clamp(180px, 55vw, 240px);
-  opacity: 0;
-  animation: fadeUp 0.7s ease 1.3s forwards;
-}
-.progress-track {
-  width: 100%;
-  height: 4px;
-  background: #E2E8F0;
-  border-radius: 8px;
   overflow: hidden;
+  border: 1px solid rgba(25,149,173,0.2);
+  box-shadow: 0 0 28px rgba(25,149,173,0.12);
 }
-.progress-fill {
-  height: 100%;
-  width: 0%;
-  border-radius: 8px;
-  background: linear-gradient(90deg, #3B82F6, #6366F1);
-  box-shadow: 0 0 8px rgba(59,130,246,0.4);
-  animation: barFill 5s ease-in-out 1.5s forwards;
+.road::after {
+  content:'';
+  position:absolute; top:50%; left:0;
+  transform:translateY(-50%);
+  height:3px; width:200%;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(25,149,173,0.5) 0px, rgba(25,149,173,0.5) 22px,
+    transparent 22px, transparent 38px
+  );
+  animation: dashScroll .45s linear infinite;
 }
-@keyframes barFill {
-  0%  { width:0%; }
-  25% { width:35%; }
-  55% { width:62%; }
-  80% { width:82%; }
-  100%{ width:100%; }
-}
-.progress-status {
-  margin-top: 12px;
-  font-size: 0.72rem;
-  font-weight: 500;
-  color: #CBD5E1;
+@keyframes dashScroll { to{transform:translateY(-50%) translateX(-38px);} }
+
+/* ─── BRAND LOGO BLOCK ─── */
+.brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
-  transition: opacity 0.3s;
+  opacity: 0;
+  animation: fadeRise .75s ease 1s forwards;
 }
 
-/* ── SKIP ── */
-.skip-btn {
-  display: inline-block;
-  margin-top: 32px;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: #94A3B8;
-  text-decoration: none;
-  letter-spacing: 0.04em;
-  padding: 8px 20px;
-  border: 1.5px solid #E2E8F0;
-  border-radius: 50px;
-  background: white;
-  transition: all 0.22s ease;
-  opacity: 0;
-  animation: fadeUp 0.7s ease 2s forwards;
+/* The brand logo SVG (bus icon) */
+.brand-bus-svg {
+  width: clamp(72px, 18vw, 110px);
+  height: auto;
+  margin-bottom: 14px;
+  filter: drop-shadow(0 0 18px rgba(25,149,173,0.45));
+  animation: busLogoFloat 4s ease-in-out infinite;
 }
-.skip-btn:hover {
-  color: #3B82F6;
-  border-color: #BFDBFE;
-  background: #EFF6FF;
+@keyframes busLogoFloat {
+  0%,100%{transform:translateY(0);}
+  50%    {transform:translateY(-5px);}
 }
 
-/* ── BOTTOM BADGE ── */
-.badge {
-  position: fixed;
-  bottom: clamp(16px,3vh,28px); left: 50%;
-  transform: translateX(-50%);
-  display: flex; align-items: center; gap: 6px;
-  padding: 7px 16px;
-  background: white;
-  border: 1px solid #F1F5F9;
-  border-radius: 50px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-  opacity: 0;
-  animation: fadeUp 0.7s ease 2.2s forwards;
-  white-space: nowrap;
+.brand-name {
+  font-family: 'Outfit', sans-serif;
+  font-size: clamp(2.4rem, 9vw, 3.2rem);
+  line-height: 1;
+  letter-spacing: -1px;
+  margin-bottom: 6px;
 }
-.badge-dot {
-  width: 6px; height: 6px; border-radius: 50%;
-  background: #22C55E;
-  animation: liveDot 2s ease-in-out infinite;
+.brand-name .easy {
+  font-weight: 800;
+  color: #1995AD;
 }
-@keyframes liveDot { 0%,100%{opacity:0.5;transform:scale(1);} 50%{opacity:1;transform:scale(1.3);} }
-.badge-text {
-  font-size: 0.65rem;
-  font-weight: 600;
-  color: #64748B;
-  letter-spacing: 0.05em;
+.brand-name .book {
+  font-weight: 300;
+  color: #1995AD;
+}
+
+.brand-tag {
+  font-size: clamp(0.68rem, 2.2vw, 0.82rem);
+  font-weight: 400;
+  color: var(--muted);
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
-@keyframes fadeUp {
-  from { opacity:0; transform:translateY(12px); }
-  to   { opacity:1; transform:translateY(0); }
+/* ─── DIVIDER ─── */
+.divider {
+  width: 1px; height: 32px;
+  background: linear-gradient(180deg, transparent, rgba(25,149,173,0.45), transparent);
+  margin: 20px 0;
+  opacity: 0;
+  animation: fadeRise .7s ease 1.2s forwards;
 }
+
+/* ─── STATS ─── */
+.stats {
+  display:flex; align-items:center; gap:26px;
+  margin-bottom:30px;
+  opacity:0;
+  animation: fadeRise .7s ease 1.35s forwards;
+}
+.stat { text-align:center; }
+.stat-n {
+  font-family:'Outfit',sans-serif;
+  font-size:1.06rem; font-weight:700;
+  color:var(--text); line-height:1;
+}
+.stat-l {
+  font-size:.6rem; font-weight:400; color:var(--muted);
+  text-transform:uppercase; letter-spacing:.08em; margin-top:3px;
+}
+.stat-div { width:1px; height:26px; background:rgba(25,149,173,0.2); }
+
+/* ─── PROGRESS ─── */
+.prog-wrap {
+  width: clamp(220px,62vw,285px);
+  opacity:0;
+  animation: fadeRise .7s ease 1.5s forwards;
+}
+.prog-head {
+  display:flex; justify-content:space-between; align-items:center;
+  margin-bottom:10px;
+}
+.prog-label {
+  font-size:.65rem; font-weight:500; color:var(--muted);
+  text-transform:uppercase; letter-spacing:.1em;
+}
+.prog-pct {
+  font-family:'Outfit',sans-serif;
+  font-size:.72rem; font-weight:600; color:#1995AD;
+}
+.prog-track {
+  position:relative; height:3px;
+  background:rgba(25,149,173,0.14); border-radius:6px; overflow:hidden;
+}
+.prog-fill {
+  height:100%; width:0%; border-radius:6px;
+  background: linear-gradient(90deg, #1995AD, #F9A828);
+  box-shadow: 0 0 12px rgba(25,149,173,0.7), 0 0 24px rgba(249,168,40,0.25);
+  transition: width .55s ease;
+  position:relative;
+}
+.prog-fill::after {
+  content:''; position:absolute;
+  right:0; top:-2px;
+  width:6px; height:7px; border-radius:50%;
+  background:#F9A828;
+  box-shadow: 0 0 8px #F9A828;
+}
+.prog-status {
+  margin-top:10px; text-align:center;
+  font-size:.7rem; font-weight:400; color:var(--muted);
+  transition:opacity .3s;
+}
+
+/* ─── SKIP ─── */
+.skip-btn {
+  margin-top:26px;
+  display:inline-flex; align-items:center; gap:8px;
+  font-family:'DM Sans',sans-serif;
+  font-size:.72rem; font-weight:500; color:var(--muted);
+  text-decoration:none; letter-spacing:.05em;
+  padding:9px 22px;
+  border:1px solid rgba(25,149,173,0.22);
+  border-radius:50px;
+  background:rgba(25,149,173,0.05);
+  backdrop-filter:blur(8px);
+  transition:all .25s ease;
+  opacity:0;
+  animation: fadeRise .7s ease 2s forwards;
+  cursor:pointer;
+}
+.skip-btn:hover {
+  color:#1995AD;
+  border-color:rgba(25,149,173,0.5);
+  background:rgba(25,149,173,0.12);
+  box-shadow:0 0 20px rgba(25,149,173,0.15);
+}
+.arrow { transition:transform .25s; }
+.skip-btn:hover .arrow { transform:translateX(3px); }
+
+/* ─── LIVE BADGE ─── */
+.live-badge {
+  position:fixed;
+  bottom: clamp(18px,4vh,32px); left:50%;
+  transform:translateX(-50%);
+  display:flex; align-items:center; gap:8px;
+  padding:8px 18px;
+  background:rgba(6,15,36,0.88);
+  border:1px solid rgba(25,149,173,0.2);
+  border-radius:50px;
+  backdrop-filter:blur(16px);
+  box-shadow:0 0 28px rgba(25,149,173,0.1), inset 0 1px 0 rgba(255,255,255,0.04);
+  opacity:0;
+  animation: fadeRise .7s ease 2.2s forwards;
+  white-space:nowrap; z-index:20;
+}
+.live-dot {
+  position:relative;
+  width:7px; height:7px; border-radius:50%;
+  background:var(--green);
+  box-shadow:0 0 8px var(--green);
+}
+.live-dot::before {
+  content:''; position:absolute; inset:-4px; border-radius:50%;
+  background:rgba(52,211,153,0.25);
+  animation:dotPing 2s ease-out infinite;
+}
+@keyframes dotPing { 0%{transform:scale(1);opacity:.8;} 100%{transform:scale(2.8);opacity:0;} }
+.live-text {
+  font-size:.63rem; font-weight:500; color:#94a3b8;
+  letter-spacing:.07em; text-transform:uppercase;
+}
+.live-text strong { color:var(--text); font-weight:600; }
+
+/* ─── KEYFRAMES ─── */
 @keyframes popIn {
-  from { opacity:0; transform:scale(0.88); }
-  to   { opacity:1; transform:scale(1); }
+  from{opacity:0; transform:scale(0.85) translateY(20px);}
+  to  {opacity:1; transform:scale(1)    translateY(0);}
+}
+@keyframes fadeRise {
+  from{opacity:0; transform:translateY(14px);}
+  to  {opacity:1; transform:translateY(0);}
 }
 </style>
 </head>
 <body>
 
-<div class="bg-circle-1"></div>
-<div class="bg-circle-2"></div>
-<div class="bg-circle-3"></div>
+<div class="bg-layer"></div>
+<div class="bg-grid"></div>
+<div class="aurora aurora-1"></div>
+<div class="aurora aurora-2"></div>
+<div class="aurora aurora-3"></div>
+<canvas id="stars"></canvas>
+<div class="shoot shoot-1"></div>
+<div class="shoot shoot-2"></div>
+<div class="corner corner-tl"></div>
+<div class="corner corner-br"></div>
 
-<div class="card">
+<!-- ══════════ STAGE ══════════ -->
+<div class="stage">
 
-  <!-- Illustration -->
-  <div class="illustration">
-    <!-- Sun -->
-    <div class="sun"></div>
-    <!-- Clouds -->
-    <div class="cloud cloud-1"></div>
-    <div class="cloud cloud-2"></div>
-
-    <!-- Trees left -->
-    <svg class="tree-left" width="28" height="44" viewBox="0 0 28 44" fill="none">
-      <rect x="12" y="30" width="4" height="14" rx="2" fill="#CBD5E1"/>
-      <ellipse cx="14" cy="22" rx="10" ry="14" fill="#86EFAC"/>
-      <ellipse cx="14" cy="16" rx="7"  ry="10" fill="#4ADE80"/>
+  <!-- Road scene -->
+  <div class="scene">
+    <!-- Mountains -->
+    <svg class="mountains" viewBox="0 0 390 55" fill="none">
+      <polygon points="0,55 65,18 130,42 195,8 270,36 330,14 390,28 390,55" fill="rgba(14,26,52,0.75)"/>
+      <polygon points="0,55 85,28 170,46 250,14 320,38 390,20 390,55" fill="rgba(10,20,42,0.85)"/>
+    </svg>
+    <!-- City skyline left -->
+    <svg class="skyline" style="left:22px;bottom:22px;opacity:.14;" viewBox="0 0 80 36" fill="none">
+      <rect x="0"  y="20" width="8"  height="16" fill="#1995AD"/>
+      <rect x="10" y="10" width="10" height="26" fill="#1995AD"/>
+      <rect x="22" y="16" width="7"  height="20" fill="#1995AD"/>
+      <rect x="31" y="5"  width="12" height="31" fill="#1995AD"/>
+      <rect x="45" y="14" width="8"  height="22" fill="#1995AD"/>
+      <rect x="55" y="20" width="6"  height="16" fill="#1995AD"/>
+      <rect x="63" y="12" width="9"  height="24" fill="#1995AD"/>
+      <rect x="74" y="18" width="6"  height="18" fill="#1995AD"/>
+    </svg>
+    <!-- City skyline right -->
+    <svg class="skyline" style="right:14px;bottom:22px;opacity:.1;" viewBox="0 0 60 30" fill="none">
+      <rect x="0"  y="14" width="7"  height="16" fill="#F9A828"/>
+      <rect x="9"  y="6"  width="9"  height="24" fill="#F9A828"/>
+      <rect x="20" y="12" width="6"  height="18" fill="#F9A828"/>
+      <rect x="28" y="4"  width="10" height="26" fill="#F9A828"/>
+      <rect x="40" y="10" width="8"  height="20" fill="#F9A828"/>
+      <rect x="50" y="16" width="6"  height="14" fill="#F9A828"/>
     </svg>
 
-    <!-- Trees right -->
-    <svg class="tree-right" width="22" height="36" viewBox="0 0 22 36" fill="none">
-      <rect x="9" y="24" width="4" height="12" rx="2" fill="#CBD5E1"/>
-      <ellipse cx="11" cy="17" rx="8" ry="11" fill="#86EFAC"/>
-      <ellipse cx="11" cy="11" rx="5.5" ry="8" fill="#4ADE80"/>
-    </svg>
+    <div class="hbeam"></div>
+    <div class="puff p1"></div>
+    <div class="puff p2"></div>
+    <div class="puff p3"></div>
+    <div class="sp sp1"></div>
+    <div class="sp sp2"></div>
+    <div class="sp sp3"></div>
 
-    <!-- Bus -->
-    <div class="bus-svg-wrap">
-      <svg width="140" height="62" viewBox="0 0 140 62" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- Body -->
-        <rect x="4" y="8" width="132" height="42" rx="10" fill="white"/>
-        <rect x="4" y="8" width="132" height="42" rx="10" fill="url(#busBody)"/>
-        <!-- Blue stripe -->
-        <rect x="4" y="32" width="132" height="5" fill="url(#stripe)"/>
-        <!-- Roof -->
-        <rect x="10" y="4" width="120" height="8" rx="5" fill="#F1F5F9"/>
-        <!-- Windows -->
-        <rect x="14" y="13" width="20" height="15" rx="4" fill="#BFDBFE"/>
-        <rect x="40" y="13" width="20" height="15" rx="4" fill="#BFDBFE"/>
-        <rect x="66" y="13" width="20" height="15" rx="4" fill="#BFDBFE"/>
-        <rect x="92" y="13" width="20" height="15" rx="4" fill="#BFDBFE"/>
-        <!-- Window glare -->
-        <rect x="14" y="13" width="6"  height="15" rx="3" fill="rgba(255,255,255,0.5)"/>
-        <rect x="40" y="13" width="6"  height="15" rx="3" fill="rgba(255,255,255,0.5)"/>
-        <rect x="66" y="13" width="6"  height="15" rx="3" fill="rgba(255,255,255,0.5)"/>
-        <rect x="92" y="13" width="6"  height="15" rx="3" fill="rgba(255,255,255,0.5)"/>
-        <!-- Door -->
-        <rect x="116" y="30" width="14" height="19" rx="3" fill="#E0F2FE"/>
-        <rect x="122" y="30" width="1.5" height="19" fill="rgba(59,130,246,0.2)"/>
-        <!-- Front headlight -->
-        <rect x="5"  y="18" width="8"  height="6" rx="3" fill="#FCD34D" opacity="0.9"/>
-        <!-- Rear light -->
-        <rect x="127" y="18" width="7" height="6" rx="3" fill="#FCA5A5" opacity="0.8"/>
-        <!-- Brand text -->
-        <text x="58" y="46" font-family="'Plus Jakarta Sans',sans-serif" font-size="6" font-weight="700" fill="#3B82F6" text-anchor="middle" letter-spacing="1.5">EASYBOOK</text>
-        <!-- Wheels -->
-        <circle cx="32"  cy="52" r="12" fill="#334155"/>
-        <circle cx="32"  cy="52" r="7"  fill="#475569"/>
-        <circle cx="32"  cy="52" r="3"  fill="#94A3B8"/>
-        <circle cx="108" cy="52" r="12" fill="#334155"/>
-        <circle cx="108" cy="52" r="7"  fill="#475569"/>
-        <circle cx="108" cy="52" r="3"  fill="#94A3B8"/>
-        <!-- Axle bar -->
-        <rect x="18" y="48" width="28" height="5" rx="2.5" fill="#1E293B"/>
-        <rect x="94" y="48" width="28" height="5" rx="2.5" fill="#1E293B"/>
+    <!-- Animated road bus (small, scene version) -->
+    <div class="bus-wrap">
+      <svg width="200" height="66" viewBox="0 0 210 66" fill="none" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <linearGradient id="busBody" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="rgba(255,255,255,0.9)"/>
-            <stop offset="1" stop-color="rgba(226,232,240,0.6)"/>
+          <linearGradient id="rb1" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%"  stop-color="#1a7a8f"/>
+            <stop offset="100%" stop-color="#0e4d5c"/>
           </linearGradient>
-          <linearGradient id="stripe" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0"   stop-color="#3B82F6"/>
-            <stop offset="0.5" stop-color="#6366F1"/>
-            <stop offset="1"   stop-color="#3B82F6"/>
+          <linearGradient id="rb2" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%"  stop-color="#c47f00"/>
+            <stop offset="100%" stop-color="#9a6200"/>
           </linearGradient>
+          <filter id="rbs" x="-5%" y="-10%" width="115%" height="140%">
+            <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="rgba(25,149,173,0.5)"/>
+          </filter>
         </defs>
+        <!-- Body teal -->
+        <rect x="4"   y="10" width="202" height="46" rx="9" fill="url(#rb1)" filter="url(#rbs)"/>
+        <!-- Roof -->
+        <rect x="10"  y="4"  width="190" height="10" rx="5"  fill="#135f70"/>
+        <rect x="10"  y="4"  width="190" height="2"  rx="1"  fill="rgba(255,255,255,0.08)"/>
+        <!-- Orange stripe -->
+        <rect x="4"   y="38" width="202" height="7"   fill="#F9A828" opacity=".88"/>
+        <!-- Windows -->
+        <rect x="16"  y="14" width="28" height="17" rx="4" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+        <rect x="50"  y="14" width="28" height="17" rx="4" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+        <rect x="84"  y="14" width="28" height="17" rx="4" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+        <rect x="118" y="14" width="28" height="17" rx="4" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+        <!-- Window glare -->
+        <rect x="16"  y="14" width="7" height="17" rx="3" fill="rgba(255,255,255,0.07)"/>
+        <rect x="50"  y="14" width="7" height="17" rx="3" fill="rgba(255,255,255,0.07)"/>
+        <rect x="84"  y="14" width="7" height="17" rx="3" fill="rgba(255,255,255,0.07)"/>
+        <rect x="118" y="14" width="7" height="17" rx="3" fill="rgba(255,255,255,0.07)"/>
+        <!-- Door -->
+        <rect x="152" y="35" width="18" height="21" rx="3" fill="rgba(10,40,50,0.9)" stroke="rgba(249,168,40,0.3)" stroke-width="1"/>
+        <rect x="160" y="35" width="1.5" height="21" fill="rgba(249,168,40,0.15)"/>
+        <!-- Headlight -->
+        <rect x="5" y="20" width="11" height="8" rx="4" fill="#fcd34d" opacity=".95"/>
+        <!-- Tail light -->
+        <rect x="194" y="20" width="10" height="8" rx="4" fill="#f87171" opacity=".8"/>
+        <!-- EASYBOOK text -->
+        <text x="86" y="51" font-family="'Outfit',sans-serif" font-size="6" font-weight="700"
+              fill="rgba(255,255,255,0.55)" text-anchor="middle" letter-spacing="2.5">EASYBOOK</text>
+        <!-- Bottom shadow -->
+        <rect x="4" y="53" width="202" height="3" rx="1" fill="rgba(0,0,0,0.35)"/>
+        <!-- Left wheel -->
+        <circle cx="48"  cy="60" r="13" fill="#071015" stroke="rgba(25,149,173,0.4)" stroke-width="1.5"/>
+        <circle cx="48"  cy="60" r="8"  fill="#0e2030"/>
+        <circle cx="48"  cy="60" r="4"  fill="#1a3545"/>
+        <circle cx="48"  cy="60" r="1.8" fill="#3a6070"/>
+        <line x1="48" y1="52" x2="48" y2="68" stroke="rgba(100,116,139,0.4)" stroke-width="1"/>
+        <line x1="40" y1="60" x2="56" y2="60" stroke="rgba(100,116,139,0.4)" stroke-width="1"/>
+        <!-- Right wheel -->
+        <circle cx="162" cy="60" r="13" fill="#071015" stroke="rgba(25,149,173,0.4)" stroke-width="1.5"/>
+        <circle cx="162" cy="60" r="8"  fill="#0e2030"/>
+        <circle cx="162" cy="60" r="4"  fill="#1a3545"/>
+        <circle cx="162" cy="60" r="1.8" fill="#3a6070"/>
+        <line x1="162" y1="52" x2="162" y2="68" stroke="rgba(100,116,139,0.4)" stroke-width="1"/>
+        <line x1="154" y1="60" x2="170" y2="60" stroke="rgba(100,116,139,0.4)" stroke-width="1"/>
+        <!-- Axles -->
+        <rect x="30"  y="56" width="36" height="5" rx="2.5" fill="#071015"/>
+        <rect x="144" y="56" width="36" height="5" rx="2.5" fill="#071015"/>
       </svg>
     </div>
-
-    <!-- Road -->
-    <div class="road">
-      <div class="road-dashes"></div>
-    </div>
+    <div class="road"></div>
   </div>
 
-  <!-- Brand -->
-  <div class="brand-row">
-    <div class="brand-icon">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-        <path d="M3 16V8a2 2 0 012-2h14a2 2 0 012 2v8" stroke="white" stroke-width="2" stroke-linecap="round"/>
-        <path d="M1 16h22M7 20a1 1 0 100-2 1 1 0 000 2zM17 20a1 1 0 100-2 1 1 0 000 2z" stroke="white" stroke-width="2" stroke-linecap="round"/>
-        <path d="M8 10h8M8 13h5" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
-      </svg>
+  <!-- ══ BRAND LOGO (exact from provided logo) ══ -->
+  <div class="brand">
+
+    <!-- Bus icon SVG from the logo -->
+    <svg class="brand-bus-svg" viewBox="0 0 540 340" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <clipPath id="windowClip">
+          <rect x="235" y="100" width="100" height="90" rx="10"/>
+          <rect x="345" y="100" width="85" height="90" rx="10"/>
+        </clipPath>
+        <filter id="logoGlow" x="-10%" y="-10%" width="120%" height="120%">
+          <feDropShadow dx="0" dy="0" stdDeviation="12" flood-color="rgba(25,149,173,0.5)"/>
+        </filter>
+      </defs>
+
+      <!-- Arrow/path going up-right (teal) -->
+      <path fill="#1995AD"
+        d="M123 173C123 118 168 73 223 73H393C408 73 421 86 421 101V128L477 80L421 32V63H223C162 63 113 112 113 173H123Z"
+        transform="translate(0,-20)"
+        filter="url(#logoGlow)"/>
+
+      <!-- Main bus body (orange) -->
+      <path fill="#F9A828"
+        d="M213 183C213 166 226 153 243 153H483C500 153 513 166 513 183V283C513 300 500 313 483 313H243C226 313 213 300 213 283V183Z"
+        filter="url(#logoGlow)"/>
+
+      <!-- Front section of bus (teal overlay) -->
+      <path fill="#1995AD"
+        d="M213 183C213 166 226 153 243 153H360L330 253H213V183Z"/>
+
+      <!-- Windows -->
+      <rect x="235" y="170" width="45" height="60" rx="8" fill="white" opacity=".9"/>
+      <rect x="295" y="170" width="45" height="60" rx="8" fill="white" opacity=".9"/>
+      <rect x="355" y="170" width="45" height="60" rx="8" fill="white" opacity=".9"/>
+      <rect x="415" y="170" width="60" height="60" rx="8" fill="white" opacity=".9"/>
+
+      <!-- Window glints -->
+      <rect x="235" y="170" width="12" height="60" rx="6" fill="rgba(255,255,255,0.4)"/>
+      <rect x="295" y="170" width="12" height="60" rx="6" fill="rgba(255,255,255,0.4)"/>
+      <rect x="355" y="170" width="12" height="60" rx="6" fill="rgba(255,255,255,0.4)"/>
+      <rect x="415" y="170" width="15" height="60" rx="6" fill="rgba(255,255,255,0.4)"/>
+
+      <!-- Small wheel circles on body -->
+      <circle cx="260" cy="275" r="18" fill="white" opacity=".35"/>
+      <circle cx="310" cy="275" r="18" fill="white" opacity=".35"/>
+
+      <!-- Teal wheels -->
+      <circle fill="#1995AD" cx="270" cy="313" r="32" filter="url(#logoGlow)"/>
+      <circle fill="#1995AD" cx="450" cy="313" r="32" filter="url(#logoGlow)"/>
+      <!-- Wheel centers (white) -->
+      <circle fill="white" cx="270" cy="313" r="12"/>
+      <circle fill="white" cx="450" cy="313" r="12"/>
+      <!-- Wheel inner -->
+      <circle fill="#1995AD" cx="270" cy="313" r="6"/>
+      <circle fill="#1995AD" cx="450" cy="313" r="6"/>
+    </svg>
+
+    <!-- Text: EasyBook -->
+    <div class="brand-name">
+      <span class="easy">Easy</span><span class="book">Book</span>
     </div>
-    <div class="brand-name">Easy<span>Book</span></div>
+
+    <p class="brand-tag">Bus Ticket Booking App</p>
   </div>
 
-  <p class="sub-text">Book bus tickets in seconds</p>
+  <!-- Divider -->
+  <div class="divider"></div>
 
-  <!-- Progress -->
-  <div class="progress-wrap">
-    <div class="progress-track">
-      <div class="progress-fill"></div>
-    </div>
-    <p class="progress-status" id="statusEl">Getting things ready...</p>
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat"><div class="stat-n">500+</div><div class="stat-l">Routes</div></div>
+    <div class="stat-div"></div>
+    <div class="stat"><div class="stat-n">2M+</div><div class="stat-l">Tickets</div></div>
+    <div class="stat-div"></div>
+    <div class="stat"><div class="stat-n">4.9★</div><div class="stat-l">Rating</div></div>
   </div>
 
-  <a href="{% url 'home' %}" class="skip-btn">Skip intro →</a>
+  <!-- Progress bar -->
+  <div class="prog-wrap">
+    <div class="prog-head">
+      <span class="prog-label">Loading</span>
+      <span class="prog-pct" id="pctEl">0%</span>
+    </div>
+    <div class="prog-track">
+      <div class="prog-fill" id="progFill"></div>
+    </div>
+    <p class="prog-status" id="statusEl">Initializing...</p>
+  </div>
+
+  <!-- Skip -->
+  <a href="{% url 'home' %}" class="skip-btn">
+    Continue to App <span class="arrow">→</span>
+  </a>
+
 </div>
 
 <!-- Live badge -->
-<div class="badge">
-  <div class="badge-dot"></div>
-  <span class="badge-text">500+ routes live</span>
+<div class="live-badge">
+  <div class="live-dot"></div>
+  <span class="live-text"><strong>Live</strong> · 500+ routes across India</span>
 </div>
 
+<!-- ══ SCRIPTS ══ -->
 <script>
-const msgs = [
-  'Getting things ready...',
+/* Twinkling star canvas */
+(function(){
+  const c   = document.getElementById('stars');
+  const ctx = c.getContext('2d');
+  let W, H, stars = [];
+
+  function resize(){
+    W = c.width  = window.innerWidth;
+    H = c.height = window.innerHeight;
+  }
+  function init(){
+    stars = [];
+    const n = Math.floor(W * H / 5500);
+    for(let i=0;i<n;i++){
+      stars.push({
+        x: Math.random()*W, y: Math.random()*H,
+        r: Math.random()*1.4+0.2,
+        a: Math.random()*0.8+0.2,
+        spd: Math.random()*0.006+0.003,
+        ph: Math.random()*Math.PI*2
+      });
+    }
+  }
+  function draw(t){
+    ctx.clearRect(0,0,W,H);
+    for(const s of stars){
+      const al = (Math.sin(t*s.spd*1000+s.ph)*0.4+0.6)*s.a;
+      ctx.beginPath();
+      ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.fillStyle = `rgba(190,220,255,${al})`;
+      ctx.fill();
+    }
+    requestAnimationFrame(draw);
+  }
+  resize(); init(); requestAnimationFrame(draw);
+  window.addEventListener('resize',()=>{ resize(); init(); });
+})();
+</script>
+
+<script>
+/* Progress bar */
+const steps  = [0, 18, 38, 62, 82, 100];
+const msgs   = [
+  'Initializing...',
   'Loading routes across India...',
-  'Checking seat availability...',
-  'Setting up your dashboard...',
+  'Syncing seat availability...',
+  'Fetching live schedules...',
+  'Almost there...',
   "You're all set! 🎉"
 ];
-let i = 0;
-const el = document.getElementById('statusEl');
-const timer = setInterval(() => {
-  el.style.opacity = '0';
-  setTimeout(() => {
-    i = Math.min(i + 1, msgs.length - 1);
-    el.textContent = msgs[i];
-    el.style.opacity = '1';
-    el.style.transition = 'opacity 0.3s';
-  }, 300);
-  if (i >= msgs.length - 1) clearInterval(timer);
-}, 1100);
 
-setTimeout(() => { window.location.href = "{% url 'home' %}"; }, 6000);
+const fill   = document.getElementById('progFill');
+const pctEl  = document.getElementById('pctEl');
+const statEl = document.getElementById('statusEl');
+let step = 0;
+
+function advance(){
+  if(step >= msgs.length) return;
+  fill.style.width     = steps[step] + '%';
+  pctEl.textContent    = steps[step] + '%';
+  statEl.style.opacity = '0';
+  setTimeout(()=>{
+    statEl.textContent   = msgs[step];
+    statEl.style.opacity = '1';
+    statEl.style.transition = 'opacity .35s ease';
+  }, 300);
+  step++;
+  if(step < msgs.length) setTimeout(advance, 1050);
+}
+
+setTimeout(advance, 1600);
+setTimeout(()=>{ window.location.href = "{% url 'home' %}"; }, 7500);
 </script>
+
 </body>
 </html>
