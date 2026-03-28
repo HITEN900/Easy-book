@@ -41,7 +41,6 @@
             --gradient-primary: linear-gradient(135deg, #0f1a2f, #1e2b4f);
             --gradient-accent: linear-gradient(135deg, #4a90e2, #2a6bb0);
             --gradient-dark: linear-gradient(135deg, #0a0e1a, #121a2a);
-            --gradient-gold: linear-gradient(135deg, #f5b042, #e88c1f);
             
             --shadow-sm: 0 2px 4px rgba(0,0,0,0.1);
             --shadow-md: 0 4px 8px rgba(0,0,0,0.15);
@@ -112,46 +111,30 @@
             padding: 0 15px;
         }
 
-        /* ===== DISTINCTIVE NEW LOGO - MODERN & DYNAMIC ===== */
+        /* Logo Styles */
         .navbar-brand {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 12px;
             text-decoration: none;
             padding: 8px 0;
             z-index: 1001;
-            position: relative;
         }
 
-        /* Premium emblem-style icon with dual-tone effect */
         .logo-icon {
-            width: 52px;
-            height: 52px;
-            background: linear-gradient(145deg, #2c3e6b, #1a2a44);
-            border-radius: 18px;
+            width: 48px;
+            height: 48px;
+            background: var(--gradient-accent);
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
-            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-            box-shadow: 0 8px 20px rgba(74, 144, 226, 0.25), inset 0 1px 0 rgba(255,255,255,0.1);
             overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
         }
 
-        /* Dynamic gradient overlay for depth */
-        .logo-icon::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(74, 144, 226, 0.3), rgba(42, 107, 176, 0.1));
-            border-radius: 18px;
-            pointer-events: none;
-        }
-
-        /* Animated speed lines effect */
         .logo-icon::before {
             content: '';
             position: absolute;
@@ -159,40 +142,27 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            background: linear-gradient(115deg, 
-                rgba(255,255,255,0) 30%, 
-                rgba(255,255,255,0.15) 50%, 
-                rgba(255,255,255,0) 70%);
-            transform: rotate(25deg);
-            transition: transform 0.6s ease;
-            pointer-events: none;
-            border-radius: 18px;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
         .navbar-brand:hover .logo-icon::before {
-            transform: rotate(25deg) translate(15%, 15%);
+            opacity: 1;
         }
 
-        .navbar-brand:hover .logo-icon {
-            transform: scale(1.02) translateY(-2px);
-            box-shadow: 0 12px 28px rgba(74, 144, 226, 0.35);
-        }
-
-        /* Main icon - modern bus + road combination */
         .logo-icon i {
-            font-size: 26px;
+            font-size: 24px;
             color: white;
             position: relative;
             z-index: 2;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
             transition: transform 0.3s ease;
         }
 
         .navbar-brand:hover .logo-icon i {
-            transform: translateX(2px);
+            transform: scale(1.1) rotate(5deg);
         }
 
-        /* Text section with refined typography */
         .logo-text {
             display: flex;
             flex-direction: column;
@@ -200,48 +170,24 @@
         }
 
         .logo-main {
-            font-size: 1.55rem;
+            font-size: 1.5rem;
             font-weight: 800;
+            color: white;
             letter-spacing: -0.5px;
-            background: linear-gradient(135deg, #ffffff 0%, #e0e8ff 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            position: relative;
         }
 
         .logo-main span {
-            background: linear-gradient(135deg, #4a90e2, #8bb9ff);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            font-weight: 800;
-        }
-
-        /* Accent dot under brand */
-        .logo-main::after {
-            content: '';
-            position: absolute;
-            bottom: -4px;
-            left: 0;
-            width: 28px;
-            height: 2px;
             background: var(--gradient-accent);
-            border-radius: 4px;
-            transition: width 0.3s ease;
-        }
-
-        .navbar-brand:hover .logo-main::after {
-            width: 42px;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .logo-tagline {
-            font-size: 0.68rem;
-            color: rgba(255, 255, 255, 0.65);
-            letter-spacing: 1.2px;
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.6);
+            letter-spacing: 1px;
             text-transform: uppercase;
-            font-weight: 500;
-            margin-top: 2px;
         }
 
         /* Navigation Menu */
@@ -788,19 +734,6 @@
                 width: 100%;
                 justify-content: center;
             }
-
-            .logo-main {
-                font-size: 1.3rem;
-            }
-            
-            .logo-icon {
-                width: 46px;
-                height: 46px;
-            }
-            
-            .logo-icon i {
-                font-size: 22px;
-            }
         }
 
         @media (max-width: 576px) {
@@ -813,9 +746,8 @@
             }
             
             .logo-icon {
-                width: 42px;
-                height: 42px;
-                border-radius: 14px;
+                width: 40px;
+                height: 40px;
             }
             
             .logo-icon i {
@@ -846,17 +778,17 @@
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <!-- Professional Blackish-Blue Navbar with Enhanced Logo -->
+    <!-- Professional Blackish-Blue Navbar -->
     <nav class="navbar" id="navbar">
         <div class="container">
-            <!-- Refreshed Logo with Distinctive Design -->
+            <!-- Logo -->
             <a class="navbar-brand" href="{% url 'home' %}">
                 <div class="logo-icon">
-                    <i class="fas fa-bus-alt"></i>
+                    <i class="fas fa-bus"></i>
                 </div>
                 <div class="logo-text">
                     <span class="logo-main">Easy<span>Book</span></span>
-                    <span class="logo-tagline">Ride. Explore. Arrive.</span>
+                    <span class="logo-tagline">Travel Smarter</span>
                 </div>
             </a>
 
@@ -942,7 +874,7 @@
                     <!-- Company Info -->
                     <div class="col-lg-4 col-md-6">
                         <div class="footer-logo">
-                            <i class="fas fa-bus-alt"></i>
+                            <i class="fas fa-bus"></i>
                             <span>Easy<span class="text-primary">Book</span></span>
                         </div>
                         <p class="footer-about">India's most trusted bus booking platform. We provide safe, comfortable, and affordable travel options across the country with 5000+ buses and 1000+ routes.</p>
@@ -1098,15 +1030,17 @@
             
             navMenu.classList.toggle('active');
             
+            // Change icon
             if (navMenu.classList.contains('active')) {
                 toggleBtn.className = 'fas fa-times';
-                document.body.style.overflow = 'hidden';
+                document.body.style.overflow = 'hidden'; // Prevent scrolling when menu is open
             } else {
                 toggleBtn.className = 'fas fa-bars';
-                document.body.style.overflow = '';
+                document.body.style.overflow = ''; // Restore scrolling
             }
         }
 
+        // Close mobile menu when clicking a link
         document.querySelectorAll('.nav-link').forEach(link => {
             link.addEventListener('click', function() {
                 const navMenu = document.getElementById('navMenu');
@@ -1118,6 +1052,7 @@
             });
         });
 
+        // Close mobile menu when clicking outside
         document.addEventListener('click', function(event) {
             const navMenu = document.getElementById('navMenu');
             const toggleBtn = document.querySelector('.mobile-toggle');
@@ -1131,6 +1066,7 @@
             }
         });
 
+        // Handle window resize
         window.addEventListener('resize', function() {
             const navMenu = document.getElementById('navMenu');
             if (window.innerWidth > 992 && navMenu.classList.contains('active')) {
@@ -1140,6 +1076,7 @@
             }
         });
 
+        // Set active nav link based on current path
         const currentPath = window.location.pathname;
         document.querySelectorAll('.nav-link').forEach(link => {
             const href = link.getAttribute('href');

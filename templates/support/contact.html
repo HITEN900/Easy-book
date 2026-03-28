@@ -1,0 +1,1011 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Customer Support - Easy Book{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary-color: #4361ee;
+        --secondary-color: #3f37c9;
+        --success-color: #4cc9f0;
+        --danger-color: #f72585;
+        --warning-color: #f8961e;
+        --light-bg: #f8f9fa;
+        --dark-text: #2b2d42;
+    }
+
+    /* Hero Section */
+    .support-hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 60px 0;
+        margin-bottom: 60px;
+        border-radius: 0 0 50px 50px;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .support-hero:before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200px;
+        height: 200px;
+        background: rgba(255,255,255,0.1);
+        border-radius: 50%;
+        animation: float 6s ease-in-out infinite;
+    }
+
+    .support-hero:after {
+        content: '';
+        position: absolute;
+        bottom: -50%;
+        left: -50%;
+        width: 300px;
+        height: 300px;
+        background: rgba(255,255,255,0.1);
+        border-radius: 50%;
+        animation: float 8s ease-in-out infinite reverse;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translate(0, 0) rotate(0deg); }
+        33% { transform: translate(30px, -30px) rotate(120deg); }
+        66% { transform: translate(-30px, 30px) rotate(240deg); }
+    }
+
+    .support-hero h1 {
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin-bottom: 20px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        position: relative;
+        z-index: 1;
+    }
+
+    .support-hero p {
+        font-size: 1.2rem;
+        opacity: 0.95;
+        max-width: 600px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+    }
+
+    /* Search Bar */
+    .search-container {
+        max-width: 600px;
+        margin: -30px auto 40px;
+        position: relative;
+        z-index: 10;
+    }
+
+    .search-box {
+        background: white;
+        border-radius: 60px;
+        padding: 5px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        display: flex;
+        align-items: center;
+    }
+
+    .search-box input {
+        flex: 1;
+        border: none;
+        padding: 18px 25px;
+        font-size: 1.1rem;
+        background: transparent;
+        border-radius: 60px;
+        outline: none;
+    }
+
+    .search-box button {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        border: none;
+        padding: 15px 35px;
+        border-radius: 50px;
+        font-weight: 600;
+        margin-right: 5px;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .search-box button:hover {
+        transform: translateX(-3px);
+        box-shadow: 0 10px 20px rgba(67, 97, 238, 0.3);
+    }
+
+    /* Quick Support Cards */
+    .quick-support-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 25px;
+        margin-bottom: 50px;
+    }
+
+    .quick-card {
+        background: white;
+        border-radius: 30px;
+        padding: 30px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .quick-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(67, 97, 238, 0.15);
+    }
+
+    .quick-card:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    }
+
+    .quick-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #667eea15, #764ba215);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        font-size: 2rem;
+        color: var(--primary-color);
+        transition: all 0.3s;
+    }
+
+    .quick-card:hover .quick-icon {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        transform: scale(1.1) rotate(360deg);
+    }
+
+    .quick-card h3 {
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        color: var(--dark-text);
+    }
+
+    .quick-card p {
+        color: #6c757d;
+        font-size: 0.95rem;
+        margin-bottom: 20px;
+    }
+
+    .quick-link {
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        transition: all 0.3s;
+    }
+
+    .quick-link:hover {
+        gap: 10px;
+        color: var(--secondary-color);
+    }
+
+    /* Main Support Grid */
+    .support-grid {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 30px;
+        margin-bottom: 50px;
+    }
+
+    /* Contact Form */
+    .contact-card {
+        background: white;
+        border-radius: 30px;
+        padding: 40px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+    }
+
+    .contact-header {
+        margin-bottom: 30px;
+    }
+
+    .contact-header h2 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--dark-text);
+        margin-bottom: 10px;
+    }
+
+    .contact-header p {
+        color: #6c757d;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: var(--dark-text);
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 15px 20px;
+        border: 2px solid #e9ecef;
+        border-radius: 15px;
+        font-size: 1rem;
+        transition: all 0.3s;
+        background: white;
+    }
+
+    .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.1);
+        outline: none;
+    }
+
+    textarea.form-control {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    .submit-btn {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        border-radius: 15px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        width: 100%;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .submit-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 30px rgba(67, 97, 238, 0.3);
+    }
+
+    /* FAQ Section */
+    .faq-card {
+        background: white;
+        border-radius: 30px;
+        padding: 40px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+    }
+
+    .faq-header {
+        margin-bottom: 30px;
+    }
+
+    .faq-header h2 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--dark-text);
+        margin-bottom: 10px;
+    }
+
+    .faq-item {
+        margin-bottom: 15px;
+        border: 2px solid #e9ecef;
+        border-radius: 15px;
+        overflow: hidden;
+        transition: all 0.3s;
+    }
+
+    .faq-item:hover {
+        border-color: var(--primary-color);
+    }
+
+    .faq-question {
+        padding: 20px;
+        background: white;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: 600;
+        color: var(--dark-text);
+    }
+
+    .faq-question i {
+        color: var(--primary-color);
+        transition: transform 0.3s;
+    }
+
+    .faq-item.active .faq-question i {
+        transform: rotate(180deg);
+    }
+
+    .faq-answer {
+        padding: 0 20px;
+        max-height: 0;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        color: #6c757d;
+        line-height: 1.6;
+    }
+
+    .faq-item.active .faq-answer {
+        padding: 0 20px 20px;
+        max-height: 200px;
+    }
+
+    /* Live Chat */
+    .chat-card {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        border-radius: 30px;
+        padding: 40px;
+        color: white;
+        margin-bottom: 50px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .chat-card:before {
+        content: '';
+        position: absolute;
+        top: -50px;
+        right: -50px;
+        width: 200px;
+        height: 200px;
+        background: rgba(255,255,255,0.1);
+        border-radius: 50%;
+    }
+
+    .chat-card h2 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .chat-card p {
+        font-size: 1.1rem;
+        opacity: 0.95;
+        margin-bottom: 30px;
+        max-width: 500px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .chat-btn {
+        background: white;
+        color: var(--primary-color);
+        border: none;
+        padding: 15px 40px;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .chat-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+    }
+
+    /* Chat Modal */
+    .chat-modal {
+        display: none;
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 350px;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        z-index: 1000;
+        overflow: hidden;
+    }
+
+    .chat-modal.active {
+        display: block;
+        animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+        from {
+            transform: translateY(20px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .chat-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        padding: 15px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .chat-header h3 {
+        margin: 0;
+        font-size: 1.1rem;
+    }
+
+    .close-chat {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.2rem;
+        cursor: pointer;
+    }
+
+    .chat-messages {
+        height: 300px;
+        padding: 20px;
+        overflow-y: auto;
+        background: #f8f9fa;
+    }
+
+    .message {
+        margin-bottom: 15px;
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .message.support {
+        flex-direction: row;
+    }
+
+    .message.user {
+        flex-direction: row-reverse;
+    }
+
+    .message-avatar {
+        width: 35px;
+        height: 35px;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 0.9rem;
+    }
+
+    .message.user .message-avatar {
+        background: var(--success-color);
+    }
+
+    .message-content {
+        max-width: 70%;
+        padding: 10px 15px;
+        border-radius: 15px;
+        font-size: 0.9rem;
+    }
+
+    .message.support .message-content {
+        background: white;
+        border-bottom-left-radius: 5px;
+    }
+
+    .message.user .message-content {
+        background: var(--primary-color);
+        color: white;
+        border-bottom-right-radius: 5px;
+    }
+
+    .chat-input {
+        padding: 15px;
+        background: white;
+        border-top: 2px solid #e9ecef;
+        display: flex;
+        gap: 10px;
+    }
+
+    .chat-input input {
+        flex: 1;
+        padding: 10px 15px;
+        border: 2px solid #e9ecef;
+        border-radius: 25px;
+        outline: none;
+    }
+
+    .chat-input button {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .chat-input button:hover {
+        transform: scale(1.1);
+    }
+
+    /* Ticket Status */
+    .ticket-card {
+        background: white;
+        border-radius: 30px;
+        padding: 30px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+    }
+
+    .ticket-status {
+        display: inline-block;
+        padding: 5px 15px;
+        border-radius: 30px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .status-open {
+        background: #d4edda;
+        color: #155724;
+    }
+
+    .status-progress {
+        background: #fff3cd;
+        color: #856404;
+    }
+
+    .status-closed {
+        background: #f8d7da;
+        color: #721c24;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .support-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .support-hero h1 {
+            font-size: 2.5rem;
+        }
+        
+        .quick-support-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .chat-modal {
+            width: 90%;
+            right: 5%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="support-hero">
+    <div class="container text-center">
+        <h1><i class="fas fa-headset me-3"></i>How Can We Help?</h1>
+        <p>24/7 Customer Support • Get answers to all your questions</p>
+    </div>
+</section>
+
+<!-- Search Bar -->
+<div class="container">
+    <div class="search-container">
+        <div class="search-box">
+            <input type="text" placeholder="Search for help articles, FAQs, topics..." id="searchInput">
+            <button onclick="searchHelp()"><i class="fas fa-search me-2"></i>Search</button>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Support Cards -->
+<div class="container">
+    <div class="quick-support-grid">
+        <div class="quick-card">
+            <div class="quick-icon">
+                <i class="fas fa-ticket-alt"></i>
+            </div>
+            <h3>Booking Issues</h3>
+            <p>Having trouble with bookings? Get instant help with ticket booking, cancellations, and modifications.</p>
+            <a href="#" class="quick-link">Get Help <i class="fas fa-arrow-right"></i></a>
+        </div>
+        
+        <div class="quick-card">
+            <div class="quick-icon">
+                <i class="fas fa-rupee-sign"></i>
+            </div>
+            <h3>Payment Support</h3>
+            <p>Payment failed? Refund not received? We're here to help with all payment-related queries.</p>
+            <a href="#" class="quick-link">Payment Help <i class="fas fa-arrow-right"></i></a>
+        </div>
+        
+        <div class="quick-card">
+            <div class="quick-icon">
+                <i class="fas fa-bus"></i>
+            </div>
+            <h3>Bus Operator Issues</h3>
+            <p>Problems with bus operators, delays, or cancellations? We'll help you resolve them.</p>
+            <a href="#" class="quick-link">Report Issue <i class="fas fa-arrow-right"></i></a>
+        </div>
+        
+        <div class="quick-card">
+            <div class="quick-icon">
+                <i class="fas fa-user-circle"></i>
+            </div>
+            <h3>Account Help</h3>
+            <p>Forgot password? Account locked? Get help with your account settings and security.</p>
+            <a href="#" class="quick-link">Account Help <i class="fas fa-arrow-right"></i></a>
+        </div>
+    </div>
+</div>
+
+<!-- Main Support Grid -->
+<div class="container">
+    <div class="support-grid">
+        <!-- Contact Form -->
+        <div class="contact-card">
+            <div class="contact-header">
+                <h2><i class="fas fa-envelope me-2 text-primary"></i>Send us a Message</h2>
+                <p>We'll get back to you within 24 hours</p>
+            </div>
+            
+            <form id="contactForm" method="POST" action="#">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label class="form-label">Your Name</label>
+                    <input type="text" class="form-control" placeholder="John Doe" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" class="form-control" placeholder="john@example.com" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Phone Number</label>
+                    <input type="tel" class="form-control" placeholder="+91 9876543210" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Subject</label>
+                    <select class="form-control" required>
+                        <option value="">Select a topic</option>
+                        <option value="booking">Booking Issue</option>
+                        <option value="payment">Payment Problem</option>
+                        <option value="refund">Refund Request</option>
+                        <option value="bus">Bus Operator Issue</option>
+                        <option value="account">Account Related</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Message</label>
+                    <textarea class="form-control" placeholder="Describe your issue in detail..." required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Booking Reference (Optional)</label>
+                    <input type="text" class="form-control" placeholder="e.g., BK12345678">
+                </div>
+                
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-paper-plane"></i>
+                    Send Message
+                </button>
+            </form>
+        </div>
+        
+        <!-- FAQ Section -->
+        <div class="faq-card">
+            <div class="faq-header">
+                <h2><i class="fas fa-question-circle me-2 text-primary"></i>Frequently Asked Questions</h2>
+                <p>Quick answers to common questions</p>
+            </div>
+            
+            <div class="faq-list">
+                <div class="faq-item active">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>How do I book a bus ticket?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Simply search for your route using the home page search bar, select your preferred bus, choose seats, enter passenger details, and complete payment. Your ticket will be instantly confirmed!
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>How can I cancel my booking?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        You can cancel your booking from the "My Bookings" section. Go to your dashboard, find the booking, and click the cancel button. Refunds will be processed as per the cancellation policy.
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>What payment methods are accepted?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        We accept all major UPI apps (Google Pay, PhonePe, Paytm), credit/debit cards, net banking from all major banks, and digital wallets.
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>How do I get a refund?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Refunds are automatically processed to your original payment method within 5-7 business days after cancellation. You'll receive a confirmation email once processed.
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>Can I change my booking date?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Date changes depend on the bus operator's policy. Please contact our support team with your booking reference for assistance with date changes.
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>What documents do I need for boarding?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        You need to carry a valid government ID (Aadhar, Passport, Driving License) and a printout or digital copy of your ticket. The name on ID should match the passenger details.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-4">
+                <a href="#" class="quick-link">View All FAQs <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Live Chat Section -->
+<div class="container">
+    <div class="chat-card">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h2><i class="fas fa-comment-dots me-3"></i>Need Immediate Help?</h2>
+                <p>Our support team is available 24/7. Start a live chat conversation and get instant answers to your questions.</p>
+                <button class="chat-btn" onclick="openChat()">
+                    <i class="fas fa-comment"></i>
+                    Start Live Chat
+                </button>
+            </div>
+            <div class="col-md-4 text-center">
+                <i class="fas fa-headset fa-6x" style="opacity: 0.2;"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Live Chat Modal -->
+<div class="chat-modal" id="chatModal">
+    <div class="chat-header">
+        <h3><i class="fas fa-comment me-2"></i>Easy Book Support</h3>
+        <button class="close-chat" onclick="closeChat()"><i class="fas fa-times"></i></button>
+    </div>
+    
+    <div class="chat-messages" id="chatMessages">
+        <div class="message support">
+            <div class="message-avatar">
+                <i class="fas fa-headset"></i>
+            </div>
+            <div class="message-content">
+                Hello! 👋 How can I help you today?
+            </div>
+        </div>
+    </div>
+    
+    <div class="chat-input">
+        <input type="text" placeholder="Type your message..." id="chatInput" onkeypress="handleChatKeyPress(event)">
+        <button onclick="sendChatMessage()"><i class="fas fa-paper-plane"></i></button>
+    </div>
+</div>
+
+<!-- Ticket Status Section -->
+<div class="container mb-5">
+    <div class="ticket-card">
+        <h3 class="mb-4"><i class="fas fa-ticket-alt me-2 text-primary"></i>Check Ticket Status</h3>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="form-label">Enter Booking Reference</label>
+                    <input type="text" class="form-control" placeholder="e.g., BK12345678">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="form-label">Email / Phone</label>
+                    <input type="text" class="form-control" placeholder="Enter registered email or phone">
+                </div>
+            </div>
+        </div>
+        
+        <button class="submit-btn" style="width: auto; padding: 12px 40px;">
+            <i class="fas fa-search"></i>
+            Check Status
+        </button>
+        
+        <hr class="my-4">
+        
+        <div class="row">
+            <div class="col-md-4">
+                <div class="d-flex align-items-center gap-3">
+                    <i class="fas fa-phone fa-2x text-primary"></i>
+                    <div>
+                        <h6 class="mb-1">Call Us</h6>
+                        <p class="mb-0">+91 12345 67890</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="d-flex align-items-center gap-3">
+                    <i class="fas fa-envelope fa-2x text-primary"></i>
+                    <div>
+                        <h6 class="mb-1">Email Us</h6>
+                        <p class="mb-0">support@easybook.com</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="d-flex align-items-center gap-3">
+                    <i class="fas fa-clock fa-2x text-primary"></i>
+                    <div>
+                        <h6 class="mb-1">Working Hours</h6>
+                        <p class="mb-0">24/7 Support</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// FAQ Toggle
+function toggleFaq(element) {
+    const faqItem = element.parentElement;
+    faqItem.classList.toggle('active');
+}
+
+// Chat Functions
+function openChat() {
+    document.getElementById('chatModal').classList.add('active');
+}
+
+function closeChat() {
+    document.getElementById('chatModal').classList.remove('active');
+}
+
+function sendChatMessage() {
+    const input = document.getElementById('chatInput');
+    const message = input.value.trim();
+    
+    if (message) {
+        const chatMessages = document.getElementById('chatMessages');
+        
+        // Add user message
+        const userMessage = document.createElement('div');
+        userMessage.className = 'message user';
+        userMessage.innerHTML = `
+            <div class="message-avatar">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="message-content">
+                ${message}
+            </div>
+        `;
+        chatMessages.appendChild(userMessage);
+        
+        // Clear input
+        input.value = '';
+        
+        // Scroll to bottom
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        
+        // Simulate support response after 1 second
+        setTimeout(() => {
+            const supportMessage = document.createElement('div');
+            supportMessage.className = 'message support';
+            supportMessage.innerHTML = `
+                <div class="message-avatar">
+                    <i class="fas fa-headset"></i>
+                </div>
+                <div class="message-content">
+                    Thank you for your message. One of our agents will assist you shortly. In the meantime, you can check our FAQ section for quick answers.
+                </div>
+            `;
+            chatMessages.appendChild(supportMessage);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }, 1000);
+    }
+}
+
+function handleChatKeyPress(event) {
+    if (event.key === 'Enter') {
+        sendChatMessage();
+    }
+}
+
+// Search Function
+function searchHelp() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    
+    // Simple search through FAQ
+    const faqQuestions = document.querySelectorAll('.faq-question span');
+    let found = false;
+    
+    faqQuestions.forEach(question => {
+        const faqItem = question.closest('.faq-item');
+        if (question.textContent.toLowerCase().includes(searchTerm)) {
+            faqItem.classList.add('active');
+            found = true;
+        } else {
+            faqItem.classList.remove('active');
+        }
+    });
+    
+    if (!found && searchTerm) {
+        alert('No results found. Please try a different search term or contact support.');
+    }
+}
+
+// Contact Form Submission
+document.getElementById('contactForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    alert('Thank you for contacting us! We will get back to you within 24 hours.');
+    this.reset();
+});
+
+// Close chat when clicking outside
+document.addEventListener('click', function(event) {
+    const chatModal = document.getElementById('chatModal');
+    const chatBtn = document.querySelector('.chat-btn');
+    
+    if (!chatModal.contains(event.target) && !chatBtn.contains(event.target)) {
+        chatModal.classList.remove('active');
+    }
+});
+
+// Initialize FAQ - open first item by default
+document.querySelector('.faq-item').classList.add('active');
+</script>
+{% endblock %}

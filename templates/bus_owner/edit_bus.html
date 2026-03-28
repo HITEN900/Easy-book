@@ -1,0 +1,751 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Edit Bus - EasyBook{% endblock %}
+
+{% block extra_css %}
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<!-- AOS Animation Library -->
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+<style>
+    :root {
+        --primary: #4361ee;
+        --primary-dark: #3a56d4;
+        --primary-light: #6c8cff;
+        --secondary: #7209b7;
+        --accent: #f72585;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --info: #3b82f6;
+        --dark: #0f172a;
+        --dark-800: #1e293b;
+        --dark-700: #334155;
+        --dark-600: #475569;
+        --light: #f8fafc;
+        --light-200: #e2e8f0;
+        --light-300: #cbd5e1;
+        
+        --gradient-primary: linear-gradient(135deg, #4361ee, #7209b7);
+        --gradient-success: linear-gradient(135deg, #10b981, #059669);
+        --gradient-warning: linear-gradient(135deg, #f59e0b, #d97706);
+        --gradient-danger: linear-gradient(135deg, #ef4444, #dc2626);
+        --gradient-info: linear-gradient(135deg, #3b82f6, #2563eb);
+        
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+        --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+        
+        --radius-sm: 0.375rem;
+        --radius-md: 0.5rem;
+        --radius-lg: 1rem;
+        --radius-xl: 1.5rem;
+        --radius-2xl: 2rem;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        color: var(--dark);
+        min-height: 100vh;
+    }
+
+    /* Page Header */
+    .page-header {
+        background: linear-gradient(135deg, #1a1a2e 0%, #2d2d44 100%);
+        padding: 40px 0;
+        margin-bottom: 40px;
+        border-radius: 0 0 50px 50px;
+        color: white;
+        position: relative;
+        overflow: hidden;
+        text-align: center;
+    }
+
+    .page-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        border-radius: 50%;
+    }
+
+    .page-header::after {
+        content: '';
+        position: absolute;
+        bottom: -30%;
+        left: -5%;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        border-radius: 50%;
+    }
+
+    .page-header h1 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 10px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .page-header p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        position: relative;
+        z-index: 2;
+    }
+
+    /* Main Card */
+    .bus-card {
+        background: white;
+        border-radius: var(--radius-2xl);
+        box-shadow: var(--shadow-2xl);
+        overflow: hidden;
+        margin-bottom: 40px;
+        animation: slideUp 0.5s ease;
+        border: 1px solid var(--light-200);
+    }
+
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Card Header */
+    .card-header-custom {
+        background: var(--gradient-primary);
+        padding: 25px 30px;
+        color: white;
+    }
+
+    .card-header-custom h4 {
+        font-size: 1.5rem;
+        font-weight: 800;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .card-header-custom h4 i {
+        font-size: 1.8rem;
+    }
+
+    .bus-badge {
+        display: inline-block;
+        background: rgba(255,255,255,0.2);
+        padding: 5px 15px;
+        border-radius: 50px;
+        font-size: 0.9rem;
+        margin-top: 10px;
+    }
+
+    .bus-badge i {
+        margin-right: 5px;
+    }
+
+    /* Card Body */
+    .card-body-custom {
+        padding: 40px;
+    }
+
+    /* Bus Preview Card */
+    .bus-preview {
+        background: linear-gradient(135deg, var(--light), white);
+        border-radius: var(--radius-xl);
+        padding: 25px;
+        margin-bottom: 30px;
+        border: 1px solid var(--light-200);
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        box-shadow: var(--shadow-md);
+    }
+
+    .bus-preview-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, rgba(67, 97, 238, 0.1), rgba(114, 9, 183, 0.1));
+        border-radius: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--primary);
+        font-size: 2.5rem;
+    }
+
+    .bus-preview-details {
+        flex: 1;
+    }
+
+    .bus-preview-name {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--dark);
+        margin-bottom: 5px;
+    }
+
+    .bus-preview-meta {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+        color: var(--dark-600);
+        font-size: 0.95rem;
+    }
+
+    .bus-preview-meta i {
+        color: var(--primary);
+        margin-right: 5px;
+    }
+
+    /* Form Sections */
+    .form-section {
+        background: var(--light);
+        border-radius: var(--radius-xl);
+        padding: 25px;
+        margin-bottom: 25px;
+        border: 1px solid var(--light-200);
+        transition: all 0.3s ease;
+    }
+
+    .form-section:hover {
+        box-shadow: var(--shadow-lg);
+        border-color: var(--primary-light);
+    }
+
+    .section-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--dark);
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid var(--light-200);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .section-title i {
+        color: var(--primary);
+        font-size: 1.2rem;
+    }
+
+    /* Form Fields */
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: var(--dark-700);
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 0.95rem;
+    }
+
+    .form-label i {
+        color: var(--primary);
+        font-size: 1rem;
+    }
+
+    .required-star {
+        color: var(--danger);
+        margin-left: 3px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 14px 16px;
+        border: 2px solid var(--light-200);
+        border-radius: var(--radius-lg);
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        font-family: 'Inter', sans-serif;
+        background: white;
+    }
+
+    .form-control:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.1);
+        outline: none;
+    }
+
+    .form-control:read-only {
+        background: var(--light);
+        cursor: not-allowed;
+    }
+
+    .form-control::placeholder {
+        color: var(--light-300);
+        font-size: 0.95rem;
+    }
+
+    .form-text {
+        font-size: 0.85rem;
+        color: var(--dark-600);
+        margin-top: 5px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .form-text i {
+        color: var(--info);
+        font-size: 0.9rem;
+    }
+
+    /* Bus Type Cards */
+    .bus-type-options {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+        margin-top: 10px;
+    }
+
+    .bus-type-option {
+        position: relative;
+    }
+
+    .bus-type-option input[type="radio"] {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .bus-type-option label {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 20px 10px;
+        background: white;
+        border: 2px solid var(--light-200);
+        border-radius: var(--radius-lg);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: center;
+    }
+
+    .bus-type-option input[type="radio"]:checked + label {
+        border-color: var(--primary);
+        background: linear-gradient(135deg, rgba(67, 97, 238, 0.05), rgba(114, 9, 183, 0.05));
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .bus-type-option label i {
+        font-size: 2rem;
+        color: var(--primary);
+        margin-bottom: 10px;
+        transition: all 0.3s ease;
+    }
+
+    .bus-type-option input[type="radio"]:checked + label i {
+        transform: scale(1.1);
+        color: var(--primary-dark);
+    }
+
+    .bus-type-option label span {
+        font-weight: 700;
+        color: var(--dark-800);
+        margin-bottom: 5px;
+    }
+
+    .bus-type-option label small {
+        color: var(--dark-600);
+        font-size: 0.8rem;
+    }
+
+    /* Toggle Switch */
+    .toggle-switch {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 15px;
+        background: white;
+        border-radius: var(--radius-lg);
+        border: 2px solid var(--light-200);
+    }
+
+    .toggle-switch input[type="checkbox"] {
+        width: 50px;
+        height: 25px;
+        appearance: none;
+        background: var(--light-300);
+        border-radius: 50px;
+        position: relative;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .toggle-switch input[type="checkbox"]:checked {
+        background: var(--gradient-primary);
+    }
+
+    .toggle-switch input[type="checkbox"]::before {
+        content: '';
+        position: absolute;
+        width: 21px;
+        height: 21px;
+        background: white;
+        border-radius: 50%;
+        top: 2px;
+        left: 2px;
+        transition: all 0.3s ease;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .toggle-switch input[type="checkbox"]:checked::before {
+        left: 27px;
+    }
+
+    .toggle-switch label {
+        font-weight: 600;
+        color: var(--dark-700);
+        cursor: pointer;
+    }
+
+    /* Action Buttons */
+    .action-buttons {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-top: 30px;
+        flex-wrap: wrap;
+    }
+
+    .btn-update {
+        background: var(--gradient-primary);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 16px 40px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        box-shadow: 0 8px 20px rgba(67, 97, 238, 0.3);
+    }
+
+    .btn-update:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 30px rgba(67, 97, 238, 0.4);
+    }
+
+    .btn-update i {
+        font-size: 1.2rem;
+    }
+
+    .btn-cancel {
+        background: white;
+        color: var(--dark-700);
+        border: 2px solid var(--light-300);
+        border-radius: 50px;
+        padding: 16px 40px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+    }
+
+    .btn-cancel:hover {
+        background: var(--light);
+        border-color: var(--primary);
+        color: var(--primary);
+        transform: translateY(-2px);
+        text-decoration: none;
+    }
+
+    .btn-cancel i {
+        font-size: 1.2rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .page-header h1 {
+            font-size: 2rem;
+        }
+
+        .card-body-custom {
+            padding: 25px;
+        }
+
+        .bus-preview {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .bus-type-options {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .action-buttons {
+            flex-direction: column;
+        }
+
+        .btn-update, .btn-cancel {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .bus-type-options {
+            grid-template-columns: 1fr;
+        }
+
+        .bus-preview-meta {
+            flex-direction: column;
+            gap: 5px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header" data-aos="fade-down">
+    <div class="container">
+        <h1><i class="fas fa-bus me-3"></i>Edit Bus</h1>
+        <p>Update your bus information and settings</p>
+    </div>
+</div>
+
+<div class="container mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Main Card -->
+            <div class="bus-card" data-aos="fade-up">
+                <!-- Card Header -->
+                <div class="card-header-custom">
+                    <h4><i class="fas fa-bus"></i> Edit Bus Details</h4>
+                    <div class="bus-badge">
+                        <i class="fas fa-hashtag"></i> {{ bus.bus_number }}
+                    </div>
+                </div>
+
+                <!-- Card Body -->
+                <div class="card-body-custom">
+                    <!-- Bus Preview -->
+                    <div class="bus-preview">
+                        <div class="bus-preview-icon">
+                            <i class="fas fa-bus"></i>
+                        </div>
+                        <div class="bus-preview-details">
+                            <div class="bus-preview-name">{{ bus.bus_name }}</div>
+                            <div class="bus-preview-meta">
+                                <span><i class="fas fa-hashtag"></i> {{ bus.bus_number }}</span>
+                                <span><i class="fas fa-tag"></i> {{ bus.get_bus_type_display }}</span>
+                                <span><i class="fas fa-chair"></i> {{ bus.total_seats }} seats</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        <!-- Basic Information Section -->
+                        <div class="form-section" data-aos="fade-up">
+                            <h5 class="section-title"><i class="fas fa-info-circle"></i> Basic Information</h5>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">
+                                            <i class="fas fa-bus"></i> Bus Name
+                                            <span class="required-star">*</span>
+                                        </label>
+                                        <input type="text" class="form-control" id="bus_name" name="bus_name" 
+                                               value="{{ bus.bus_name }}" placeholder="e.g., Volvo Multi-Axle" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">
+                                            <i class="fas fa-hashtag"></i> Bus Number
+                                            <span class="required-star">*</span>
+                                        </label>
+                                        <input type="text" class="form-control" id="bus_number" name="bus_number" 
+                                               value="{{ bus.bus_number }}" placeholder="e.g., MH-01-AB-1234" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bus Type Section -->
+                        <div class="form-section" data-aos="fade-up">
+                            <h5 class="section-title"><i class="fas fa-tag"></i> Bus Type</h5>
+                            
+                            <div class="bus-type-options">
+                                <div class="bus-type-option">
+                                    <input type="radio" name="bus_type" id="type_ac" value="ac" {% if bus.bus_type == 'ac' %}checked{% endif %}>
+                                    <label for="type_ac">
+                                        <i class="fas fa-snowflake"></i>
+                                        <span>AC</span>
+                                        <small>Air Conditioned</small>
+                                    </label>
+                                </div>
+                                
+                                <div class="bus-type-option">
+                                    <input type="radio" name="bus_type" id="type_non_ac" value="non_ac" {% if bus.bus_type == 'non_ac' %}checked{% endif %}>
+                                    <label for="type_non_ac">
+                                        <i class="fas fa-fan"></i>
+                                        <span>Non AC</span>
+                                        <small>Standard</small>
+                                    </label>
+                                </div>
+                                
+                                <div class="bus-type-option">
+                                    <input type="radio" name="bus_type" id="type_sleeper" value="sleeper" {% if bus.bus_type == 'sleeper' %}checked{% endif %}>
+                                    <label for="type_sleeper">
+                                        <i class="fas fa-bed"></i>
+                                        <span>Sleeper</span>
+                                        <small>Sleeping Berths</small>
+                                    </label>
+                                </div>
+                                
+                                <div class="bus-type-option">
+                                    <input type="radio" name="bus_type" id="type_seater" value="seater" {% if bus.bus_type == 'seater' %}checked{% endif %}>
+                                    <label for="type_seater">
+                                        <i class="fas fa-chair"></i>
+                                        <span>Seater</span>
+                                        <small>Pushback Seats</small>
+                                    </label>
+                                </div>
+                                
+                                <div class="bus-type-option">
+                                    <input type="radio" name="bus_type" id="type_ac_sleeper" value="ac_sleeper" {% if bus.bus_type == 'ac_sleeper' %}checked{% endif %}>
+                                    <label for="type_ac_sleeper">
+                                        <i class="fas fa-snowflake"></i>
+                                        <i class="fas fa-bed"></i>
+                                        <span>AC Sleeper</span>
+                                        <small>AC + Sleeper</small>
+                                    </label>
+                                </div>
+                                
+                                <div class="bus-type-option">
+                                    <input type="radio" name="bus_type" id="type_luxury" value="luxury" {% if bus.bus_type == 'luxury' %}checked{% endif %}>
+                                    <label for="type_luxury">
+                                        <i class="fas fa-crown"></i>
+                                        <span>Luxury</span>
+                                        <small>Premium Class</small>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Seats & Amenities Section -->
+                        <div class="form-section" data-aos="fade-up">
+                            <h5 class="section-title"><i class="fas fa-cog"></i> Seats & Amenities</h5>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">
+                                            <i class="fas fa-chair"></i> Total Seats
+                                        </label>
+                                        <input type="number" class="form-control" id="total_seats" name="total_seats" 
+                                               value="{{ bus.total_seats }}" readonly>
+                                        <div class="form-text">
+                                            <i class="fas fa-info-circle"></i>
+                                            Seats cannot be changed after creation
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">
+                                            <i class="fas fa-star"></i> Amenities
+                                        </label>
+                                        <input type="text" class="form-control" id="amenities" name="amenities" 
+                                               value="{{ bus.amenities }}" placeholder="AC, WiFi, Charging point, Water bottle">
+                                        <div class="form-text">
+                                            <i class="fas fa-info-circle"></i>
+                                            Comma-separated amenities
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Status Section -->
+                        <div class="form-section" data-aos="fade-up">
+                            <h5 class="section-title"><i class="fas fa-toggle-on"></i> Bus Status</h5>
+                            
+                            <div class="toggle-switch">
+                                <input type="checkbox" class="form-check-input" id="is_active" name="is_active" {% if bus.is_active %}checked{% endif %}>
+                                <label class="form-check-label" for="is_active">
+                                    {% if bus.is_active %}Active - Bus is visible for booking{% else %}Inactive - Bus is hidden from search{% endif %}
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="action-buttons">
+                            <button type="submit" class="btn-update">
+                                <i class="fas fa-save"></i> Update Bus
+                            </button>
+                            <a href="{% url 'manage_buses' %}" class="btn-cancel">
+                                <i class="fas fa-times"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- AOS Animation Library -->
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+<script>
+// Initialize AOS
+AOS.init({
+    duration: 600,
+    once: true,
+    offset: 50
+});
+
+// Update status label based on checkbox
+document.getElementById('is_active').addEventListener('change', function() {
+    const label = this.nextElementSibling;
+    if (this.checked) {
+        label.textContent = 'Active - Bus is visible for booking';
+    } else {
+        label.textContent = 'Inactive - Bus is hidden from search';
+    }
+});
+</script>
+{% endblock %}

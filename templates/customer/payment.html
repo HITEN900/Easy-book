@@ -1,0 +1,271 @@
+{% extends 'base.html' %}
+
+{% block title %}Payment - Easy Book{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Select Payment Method</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" id="paymentForm">
+                        {% csrf_token %}
+                        
+                        <!-- UPI Options -->
+                        <div class="payment-section mb-4">
+                            <h5 class="mb-3">UPI Apps</h5>
+                            <div class="row">
+                                <div class="col-md-4 mb-2">
+                                    <label class="payment-option">
+                                        <input type="radio" name="payment_method" value="google_pay" class="payment-radio">
+                                        <div class="payment-card text-center">
+                                            <img src="https://upload.wikimedia.org/wikipedia/commons/f/f2/Google_Pay_Logo.svg" alt="Google Pay" height="40">
+                                            <p class="mb-0 mt-2">Google Pay</p>
+                                        </div>
+                                    </label>
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <label class="payment-option">
+                                        <input type="radio" name="payment_method" value="phonepe" class="payment-radio">
+                                        <div class="payment-card text-center">
+                                            <img src="https://upload.wikimedia.org/wikipedia/commons/c/cc/PhonePe_Logo.svg" alt="PhonePe" height="40">
+                                            <p class="mb-0 mt-2">PhonePe</p>
+                                        </div>
+                                    </label>
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <label class="payment-option">
+                                        <input type="radio" name="payment_method" value="paytm" class="payment-radio">
+                                        <div class="payment-card text-center">
+                                            <img src="https://upload.wikimedia.org/wikipedia/commons/2/24/Paytm_Logo_%28standalone%29.svg" alt="Paytm" height="40">
+                                            <p class="mb-0 mt-2">Paytm</p>
+                                        </div>
+                                    </label>
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <label class="payment-option">
+                                        <input type="radio" name="payment_method" value="bhIM" class="payment-radio">
+                                        <div class="payment-card text-center">
+                                            <img src="https://upload.wikimedia.org/wikipedia/commons/e/ee/BHIM_Logo.svg" alt="BHIM" height="40">
+                                            <p class="mb-0 mt-2">BHIM UPI</p>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Cards -->
+                        <div class="payment-section mb-4">
+                            <h5 class="mb-3">Cards</h5>
+                            <div class="row">
+                                <div class="col-md-4 mb-2">
+                                    <label class="payment-option">
+                                        <input type="radio" name="payment_method" value="credit_card" class="payment-radio">
+                                        <div class="payment-card text-center">
+                                            <i class="fas fa-credit-card fa-2x text-primary mb-2"></i>
+                                            <p class="mb-0">Credit Card</p>
+                                        </div>
+                                    </label>
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <label class="payment-option">
+                                        <input type="radio" name="payment_method" value="debit_card" class="payment-radio">
+                                        <div class="payment-card text-center">
+                                            <i class="fas fa-credit-card fa-2x text-success mb-2"></i>
+                                            <p class="mb-0">Debit Card</p>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Net Banking -->
+                        <div class="payment-section mb-4">
+                            <h5 class="mb-3">Net Banking</h5>
+                            <div class="row">
+                                <div class="col-md-4 mb-2">
+                                    <label class="payment-option">
+                                        <input type="radio" name="payment_method" value="sbi" class="payment-radio">
+                                        <div class="payment-card text-center">
+                                            <i class="fas fa-university fa-2x text-primary mb-2"></i>
+                                            <p class="mb-0">SBI</p>
+                                        </div>
+                                    </label>
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <label class="payment-option">
+                                        <input type="radio" name="payment_method" value="hdfc" class="payment-radio">
+                                        <div class="payment-card text-center">
+                                            <i class="fas fa-university fa-2x text-success mb-2"></i>
+                                            <p class="mb-0">HDFC</p>
+                                        </div>
+                                    </label>
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <label class="payment-option">
+                                        <input type="radio" name="payment_method" value="icici" class="payment-radio">
+                                        <div class="payment-card text-center">
+                                            <i class="fas fa-university fa-2x text-info mb-2"></i>
+                                            <p class="mb-0">ICICI</p>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Wallets -->
+                        <div class="payment-section mb-4">
+                            <h5 class="mb-3">Wallets</h5>
+                            <div class="row">
+                                <div class="col-md-4 mb-2">
+                                    <label class="payment-option">
+                                        <input type="radio" name="payment_method" value="amazon_pay" class="payment-radio">
+                                        <div class="payment-card text-center">
+                                            <i class="fas fa-wallet fa-2x text-primary mb-2"></i>
+                                            <p class="mb-0">Amazon Pay</p>
+                                        </div>
+                                    </label>
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <label class="payment-option">
+                                        <input type="radio" name="payment_method" value="mobikwik" class="payment-radio">
+                                        <div class="payment-card text-center">
+                                            <i class="fas fa-wallet fa-2x text-success mb-2"></i>
+                                            <p class="mb-0">Mobikwik</p>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-success btn-lg w-100 mt-3" id="payButton" disabled>
+                            Proceed to Pay ₹{{ total_amount }}
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Booking Summary -->
+        <div class="col-md-4">
+            <div class="card sticky-top" style="top: 20px;">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Booking Summary</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Booking Reference:</strong> {{ booking.booking_reference }}</p>
+                    
+                    <hr>
+                    
+                    <h6>Journey Details</h6>
+                    <p>{{ booking.route.source }} → {{ booking.route.destination }}</p>
+                    <p class="text-muted">{{ booking.route.departure_time|date:"d M Y, h:i A" }}</p>
+                    
+                    <hr>
+                    
+                    <h6>Bus Details</h6>
+                    <p>{{ booking.route.bus.bus_name }} ({{ booking.route.bus.bus_number }})</p>
+                    <p>{{ booking.route.bus.get_bus_type_display }}</p>
+                    
+                    <hr>
+                    
+                    <h6>Selected Seats</h6>
+                    <p>
+                        {% for seat in booked_seats %}
+                            <span class="badge bg-primary me-1">{{ seat.seat.seat_number }}</span>
+                        {% endfor %}
+                    </p>
+                    
+                    <hr>
+                    
+                    <div class="fare-details">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Base Fare:</span>
+                            <span>₹{{ booking.total_amount|floatformat:0 }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Taxes & Fees:</span>
+                            <span>₹{{ booking.total_amount|floatformat:0|add:"0" }}</span>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between fw-bold">
+                            <span>Total Amount:</span>
+                            <span>₹{{ booking.total_amount|floatformat:0 }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.payment-option {
+    cursor: pointer;
+    display: block;
+    width: 100%;
+}
+
+.payment-radio {
+    display: none;
+}
+
+.payment-card {
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    padding: 15px;
+    transition: all 0.3s;
+}
+
+.payment-radio:checked + .payment-card {
+    border-color: #007bff;
+    background-color: #f0f8ff;
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(0,123,255,0.3);
+}
+
+.payment-card:hover {
+    border-color: #007bff;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.sticky-top {
+    z-index: 100;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const paymentRadios = document.querySelectorAll('input[name="payment_method"]');
+    const payButton = document.getElementById('payButton');
+    
+    paymentRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            payButton.disabled = false;
+        });
+    });
+    
+    // Simulate payment processing
+    document.getElementById('paymentForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const selectedMethod = document.querySelector('input[name="payment_method"]:checked');
+        if (!selectedMethod) {
+            alert('Please select a payment method');
+            return;
+        }
+        
+        payButton.disabled = true;
+        payButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+        
+        // Simulate payment processing
+        setTimeout(() => {
+            this.submit();
+        }, 2000);
+    });
+});
+</script>
+{% endblock %}
