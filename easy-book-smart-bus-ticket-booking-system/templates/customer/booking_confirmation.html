@@ -1,0 +1,508 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Booking Confirmed - Easy Book{% endblock %}
+
+{% block extra_css %}
+<style>
+    .confirmation-card {
+        border: none;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    }
+
+    .success-header {
+        background: linear-gradient(135deg, #28a745, #20c997);
+        color: white;
+        padding: 40px 20px;
+        text-align: center;
+    }
+
+    .success-header i {
+        font-size: 5rem;
+        margin-bottom: 20px;
+        animation: bounce 1s ease;
+    }
+
+    @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+        40% {transform: translateY(-30px);}
+        60% {transform: translateY(-15px);}
+    }
+
+    .ticket {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        position: relative;
+        margin: 30px 0;
+    }
+
+    .ticket:before, .ticket:after {
+        content: '';
+        position: absolute;
+        width: 30px;
+        height: 30px;
+        background: #f8f9fa;
+        border-radius: 50%;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    .ticket:before {
+        left: -15px;
+        box-shadow: inset -5px 0 10px rgba(0,0,0,0.05);
+    }
+
+    .ticket:after {
+        right: -15px;
+        box-shadow: inset 5px 0 10px rgba(0,0,0,0.05);
+    }
+
+    .ticket-header {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        padding: 20px;
+        text-align: center;
+        border-radius: 15px 15px 0 0;
+    }
+
+    .ticket-body {
+        padding: 30px;
+        background: white;
+    }
+
+    .journey-info {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 25px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .journey-info:before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200px;
+        height: 200px;
+        background: rgba(102, 126, 234, 0.05);
+        border-radius: 50%;
+    }
+
+    .journey-point {
+        text-align: center;
+        position: relative;
+        z-index: 1;
+    }
+
+    .journey-point .city {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 5px;
+    }
+
+    .journey-point .time {
+        color: #667eea;
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+
+    .journey-point .date {
+        color: #718096;
+        font-size: 0.9rem;
+    }
+
+    .journey-arrow {
+        text-align: center;
+        color: #667eea;
+        font-size: 2rem;
+    }
+
+    .bus-details-card {
+        background: white;
+        border: 2px solid #e9ecef;
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 25px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .bus-icon {
+        width: 70px;
+        height: 70px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 2rem;
+    }
+
+    .bus-info h4 {
+        margin: 0;
+        color: #2d3748;
+        font-weight: 700;
+    }
+
+    .bus-info p {
+        margin: 5px 0 0;
+        color: #718096;
+    }
+
+    .passenger-table {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        margin-bottom: 25px;
+    }
+
+    .passenger-table thead {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+    }
+
+    .passenger-table th {
+        padding: 15px;
+        font-weight: 600;
+        border: none;
+    }
+
+    .passenger-table td {
+        padding: 12px 15px;
+        vertical-align: middle;
+    }
+
+    .passenger-table tbody tr:hover {
+        background: #f8f9fa;
+    }
+
+    .fare-box {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        border-radius: 15px;
+        padding: 25px;
+    }
+
+    .fare-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px dashed #dee2e6;
+    }
+
+    .fare-item:last-child {
+        border-bottom: none;
+    }
+
+    .fare-total {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #28a745;
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 2px solid #dee2e6;
+    }
+
+    .qr-code {
+        background: white;
+        padding: 20px;
+        border-radius: 15px;
+        text-align: center;
+        border: 2px dashed #667eea;
+    }
+
+    .qr-code img {
+        max-width: 150px;
+        margin-bottom: 15px;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-top: 30px;
+    }
+
+    .btn-print {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 12px 30px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.3s;
+    }
+
+    .btn-print:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        color: white;
+    }
+
+    .btn-bookings {
+        background: white;
+        color: #667eea;
+        border: 2px solid #667eea;
+        border-radius: 10px;
+        padding: 12px 30px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.3s;
+    }
+
+    .btn-bookings:hover {
+        background: #667eea;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .btn-home {
+        background: #6c757d;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 12px 30px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.3s;
+    }
+
+    .btn-home:hover {
+        background: #5a6268;
+        transform: translateY(-2px);
+        color: white;
+    }
+
+    @media print {
+        .navbar, .footer, .action-buttons, .btn-print, .btn-bookings, .btn-home {
+            display: none !important;
+        }
+        .ticket {
+            box-shadow: none;
+            border: 2px solid #000;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .journey-point .city {
+            font-size: 1.2rem;
+        }
+        .journey-arrow {
+            font-size: 1.5rem;
+        }
+        .action-buttons {
+            flex-direction: column;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <!-- Success Header -->
+            <div class="confirmation-card">
+                <div class="success-header">
+                    <i class="fas fa-check-circle"></i>
+                    <h2 class="display-4">Booking Confirmed!</h2>
+                    <p class="lead">Your ticket has been booked successfully</p>
+                </div>
+
+                <!-- Ticket -->
+                <div class="ticket" id="ticket">
+                    <div class="ticket-header">
+                        <h3 class="mb-0">E-TICKET</h3>
+                        <p class="mb-0 opacity-75">Easy Book - Your Trusted Bus Partner</p>
+                    </div>
+                    
+                    <div class="ticket-body">
+                        <!-- Booking Reference -->
+                        <div class="text-center mb-4">
+                            <h5>Booking Reference: <strong class="text-primary">{{ booking.booking_reference }}</strong></h5>
+                            {% if booking.payment_id %}
+                                <p class="text-muted">Payment ID: {{ booking.payment_id }}</p>
+                            {% endif %}
+                        </div>
+
+                        <!-- Journey Details -->
+                        <div class="journey-info">
+                            <div class="row align-items-center">
+                                <div class="col-5">
+                                    <div class="journey-point">
+                                        <div class="city">{{ route.source }}</div>
+                                        <div class="time">{{ route.departure_time|date:"h:i A" }}</div>
+                                        <div class="date">{{ route.departure_time|date:"d M Y" }}</div>
+                                    </div>
+                                </div>
+                                <div class="col-2">
+                                    <div class="journey-arrow">
+                                        <i class="fas fa-arrow-right fa-2x"></i>
+                                        <div class="small text-muted">{{ route.duration|default:"5h 30m" }}</div>
+                                    </div>
+                                </div>
+                                <div class="col-5">
+                                    <div class="journey-point">
+                                        <div class="city">{{ route.destination }}</div>
+                                        <div class="time">{{ route.arrival_time|date:"h:i A" }}</div>
+                                        <div class="date">{{ route.arrival_time|date:"d M Y" }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bus Details -->
+                        <div class="bus-details-card">
+                            <div class="bus-icon">
+                                <i class="fas fa-bus"></i>
+                            </div>
+                            <div class="bus-info">
+                                <h4>{{ bus.bus_name }}</h4>
+                                <p><i class="fas fa-hashtag"></i> {{ bus.bus_number }} | <i class="fas fa-tag"></i> {{ bus.get_bus_type_display }}</p>
+                                <p class="small text-muted"><i class="fas fa-info-circle"></i> {{ bus.amenities|truncatechars:100 }}</p>
+                            </div>
+                        </div>
+
+                        <!-- Passenger Details -->
+                        <h5 class="mb-3"><i class="fas fa-users text-primary me-2"></i>Passenger Details</h5>
+                        <div class="passenger-table">
+                            <table class="table table-bordered mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Seat No.</th>
+                                        <th>Passenger Name</th>
+                                        <th>Age</th>
+                                        <th>Gender</th>
+                                        {% if booked_seats.0.passenger_adhar %}
+                                        <th>Aadhar</th>
+                                        {% endif %}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for seat in booked_seats %}
+                                    <tr>
+                                        <td><strong class="text-primary">{{ seat.seat.seat_number }}</strong></td>
+                                        <td>{{ seat.passenger_name }}</td>
+                                        <td>{{ seat.passenger_age }}</td>
+                                        <td>
+                                            {% if seat.passenger_gender == 'M' %}Male
+                                            {% elif seat.passenger_gender == 'F' %}Female
+                                            {% else %}Other{% endif %}
+                                        </td>
+                                        {% if seat.passenger_adhar %}
+                                        <td>{{ seat.passenger_adhar }}</td>
+                                        {% endif %}
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Fare Details -->
+                        <div class="fare-box">
+                            <h5 class="mb-3"><i class="fas fa-calculator text-primary me-2"></i>Fare Details</h5>
+                            <div class="fare-item">
+                                <span>Base Fare ({{ booked_seats|length }} seat{% if booked_seats|length > 1 %}s{% endif %}):</span>
+                                <span class="fw-bold">₹{{ booking.total_amount|floatformat:2 }}</span>
+                            </div>
+                            <div class="fare-item">
+                                <span>Taxes & Fees:</span>
+                                <span class="fw-bold">₹0.00</span>
+                            </div>
+                            <div class="fare-total">
+                                <span>Total Amount:</span>
+                                <span class="text-success">₹{{ booking.total_amount|floatformat:2 }}</span>
+                            </div>
+                        </div>
+                        <!-- Action Buttons -->
+<div class="action-buttons">
+    <button onclick="window.print()" class="btn-print">
+        <i class="fas fa-print"></i> Print Ticket
+    </button>
+    <a href="{% url 'download_ticket' booking.id %}" class="btn-download" style="
+        background: linear-gradient(135deg, #28a745, #20c997);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 12px 30px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.3s;
+        text-decoration: none;
+    ">
+        <i class="fas fa-download"></i> Download PDF
+    </a>
+    <a href="{% url 'my_bookings' %}" class="btn-bookings">
+        <i class="fas fa-ticket-alt"></i> My Bookings
+    </a>
+    <a href="{% url 'home' %}" class="btn-home">
+        <i class="fas fa-home"></i> Home
+    </a>
+</div>
+
+                        <!-- QR Code -->
+                        <div class="qr-code mt-4">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ booking.booking_reference }}" alt="QR Code">
+                            <p class="mb-0"><strong>Scan QR Code at Boarding</strong></p>
+                            <p class="text-muted small mb-0">Show this QR code or booking reference</p>
+                        </div>
+
+                        <!-- Terms -->
+                        <div class="mt-3 text-center text-muted small">
+                            <p class="mb-1"><i class="fas fa-clock"></i> Please report at least 30 minutes before departure</p>
+                            <p class="mb-0"><i class="fas fa-id-card"></i> Carry a valid ID proof for all passengers</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button onclick="window.print()" class="btn-print">
+                        <i class="fas fa-print"></i> Print Ticket
+                    </button>
+                    <a href="{% url 'my_bookings' %}" class="btn-bookings">
+                        <i class="fas fa-ticket-alt"></i> My Bookings
+                    </a>
+                    <a href="{% url 'home' %}" class="btn-home">
+                        <i class="fas fa-home"></i> Home
+                    </a>
+                </div>
+
+                <!-- Email Option -->
+                <div class="text-center mt-3">
+                    <small class="text-muted">
+                        <i class="fas fa-envelope"></i> 
+                        Ticket has been sent to your email: {{ booking.user.email }}
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Auto print dialog (optional - remove if not needed)
+// window.onload = function() {
+//     setTimeout(function() {
+//         window.print();
+//     }, 1000);
+// }
+</script>
+{% endblock %}

@@ -1,0 +1,883 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Search Buses - EasyBook{% endblock %}
+
+{% block extra_css %}
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<!-- AOS Animation Library -->
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+<style>
+    :root {
+        --primary: #4361ee;
+        --primary-dark: #3a56d4;
+        --primary-light: #6c8cff;
+        --secondary: #7209b7;
+        --accent: #f72585;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --dark: #0f172a;
+        --dark-800: #1e293b;
+        --dark-700: #334155;
+        --dark-600: #475569;
+        --light: #f8fafc;
+        --light-200: #e2e8f0;
+        --light-300: #cbd5e1;
+        
+        --gradient-primary: linear-gradient(135deg, #4361ee, #7209b7);
+        --gradient-accent: linear-gradient(135deg, #f72585, #b5179e);
+        --gradient-dark: linear-gradient(135deg, #0f172a, #1e293b);
+        
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+        --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+        
+        --radius-sm: 0.375rem;
+        --radius-md: 0.5rem;
+        --radius-lg: 1rem;
+        --radius-xl: 1.5rem;
+        --radius-2xl: 2rem;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background: #f8fafc;
+        color: var(--dark);
+    }
+
+    /* Page Header */
+    .page-header {
+        background: linear-gradient(135deg, #1a1a2e 0%, #2d2d44 100%);
+        padding: 40px 0;
+        margin-bottom: 40px;
+        border-radius: 0 0 50px 50px;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .page-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        border-radius: 50%;
+    }
+
+    .page-header::after {
+        content: '';
+        position: absolute;
+        bottom: -30%;
+        left: -5%;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        border-radius: 50%;
+    }
+
+    .page-header h1 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 10px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .page-header p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        position: relative;
+        z-index: 2;
+    }
+
+    /* Search Card */
+    .search-card {
+        background: white;
+        border-radius: var(--radius-2xl);
+        box-shadow: var(--shadow-2xl);
+        overflow: hidden;
+        margin-bottom: 40px;
+        animation: slideUp 0.5s ease;
+        border: 1px solid var(--light-200);
+    }
+
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .search-header {
+        background: var(--gradient-primary);
+        padding: 25px 30px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .search-header h4 {
+        color: white;
+        font-weight: 700;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .search-header h4 i {
+        font-size: 1.8rem;
+    }
+
+    .search-body {
+        padding: 30px;
+    }
+
+    /* Form Elements */
+    .form-label {
+        font-weight: 600;
+        color: var(--dark-700);
+        margin-bottom: 8px;
+        font-size: 0.95rem;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .form-label i {
+        color: var(--primary);
+        font-size: 1rem;
+    }
+
+    .form-control {
+        border: 2px solid var(--light-200);
+        border-radius: var(--radius-lg);
+        padding: 14px 16px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .form-control:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.1);
+        outline: none;
+    }
+
+    .form-control::placeholder {
+        color: var(--light-300);
+    }
+
+    .btn-search {
+        background: var(--gradient-primary);
+        color: white;
+        border: none;
+        border-radius: var(--radius-lg);
+        padding: 14px 25px;
+        font-weight: 700;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        width: 100%;
+        height: 52px;
+        box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+    }
+
+    .btn-search:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(67, 97, 238, 0.4);
+        cursor: pointer;
+    }
+
+    .btn-search i {
+        font-size: 1.2rem;
+    }
+
+    /* Results Header */
+    .results-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .results-title h4 {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: var(--dark);
+        margin-bottom: 5px;
+    }
+
+    .results-title p {
+        color: var(--dark-600);
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .results-title p i {
+        color: var(--primary);
+    }
+
+    .results-count {
+        background: linear-gradient(135deg, var(--light), var(--light-200));
+        padding: 10px 25px;
+        border-radius: 50px;
+        font-weight: 600;
+        color: var(--dark-700);
+        border: 1px solid var(--light-300);
+    }
+
+    .results-count span {
+        color: var(--primary);
+        font-weight: 800;
+        font-size: 1.2rem;
+        margin-right: 5px;
+    }
+
+    /* Bus Cards */
+    .bus-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
+
+    .bus-card {
+        background: white;
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-md);
+        transition: all 0.3s ease;
+        overflow: hidden;
+        border: 1px solid var(--light-200);
+        animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .bus-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-xl);
+        border-color: var(--primary-light);
+    }
+
+    .bus-header {
+        background: linear-gradient(135deg, var(--light), white);
+        padding: 20px;
+        border-bottom: 2px solid rgba(67, 97, 238, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .bus-title h5 {
+        font-size: 1.3rem;
+        font-weight: 800;
+        color: var(--dark);
+        margin: 0 0 5px 0;
+    }
+
+    .bus-number {
+        background: var(--gradient-primary);
+        color: white;
+        padding: 5px 15px;
+        border-radius: 30px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+
+    .bus-badge {
+        background: rgba(67, 97, 238, 0.1);
+        color: var(--primary);
+        padding: 8px 20px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .bus-body {
+        padding: 20px;
+    }
+
+    /* Journey Route Display */
+    .journey-route {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: var(--light);
+        padding: 15px;
+        border-radius: var(--radius-lg);
+        margin-bottom: 15px;
+    }
+
+    .time-point {
+        text-align: center;
+        flex: 1;
+    }
+
+    .time {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: 3px;
+    }
+
+    .city {
+        font-weight: 600;
+        color: var(--dark);
+        margin-bottom: 2px;
+    }
+
+    .date {
+        font-size: 0.8rem;
+        color: var(--dark-600);
+    }
+
+    .route-arrow {
+        color: var(--primary);
+        font-size: 1.2rem;
+        margin: 0 15px;
+    }
+
+    /* Bus Details Grid */
+    .bus-details-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+
+    .detail-item {
+        background: var(--light);
+        border-radius: var(--radius-lg);
+        padding: 12px 10px;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .detail-item:hover {
+        background: linear-gradient(135deg, var(--light), white);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-sm);
+    }
+
+    .detail-item i {
+        color: var(--primary);
+        font-size: 1.2rem;
+        margin-bottom: 5px;
+        display: block;
+    }
+
+    .detail-label {
+        font-size: 0.75rem;
+        color: var(--dark-600);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 3px;
+    }
+
+    .detail-value {
+        font-weight: 700;
+        color: var(--dark);
+        font-size: 1rem;
+    }
+
+    .detail-value.available {
+        color: var(--success);
+    }
+
+    .detail-value.fare {
+        color: var(--primary);
+        font-size: 1.1rem;
+    }
+
+    /* Amenities */
+    .amenities {
+        background: var(--light);
+        border-radius: var(--radius-lg);
+        padding: 12px;
+        margin-bottom: 15px;
+        font-size: 0.9rem;
+        color: var(--dark-600);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .amenities i {
+        color: var(--primary);
+    }
+
+    /* Card Footer */
+    .bus-footer {
+        background: var(--light);
+        padding: 20px;
+        border-top: 1px solid var(--light-200);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .fare-info {
+        text-align: left;
+    }
+
+    .fare-label {
+        font-size: 0.8rem;
+        color: var(--dark-600);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .fare-amount {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: var(--primary);
+        line-height: 1;
+    }
+
+    .btn-book {
+        background: var(--gradient-primary);
+        color: white;
+        border: none;
+        border-radius: var(--radius-lg);
+        padding: 14px 30px;
+        font-weight: 700;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+    }
+
+    .btn-book:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(67, 97, 238, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-book i {
+        font-size: 1.2rem;
+    }
+
+    .btn-login-book {
+        background: white;
+        color: var(--primary);
+        border: 2px solid var(--primary);
+        border-radius: var(--radius-lg);
+        padding: 14px 30px;
+        font-weight: 700;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+    }
+
+    .btn-login-book:hover {
+        background: var(--gradient-primary);
+        color: white;
+        border-color: transparent;
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-lg);
+        text-decoration: none;
+    }
+
+    /* No Results */
+    .no-results {
+        text-align: center;
+        padding: 60px 20px;
+        background: white;
+        border-radius: var(--radius-2xl);
+        box-shadow: var(--shadow-md);
+    }
+
+    .no-results i {
+        font-size: 5rem;
+        color: var(--light-300);
+        margin-bottom: 20px;
+    }
+
+    .no-results h5 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--dark);
+        margin-bottom: 10px;
+    }
+
+    .no-results p {
+        color: var(--dark-600);
+        margin-bottom: 25px;
+    }
+
+    .btn-explore {
+        background: var(--gradient-primary);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 15px 40px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+    }
+
+    .btn-explore:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-xl);
+        color: white;
+        text-decoration: none;
+    }
+
+    /* Filter Section */
+    .filter-section {
+        background: white;
+        border-radius: var(--radius-xl);
+        padding: 20px;
+        margin-bottom: 25px;
+        box-shadow: var(--shadow-md);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        align-items: center;
+    }
+
+    .filter-label {
+        font-weight: 600;
+        color: var(--dark-700);
+        margin-right: 10px;
+    }
+
+    .filter-badge {
+        background: var(--light);
+        color: var(--dark-700);
+        padding: 8px 20px;
+        border-radius: 50px;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 1px solid var(--light-300);
+    }
+
+    .filter-badge:hover {
+        background: var(--gradient-primary);
+        color: white;
+        border-color: transparent;
+    }
+
+    .filter-badge.active {
+        background: var(--gradient-primary);
+        color: white;
+        border-color: transparent;
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+        .bus-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .page-header h1 {
+            font-size: 2rem;
+        }
+
+        .results-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .bus-details-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .bus-footer {
+            flex-direction: column;
+            gap: 15px;
+            align-items: stretch;
+        }
+
+        .btn-book, .btn-login-book {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .filter-section {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .journey-route {
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .route-arrow {
+            transform: rotate(90deg);
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header" data-aos="fade-down">
+    <div class="container">
+        <h1 class="display-4"><i class="fas fa-search me-3"></i>Search Buses</h1>
+        <p class="lead">Find the perfect bus for your journey across India</p>
+    </div>
+</div>
+
+<div class="container mb-5">
+    <!-- Search Card -->
+    <div class="search-card" data-aos="fade-up">
+        <div class="search-header">
+            <h4><i class="fas fa-bus"></i> Search for Buses</h4>
+        </div>
+        <div class="search-body">
+            <form method="GET" action="{% url 'search_buses' %}" class="row g-3">
+                <div class="col-md-4">
+                    <label for="from" class="form-label">
+                        <i class="fas fa-map-marker-alt"></i> From
+                    </label>
+                    <input type="text" class="form-control" id="from" name="from" 
+                           value="{{ source|default:'' }}" placeholder="Enter source city" required>
+                </div>
+                <div class="col-md-4">
+                    <label for="to" class="form-label">
+                        <i class="fas fa-map-marker-alt"></i> To
+                    </label>
+                    <input type="text" class="form-control" id="to" name="to" 
+                           value="{{ destination|default:'' }}" placeholder="Enter destination city" required>
+                </div>
+                <div class="col-md-3">
+                    <label for="date" class="form-label">
+                        <i class="fas fa-calendar-alt"></i> Journey Date
+                    </label>
+                    <input type="date" class="form-control" id="date" name="date" 
+                           value="{{ journey_date|default:'' }}" min="{{ current_date|date:'Y-m-d' }}" required>
+                </div>
+                <div class="col-md-1 d-flex align-items-end">
+                    <button type="submit" class="btn-search">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Search Results -->
+    {% if search_performed %}
+    <div class="results-header" data-aos="fade-up">
+        <div class="results-title">
+            <h4><i class="fas fa-route me-2"></i>{{ source }} → {{ destination }}</h4>
+            <p><i class="fas fa-calendar-alt me-1"></i> {{ journey_date }} • <span class="fw-bold">{{ routes.count }}</span> buses found</p>
+        </div>
+        <div class="results-count">
+            <span>{{ routes.count }}</span> buses available
+        </div>
+    </div>
+
+    <!-- Filter Section (Optional) -->
+    <div class="filter-section" data-aos="fade-up">
+        <span class="filter-label"><i class="fas fa-filter me-2"></i>Filter by:</span>
+        <span class="filter-badge active">All Buses</span>
+        <span class="filter-badge">AC</span>
+        <span class="filter-badge">Non-AC</span>
+        <span class="filter-badge">Sleeper</span>
+        <span class="filter-badge">Seater</span>
+        <span class="filter-badge">Luxury</span>
+    </div>
+
+    <div class="bus-grid mt-4">
+        {% if routes %}
+            {% for route in routes %}
+            <div class="bus-card" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:50 }}">
+                <div class="bus-header">
+                    <div class="bus-title">
+                        <h5>{{ route.bus.bus_name }}</h5>
+                        <span class="bus-badge">
+                            <i class="fas fa-tag"></i> {{ route.bus.get_bus_type_display }}
+                        </span>
+                    </div>
+                    <div class="bus-number">{{ route.bus.bus_number }}</div>
+                </div>
+                
+                <div class="bus-body">
+                    <!-- Journey Route -->
+                    <div class="journey-route">
+                        <div class="time-point">
+                            <div class="time">{{ route.departure_time|date:"h:i A" }}</div>
+                            <div class="city">{{ route.source }}</div>
+                            <div class="date">{{ route.departure_time|date:"d M" }}</div>
+                        </div>
+                        <div class="route-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                        <div class="time-point">
+                            <div class="time">{{ route.arrival_time|date:"h:i A" }}</div>
+                            <div class="city">{{ route.destination }}</div>
+                            <div class="date">{{ route.arrival_time|date:"d M" }}</div>
+                        </div>
+                    </div>
+
+                    <!-- Bus Details Grid -->
+                    <div class="bus-details-grid">
+                        <div class="detail-item">
+                            <i class="fas fa-clock"></i>
+                            <div class="detail-label">Duration</div>
+                            <div class="detail-value">{{ route.duration }}</div>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-chair"></i>
+                            <div class="detail-label">Available</div>
+                            <div class="detail-value available">{{ route.available_seats }}</div>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-tag"></i>
+                            <div class="detail-label">Fare</div>
+                            <div class="detail-value fare">₹{{ route.fare }}</div>
+                        </div>
+                    </div>
+
+                    <!-- Amenities -->
+                    <div class="amenities">
+                        <i class="fas fa-star"></i>
+                        <span>{{ route.bus.amenities|default:"AC, WiFi, Charging Point, Water Bottle, Blanket"|truncatechars:60 }}</span>
+                    </div>
+                </div>
+
+                <div class="bus-footer">
+                    <div class="fare-info">
+                        <div class="fare-label">Starting from</div>
+                        <div class="fare-amount">₹{{ route.fare }}</div>
+                    </div>
+                    
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'bus_details' route.id %}" class="btn-book">
+                            <i class="fas fa-ticket-alt"></i> View Seats
+                        </a>
+                    {% else %}
+                        <a href="{% url 'login' %}?next={% url 'bus_details' route.id %}" class="btn-login-book">
+                            <i class="fas fa-sign-in-alt"></i> Login to Book
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12">
+                <div class="no-results">
+                    <i class="fas fa-bus"></i>
+                    <h5>No Buses Available</h5>
+                    <p>We couldn't find any buses for this route on the selected date.</p>
+                    <p class="text-muted">Try different dates or explore other popular routes.</p>
+                    <a href="{% url 'home' %}" class="btn-explore">
+                        <i class="fas fa-compass me-2"></i>Explore Popular Routes
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+
+<!-- AOS Animation Library -->
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+<script>
+// Initialize AOS
+AOS.init({
+    duration: 800,
+    once: true,
+    offset: 100
+});
+
+// Set minimum date for journey date
+document.getElementById('date').min = new Date().toISOString().split('T')[0];
+
+// Filter functionality (optional - can be enhanced with AJAX)
+document.querySelectorAll('.filter-badge').forEach(filter => {
+    filter.addEventListener('click', function() {
+        document.querySelectorAll('.filter-badge').forEach(f => f.classList.remove('active'));
+        this.classList.add('active');
+        
+        // Here you can add AJAX call to filter buses
+        // For now, just a visual indicator
+        const filterType = this.textContent.trim();
+        if (filterType !== 'All Buses') {
+            // Show loading state
+            const busCards = document.querySelectorAll('.bus-card');
+            busCards.forEach(card => {
+                const busType = card.querySelector('.bus-badge').textContent.trim();
+                if (!busType.includes(filterType)) {
+                    card.style.opacity = '0.5';
+                } else {
+                    card.style.opacity = '1';
+                }
+            });
+        } else {
+            // Reset all cards
+            document.querySelectorAll('.bus-card').forEach(card => {
+                card.style.opacity = '1';
+            });
+        }
+    });
+});
+
+// Form validation
+document.querySelector('form').addEventListener('submit', function(e) {
+    const from = document.getElementById('from').value.trim().toLowerCase();
+    const to = document.getElementById('to').value.trim().toLowerCase();
+    
+    if (from === to) {
+        e.preventDefault();
+        alert('Source and destination cannot be the same!');
+    }
+});
+</script>
+{% endblock %}

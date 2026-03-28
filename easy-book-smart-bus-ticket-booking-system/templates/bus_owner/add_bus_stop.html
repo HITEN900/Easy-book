@@ -1,0 +1,815 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Add Bus Stop - EasyBook{% endblock %}
+
+{% block extra_css %}
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<!-- AOS Animation Library -->
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+<style>
+    :root {
+        --primary: #4361ee;
+        --primary-dark: #3a56d4;
+        --primary-light: #6c8cff;
+        --secondary: #7209b7;
+        --accent: #f72585;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --info: #3b82f6;
+        --dark: #0f172a;
+        --dark-800: #1e293b;
+        --dark-700: #334155;
+        --dark-600: #475569;
+        --light: #f8fafc;
+        --light-200: #e2e8f0;
+        --light-300: #cbd5e1;
+        
+        --gradient-primary: linear-gradient(135deg, #4361ee, #7209b7);
+        --gradient-success: linear-gradient(135deg, #10b981, #059669);
+        --gradient-warning: linear-gradient(135deg, #f59e0b, #d97706);
+        --gradient-danger: linear-gradient(135deg, #ef4444, #dc2626);
+        --gradient-info: linear-gradient(135deg, #3b82f6, #2563eb);
+        
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+        --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+        
+        --radius-sm: 0.375rem;
+        --radius-md: 0.5rem;
+        --radius-lg: 1rem;
+        --radius-xl: 1.5rem;
+        --radius-2xl: 2rem;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        color: var(--dark);
+        min-height: 100vh;
+    }
+
+    /* Page Header */
+    .page-header {
+        background: linear-gradient(135deg, #1a1a2e 0%, #2d2d44 100%);
+        padding: 40px 0;
+        margin-bottom: 40px;
+        border-radius: 0 0 50px 50px;
+        color: white;
+        position: relative;
+        overflow: hidden;
+        text-align: center;
+    }
+
+    .page-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        border-radius: 50%;
+    }
+
+    .page-header::after {
+        content: '';
+        position: absolute;
+        bottom: -30%;
+        left: -5%;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        border-radius: 50%;
+    }
+
+    .page-header h1 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 10px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .page-header p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        position: relative;
+        z-index: 2;
+    }
+
+    /* Main Card */
+    .stop-card {
+        background: white;
+        border-radius: var(--radius-2xl);
+        box-shadow: var(--shadow-2xl);
+        overflow: hidden;
+        margin-bottom: 40px;
+        animation: slideUp 0.5s ease;
+        border: 1px solid var(--light-200);
+    }
+
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Card Header */
+    .card-header-custom {
+        background: var(--gradient-primary);
+        padding: 25px 30px;
+        color: white;
+    }
+
+    .card-header-custom h4 {
+        font-size: 1.5rem;
+        font-weight: 800;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .card-header-custom h4 i {
+        font-size: 1.8rem;
+    }
+
+    .route-badge {
+        display: inline-block;
+        background: rgba(255,255,255,0.2);
+        padding: 8px 20px;
+        border-radius: 50px;
+        font-size: 1rem;
+        margin-top: 12px;
+    }
+
+    .route-badge i {
+        margin-right: 8px;
+    }
+
+    .route-badge .arrow {
+        margin: 0 10px;
+        color: rgba(255,255,255,0.8);
+    }
+
+    /* Card Body */
+    .card-body-custom {
+        padding: 40px;
+    }
+
+    /* Route Info Card */
+    .route-info-card {
+        background: linear-gradient(135deg, var(--light), white);
+        border-radius: var(--radius-xl);
+        padding: 25px;
+        margin-bottom: 30px;
+        border: 1px solid var(--light-200);
+        box-shadow: var(--shadow-md);
+    }
+
+    .route-info-title {
+        font-size: 0.9rem;
+        color: var(--dark-600);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 10px;
+    }
+
+    .route-info-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .route-point {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .point-icon {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, rgba(67, 97, 238, 0.1), rgba(114, 9, 183, 0.1));
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--primary);
+        font-size: 1.5rem;
+    }
+
+    .point-details {
+        text-align: left;
+    }
+
+    .point-label {
+        font-size: 0.8rem;
+        color: var(--dark-600);
+        margin-bottom: 3px;
+    }
+
+    .point-value {
+        font-weight: 700;
+        color: var(--dark);
+        font-size: 1.2rem;
+    }
+
+    .route-arrow-large {
+        color: var(--primary);
+        font-size: 2rem;
+    }
+
+    /* Form Sections */
+    .form-section {
+        background: var(--light);
+        border-radius: var(--radius-xl);
+        padding: 25px;
+        margin-bottom: 25px;
+        border: 1px solid var(--light-200);
+        transition: all 0.3s ease;
+    }
+
+    .form-section:hover {
+        box-shadow: var(--shadow-lg);
+        border-color: var(--primary-light);
+    }
+
+    .section-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--dark);
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid var(--light-200);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .section-title i {
+        color: var(--primary);
+        font-size: 1.2rem;
+    }
+
+    /* Form Fields */
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: var(--dark-700);
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 0.95rem;
+    }
+
+    .form-label i {
+        color: var(--primary);
+        font-size: 1rem;
+    }
+
+    .required-star {
+        color: var(--danger);
+        margin-left: 3px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 14px 16px;
+        border: 2px solid var(--light-200);
+        border-radius: var(--radius-lg);
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        font-family: 'Inter', sans-serif;
+        background: white;
+    }
+
+    .form-control:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.1);
+        outline: none;
+    }
+
+    .form-control::placeholder {
+        color: var(--light-300);
+        font-size: 0.95rem;
+    }
+
+    .form-text {
+        font-size: 0.85rem;
+        color: var(--dark-600);
+        margin-top: 5px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .form-text i {
+        color: var(--info);
+        font-size: 0.9rem;
+    }
+
+    /* Input Groups */
+    .input-group {
+        display: flex;
+        align-items: center;
+    }
+
+    .input-group-text {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        padding: 14px 20px;
+        border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+        font-weight: 600;
+        border: none;
+    }
+
+    .input-group .form-control {
+        border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+    }
+
+    /* Stop Order Preview */
+    .order-preview {
+        background: white;
+        border-radius: var(--radius-lg);
+        padding: 15px;
+        margin-bottom: 20px;
+        border: 2px dashed var(--light-300);
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .order-number {
+        width: 40px;
+        height: 40px;
+        background: var(--gradient-primary);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 700;
+        font-size: 1.2rem;
+    }
+
+    .order-text {
+        color: var(--dark-600);
+    }
+
+    .order-text strong {
+        color: var(--primary);
+    }
+
+    /* Time Preview */
+    .time-preview {
+        background: linear-gradient(135deg, var(--info), #2563eb);
+        color: white;
+        border-radius: var(--radius-lg);
+        padding: 15px;
+        margin-top: 15px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        display: none;
+    }
+
+    .time-preview.show {
+        display: flex;
+        animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .time-preview i {
+        font-size: 2rem;
+    }
+
+    .time-preview-content {
+        flex: 1;
+    }
+
+    .time-preview-title {
+        font-size: 0.85rem;
+        opacity: 0.9;
+        margin-bottom: 3px;
+    }
+
+    .time-preview-value {
+        font-weight: 700;
+        font-size: 1.1rem;
+    }
+
+    /* Action Buttons */
+    .action-buttons {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-top: 30px;
+        flex-wrap: wrap;
+    }
+
+    .btn-add {
+        background: var(--gradient-primary);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 16px 40px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        box-shadow: 0 8px 20px rgba(67, 97, 238, 0.3);
+    }
+
+    .btn-add:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 30px rgba(67, 97, 238, 0.4);
+    }
+
+    .btn-add i {
+        font-size: 1.2rem;
+    }
+
+    .btn-cancel {
+        background: white;
+        color: var(--dark-700);
+        border: 2px solid var(--light-300);
+        border-radius: 50px;
+        padding: 16px 40px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+    }
+
+    .btn-cancel:hover {
+        background: var(--light);
+        border-color: var(--primary);
+        color: var(--primary);
+        transform: translateY(-2px);
+        text-decoration: none;
+    }
+
+    .btn-cancel i {
+        font-size: 1.2rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .page-header h1 {
+            font-size: 2rem;
+        }
+
+        .card-body-custom {
+            padding: 25px;
+        }
+
+        .route-info-content {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .route-point {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .route-arrow-large {
+            transform: rotate(90deg);
+        }
+
+        .action-buttons {
+            flex-direction: column;
+        }
+
+        .btn-add, .btn-cancel {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .time-preview {
+            flex-direction: column;
+            text-align: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header" data-aos="fade-down">
+    <div class="container">
+        <h1><i class="fas fa-map-pin me-3"></i>Add Bus Stop</h1>
+        <p>Add a new stop along the route</p>
+    </div>
+</div>
+
+<div class="container mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Main Card -->
+            <div class="stop-card" data-aos="fade-up">
+                <!-- Card Header -->
+                <div class="card-header-custom">
+                    <h4><i class="fas fa-map-pin"></i> Add Stop for Route</h4>
+                    <div class="route-badge">
+                        <i class="fas fa-map-marker-alt"></i> {{ route.source }}
+                        <span class="arrow"><i class="fas fa-arrow-right"></i></span>
+                        <i class="fas fa-map-marker-alt"></i> {{ route.destination }}
+                    </div>
+                </div>
+
+                <!-- Card Body -->
+                <div class="card-body-custom">
+                    <!-- Route Info Card -->
+                    <div class="route-info-card" data-aos="fade-up">
+                        <div class="route-info-title">Route Details</div>
+                        <div class="route-info-content">
+                            <div class="route-point">
+                                <div class="point-icon">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </div>
+                                <div class="point-details">
+                                    <div class="point-label">Starting Point</div>
+                                    <div class="point-value">{{ route.source }}</div>
+                                </div>
+                            </div>
+                            
+                            <div class="route-arrow-large">
+                                <i class="fas fa-long-arrow-alt-right"></i>
+                            </div>
+                            
+                            <div class="route-point">
+                                <div class="point-icon">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </div>
+                                <div class="point-details">
+                                    <div class="point-label">End Point</div>
+                                    <div class="point-value">{{ route.destination }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form method="POST" id="stopForm">
+                        {% csrf_token %}
+
+                        <!-- Stop Details Section -->
+                        <div class="form-section" data-aos="fade-up">
+                            <h5 class="section-title"><i class="fas fa-info-circle"></i> Stop Details</h5>
+                            
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-map-pin"></i> Stop Name
+                                    <span class="required-star">*</span>
+                                </label>
+                                <input type="text" class="form-control" id="stop_name" name="stop_name" 
+                                       placeholder="e.g., Majestic Bus Station" required>
+                                <div class="form-text">
+                                    <i class="fas fa-info-circle"></i> Enter the name of the bus stop
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">
+                                            <i class="fas fa-sort-numeric-up"></i> Stop Order
+                                            <span class="required-star">*</span>
+                                        </label>
+                                        <input type="number" class="form-control" id="stop_order" name="stop_order" 
+                                               min="1" placeholder="e.g., 2" required onchange="updateOrderPreview()">
+                                        <div class="form-text">
+                                            <i class="fas fa-info-circle"></i> Order in journey (1,2,3...)
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">
+                                            <i class="fas fa-hourglass-half"></i> Stop Duration
+                                        </label>
+                                        <div class="input-group">
+                                            <input type="number" class="form-control" id="stop_duration" name="stop_duration" 
+                                                   value="5" min="1" placeholder="5">
+                                            <span class="input-group-text">minutes</span>
+                                        </div>
+                                        <div class="form-text">
+                                            <i class="fas fa-info-circle"></i> How long bus stops here
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Order Preview -->
+                            <div class="order-preview" id="orderPreview">
+                                <div class="order-number">2</div>
+                                <div class="order-text">
+                                    This will be the <strong>2nd stop</strong> on this route
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Timing Section -->
+                        <div class="form-section" data-aos="fade-up">
+                            <h5 class="section-title"><i class="fas fa-clock"></i> Timing Details</h5>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">
+                                            <i class="fas fa-clock"></i> Arrival Time
+                                            <span class="required-star">*</span>
+                                        </label>
+                                        <input type="time" class="form-control" id="arrival_time" name="arrival_time" 
+                                               required onchange="updateTimePreview()">
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">
+                                            <i class="fas fa-clock"></i> Departure Time
+                                            <span class="required-star">*</span>
+                                        </label>
+                                        <input type="time" class="form-control" id="departure_time" name="departure_time" 
+                                               required onchange="updateTimePreview()">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Time Preview -->
+                            <div class="time-preview" id="timePreview">
+                                <i class="fas fa-clock"></i>
+                                <div class="time-preview-content">
+                                    <div class="time-preview-title">Stop Duration</div>
+                                    <div class="time-preview-value" id="durationValue">0 minutes</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="action-buttons">
+                            <button type="submit" class="btn-add">
+                                <i class="fas fa-plus-circle"></i> Add Stop
+                            </button>
+                            <a href="{% url 'manage_routes' route.bus.id %}" class="btn-cancel">
+                                <i class="fas fa-times"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- AOS Animation Library -->
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+<script>
+// Initialize AOS
+AOS.init({
+    duration: 600,
+    once: true,
+    offset: 50
+});
+
+// Update order preview
+function updateOrderPreview() {
+    const order = document.getElementById('stop_order').value;
+    const preview = document.getElementById('orderPreview');
+    const orderNumber = preview.querySelector('.order-number');
+    const orderText = preview.querySelector('.order-text');
+    
+    if (order) {
+        orderNumber.textContent = order;
+        
+        let suffix = 'th';
+        if (order.endsWith('1') && order !== '11') suffix = 'st';
+        else if (order.endsWith('2') && order !== '12') suffix = 'nd';
+        else if (order.endsWith('3') && order !== '13') suffix = 'rd';
+        
+        orderText.innerHTML = `This will be the <strong>${order}${suffix} stop</strong> on this route`;
+    }
+}
+
+// Update time preview and calculate duration
+function updateTimePreview() {
+    const arrival = document.getElementById('arrival_time').value;
+    const departure = document.getElementById('departure_time').value;
+    const preview = document.getElementById('timePreview');
+    const durationValue = document.getElementById('durationValue');
+    
+    if (arrival && departure) {
+        // Parse times
+        const [arrivalHours, arrivalMinutes] = arrival.split(':').map(Number);
+        const [departureHours, departureMinutes] = departure.split(':').map(Number);
+        
+        // Convert to minutes since midnight
+        const arrivalTotal = arrivalHours * 60 + arrivalMinutes;
+        const departureTotal = departureHours * 60 + departureMinutes;
+        
+        // Calculate duration
+        let duration = departureTotal - arrivalTotal;
+        
+        // Handle cases where departure is next day
+        if (duration < 0) {
+            duration += 24 * 60;
+        }
+        
+        if (duration >= 0) {
+            const hours = Math.floor(duration / 60);
+            const minutes = duration % 60;
+            
+            let durationText = '';
+            if (hours > 0) {
+                durationText += `${hours} hour${hours > 1 ? 's' : ''}`;
+            }
+            if (minutes > 0) {
+                if (hours > 0) durationText += ' ';
+                durationText += `${minutes} minute${minutes > 1 ? 's' : ''}`;
+            }
+            
+            durationValue.textContent = durationText || '0 minutes';
+            preview.classList.add('show');
+        } else {
+            preview.classList.remove('show');
+        }
+    } else {
+        preview.classList.remove('show');
+    }
+}
+
+// Form validation
+document.getElementById('stopForm').addEventListener('submit', function(e) {
+    const arrival = document.getElementById('arrival_time').value;
+    const departure = document.getElementById('departure_time').value;
+    
+    if (arrival && departure) {
+        const [arrivalHours, arrivalMinutes] = arrival.split(':').map(Number);
+        const [departureHours, departureMinutes] = departure.split(':').map(Number);
+        
+        const arrivalTotal = arrivalHours * 60 + arrivalMinutes;
+        const departureTotal = departureHours * 60 + departureMinutes;
+        
+        let duration = departureTotal - arrivalTotal;
+        if (duration < 0) {
+            duration += 24 * 60;
+        }
+        
+        // Check if stop duration is at least 1 minute
+        if (duration < 1) {
+            e.preventDefault();
+            alert('❌ Departure time must be after arrival time');
+            return;
+        }
+    }
+});
+
+// Initialize previews on page load
+document.addEventListener('DOMContentLoaded', function() {
+    updateOrderPreview();
+});
+</script>
+{% endblock %}

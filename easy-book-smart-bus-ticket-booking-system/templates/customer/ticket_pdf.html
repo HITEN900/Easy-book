@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Ticket - {{ booking.booking_reference }}</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 0.3cm;
+        }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f0f2f5;
+            margin: 0;
+            padding: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        /* Movie Ticket Style */
+        .ticket {
+            width: 100%;
+            max-width: 950px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            overflow: hidden;
+            position: relative;
+            margin: 0 auto;
+        }
+        
+        /* Ticket Tear Effect */
+        .ticket:before, .ticket:after {
+            content: '';
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: #f0f2f5;
+            border-radius: 50%;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 2;
+        }
+        
+        .ticket:before {
+            left: -15px;
+            box-shadow: inset -5px 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .ticket:after {
+            right: -15px;
+            box-shadow: inset 5px 0 10px rgba(0,0,0,0.1);
+        }
+        
+        /* Movie Header Strip */
+        .movie-strip {
+            background: linear-gradient(45deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+            height: 8px;
+            width: 100%;
+        }
+        
+        /* Main Content Grid - COMPACT */
+        .ticket-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 12px;
+            padding: 15px;
+        }
+        
+        /* Left Section - Movie Style */
+        .movie-left {
+            background: #fff;
+            border-right: 2px dashed #e0e0e0;
+            padding-right: 15px;
+        }
+        
+        /* Movie Title Banner */
+        .movie-banner {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: white;
+            padding: 12px 15px;
+            border-radius: 15px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .movie-banner h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+        
+        .movie-banner .rating {
+            background: gold;
+            color: #1a1a2e;
+            padding: 5px 15px;
+            border-radius: 30px;
+            font-weight: bold;
+        }
+        
+        /* Journey Card - Movie Style */
+        .journey-card {
+            background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+            border-radius: 20px;
+            padding: 15px;
+            margin-bottom: 12px;
+            border-left: 5px solid #ff6b6b;
+        }
+        
+        .route-movie {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 5px 0;
+        }
+        
+        .city-block {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .city-block .city {
+            font-size: 22px;
+            font-weight: 800;
+            color: #1a1a2e;
+        }
+        
+        .city-block .time {
+            font-size: 18px;
+            font-weight: 600;
+            color: #ff6b6b;
+        }
+        
+        .city-block .date {
+            font-size: 12px;
+            color: #6c757d;
+        }
+        
+        .arrow-block {
+            font-size: 24px;
+            color: #ff6b6b;
+            margin: 0 5px;
+        }
+        
+        /* Ticket Info Grid - 2 Columns */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin: 12px 0;
+        }
+        
+        .info-item {
+            background: white;
+            border-radius: 12px;
+            padding: 8px 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .info-label {
+            font-size: 11px;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .info-value {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-top: 2px;
+        }
+        
+        /* Bus Info - Compact */
+        .bus-compact {
+            background: white;
+            border-radius: 15px;
+            padding: 10px 15px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 2px solid #ff6b6b20;
+        }
+        
+        .bus-icon-small {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #ff6b6b, #ff9ff3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 22px;
+        }
+        
+        .bus-details-compact h4 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 700;
+        }
+        
+        .bus-details-compact p {
+            margin: 3px 0 0;
+            font-size: 12px;
+            color: #6c757d;
+        }
+        
+        /* Right Section - Movie Ticket Style */
+        .movie-right {
+            background: linear-gradient(145deg, #fff9f0, #fff);
+            border-radius: 20px;
+            padding: 15px;
+        }
+        
+        /* Seat Display - Movie Style */
+        .seat-display {
+            background: #1a1a2e;
+            border-radius: 15px;
+            padding: 12px;
+            margin-bottom: 12px;
+            color: white;
+        }
+        
+        .seat-display h3 {
+            margin: 0 0 8px 0;
+            font-size: 14px;
+            color: #ffd700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .seat-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+        
+        .seat-chip {
+            background: #ff6b6b;
+            padding: 5px 12px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 600;
+            display: inline-block;
+        }
+        
+        /* Passenger List - Compact Table */
+        .passenger-mini {
+            margin-bottom: 12px;
+        }
+        
+        .passenger-mini table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+        
+        .passenger-mini th {
+            background: #ff6b6b;
+            color: white;
+            padding: 6px;
+            font-weight: 600;
+            font-size: 11px;
+        }
+        
+        .passenger-mini td {
+            padding: 5px;
+            border-bottom: 1px solid #ffe0e0;
+        }
+        
+        /* Price Tag - Movie Style */
+        .price-tag {
+            background: linear-gradient(135deg, #ffd700, #ffa500);
+            border-radius: 15px;
+            padding: 12px;
+            text-align: center;
+            margin-bottom: 12px;
+        }
+        
+        .price-label {
+            font-size: 11px;
+            color: #1a1a2e;
+            text-transform: uppercase;
+        }
+        
+        .price-value {
+            font-size: 28px;
+            font-weight: 800;
+            color: #1a1a2e;
+            line-height: 1;
+        }
+        
+        /* QR Code - Compact */
+        .qr-compact {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: white;
+            border-radius: 12px;
+            padding: 8px;
+            border: 2px dashed #ff6b6b;
+        }
+        
+        .qr-compact img {
+            width: 70px;
+            height: 70px;
+        }
+        
+        .qr-compact div {
+            font-size: 11px;
+            color: #6c757d;
+        }
+        
+        .qr-compact strong {
+            color: #ff6b6b;
+            font-size: 13px;
+        }
+        
+        /* Footer - Movie Credits */
+        .movie-footer {
+            background: #1a1a2e;
+            color: white;
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+        }
+        
+        .footer-left span {
+            margin-right: 15px;
+            opacity: 0.8;
+        }
+        
+        .footer-right {
+            background: #ff6b6b;
+            padding: 4px 15px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 12px;
+        }
+        
+        /* Terms Mini */
+        .terms-mini {
+            font-size: 9px;
+            color: #6c757d;
+            text-align: center;
+            margin-top: 8px;
+            padding: 5px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        /* Reference Badge */
+        .ref-badge {
+            background: #ff6b6b;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 14px;
+            letter-spacing: 1px;
+            display: inline-block;
+        }
+        
+        /* Ensure everything fits in one page */
+        * {
+            box-sizing: border-box;
+        }
+        
+        .no-break {
+            page-break-inside: avoid;
+        }
+    </style>
+</head>
+<body>
+    <div class="ticket no-break">
+        <!-- Movie Style Strip -->
+        <div class="movie-strip"></div>
+        
+        <!-- Main Ticket Content - COMPACT -->
+        <div class="ticket-grid">
+            <!-- LEFT SECTION - JOURNEY DETAILS -->
+            <div class="movie-left">
+                <!-- Movie Banner -->
+                <div class="movie-banner">
+                    <h1>🎬 EASY BOOK</h1>
+                    <span class="rating">✨ PREMIUM</span>
+                </div>
+                
+                <!-- Reference Badge -->
+                <div style="text-align: center; margin-bottom: 10px;">
+                    <span class="ref-badge">#{{ booking.booking_reference }}</span>
+                </div>
+                
+                <!-- Journey Card - Movie Style -->
+                <div class="journey-card">
+                    <div class="route-movie">
+                        <div class="city-block">
+                            <div class="city">{{ route.source }}</div>
+                            <div class="time">{{ route.departure_time|date:"h:i A" }}</div>
+                            <div class="date">{{ route.departure_time|date:"d M" }}</div>
+                        </div>
+                        
+                        <div class="arrow-block">→</div>
+                        
+                        <div class="city-block">
+                            <div class="city">{{ route.destination }}</div>
+                            <div class="time">{{ route.arrival_time|date:"h:i A" }}</div>
+                            <div class="date">{{ route.arrival_time|date:"d M" }}</div>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 8px; padding-top: 8px; border-top: 1px dashed #ff6b6b;">
+                        <span style="font-size: 12px; color: #ff6b6b;">⏱️ {{ route.duration|default:"5h 30m" }}</span>
+                    </div>
+                </div>
+                
+                <!-- Info Grid - 2 Columns -->
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Bus Name</div>
+                        <div class="info-value">{{ bus.bus_name }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Bus Number</div>
+                        <div class="info-value">{{ bus.bus_number }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Bus Type</div>
+                        <div class="info-value">{{ bus.get_bus_type_display }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Total Seats</div>
+                        <div class="info-value">{{ bus.total_seats }}</div>
+                    </div>
+                </div>
+                
+                <!-- Compact Bus Info -->
+                <div class="bus-compact">
+                    <div class="bus-icon-small">🚌</div>
+                    <div class="bus-details-compact">
+                        <h4>{{ bus.bus_name }}</h4>
+                        <p><i class="fas fa-star"></i> {{ bus.amenities|truncatechars:40 }}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- RIGHT SECTION - SEATS & PAYMENT -->
+            <div class="movie-right">
+                <!-- Seat Display -->
+                <div class="seat-display">
+                    <h3>🎫 SELECTED SEATS</h3>
+                    <div class="seat-grid">
+                        {% for seat in booked_seats %}
+                            <span class="seat-chip">{{ seat.seat.seat_number }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <!-- Passenger Mini Table -->
+                <div class="passenger-mini">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Seat</th>
+                                <th>Name</th>
+                                <th>Age</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for seat in booked_seats %}
+                            <tr>
+                                <td><strong>{{ seat.seat.seat_number }}</strong></td>
+                                <td>{{ seat.passenger_name|truncatechars:10 }}</td>
+                                <td>{{ seat.passenger_age }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Price Tag -->
+                <div class="price-tag">
+                    <div class="price-label">Total Amount</div>
+                    <div class="price-value">₹{{ booking.total_amount|floatformat:2 }}</div>
+                    <div style="font-size: 10px; color: #1a1a2e;">Including all taxes</div>
+                </div>
+                
+                <!-- Compact QR -->
+                <div class="qr-compact">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=70x70&data={{ booking.booking_reference }}" alt="QR">
+                    <div>
+                        <strong>Scan for Boarding</strong><br>
+                        <span style="font-size: 9px;">Booking Ref: {{ booking.booking_reference }}</span><br>
+                        <span style="font-size: 8px;">Payment: {{ booking.payment_id|default:"N/A"|truncatechars:12 }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Compact Terms -->
+        <div class="terms-mini">
+            ⏰ Report 30 min early • 🆔 Valid ID required • ❌ Non-transferable • 📱 Show QR at gate
+        </div>
+        
+        <!-- Movie Footer -->
+        <div class="movie-footer">
+            <div class="footer-left">
+                <span>📞 +91 1234567890</span>
+                <span>✉️ help@easybook.com</span>
+                <span>🌐 www.easybook.com</span>
+            </div>
+            <div class="footer-right">
+                ✨ HAPPY JOURNEY ✨
+            </div>
+        </div>
+    </div>
+</body>
+</html>

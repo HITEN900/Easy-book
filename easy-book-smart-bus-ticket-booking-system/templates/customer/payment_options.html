@@ -1,0 +1,581 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Payment Options - Easy Book{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary-color: #4361ee;
+        --secondary-color: #3f37c9;
+        --success-color: #4cc9f0;
+        --danger-color: #f72585;
+        --warning-color: #f8961e;
+        --light-bg: #f8f9fa;
+        --dark-text: #2b2d42;
+    }
+
+    .page-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 40px 0;
+        margin-bottom: 40px;
+        border-radius: 0 0 50px 50px;
+        color: white;
+        text-align: center;
+    }
+
+    .progress-steps {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 40px;
+        padding: 0 20px;
+    }
+
+    .step {
+        display: flex;
+        align-items: center;
+        position: relative;
+    }
+
+    .step-circle {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: white;
+        border: 2px solid #dee2e6;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        color: #6c757d;
+        z-index: 1;
+    }
+
+    .step.completed .step-circle {
+        background: var(--success-color);
+        border-color: var(--success-color);
+        color: white;
+    }
+
+    .step.active .step-circle {
+        background: var(--primary-color);
+        border-color: var(--primary-color);
+        color: white;
+        box-shadow: 0 0 0 5px rgba(67, 97, 238, 0.2);
+    }
+
+    .step-line {
+        width: 100px;
+        height: 2px;
+        background: #dee2e6;
+        margin: 0 15px;
+    }
+
+    .payment-container {
+        display: grid;
+        grid-template-columns: 1fr 0.8fr;
+        gap: 25px;
+        margin-bottom: 50px;
+    }
+
+    .payment-card {
+        background: white;
+        border-radius: 30px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+        overflow: hidden;
+    }
+
+    .payment-header {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        padding: 25px;
+    }
+
+    .payment-body {
+        padding: 30px;
+    }
+
+    .section-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--dark-text);
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .payment-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 15px;
+        margin-bottom: 30px;
+    }
+
+    .payment-option {
+        position: relative;
+        cursor: pointer;
+    }
+
+    .payment-radio {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .payment-box {
+        background: white;
+        border: 2px solid #e9ecef;
+        border-radius: 16px;
+        padding: 20px 15px;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .payment-radio:checked + .payment-box {
+        border-color: var(--primary-color);
+        background: linear-gradient(135deg, #f0f4ff, #ffffff);
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(67, 97, 238, 0.15);
+    }
+
+    .payment-box:hover {
+        border-color: var(--primary-color);
+        transform: translateY(-2px);
+    }
+
+    .payment-icon img {
+        max-height: 40px;
+        max-width: 100px;
+        object-fit: contain;
+        margin-bottom: 10px;
+    }
+
+    .qr-section {
+        background: white;
+        border-radius: 30px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+        overflow: hidden;
+    }
+
+    .qr-header {
+        background: linear-gradient(135deg, #f72585, #b5179e);
+        color: white;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .qr-body {
+        padding: 30px;
+        text-align: center;
+    }
+
+    .qr-code-box {
+        background: white;
+        padding: 20px;
+        border-radius: 20px;
+        border: 3px dashed var(--primary-color);
+        margin-bottom: 20px;
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0% { box-shadow: 0 0 0 0 rgba(67, 97, 238, 0.7); }
+        70% { box-shadow: 0 0 0 15px rgba(67, 97, 238, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(67, 97, 238, 0); }
+    }
+
+    .qr-code-box img {
+        width: 200px;
+        height: 200px;
+        margin: 0 auto;
+    }
+
+    .upi-id {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 12px;
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--primary-color);
+        border: 2px solid #e9ecef;
+        margin: 15px 0;
+        cursor: pointer;
+    }
+
+    .timer-box {
+        background: linear-gradient(135deg, #1a1a2e, #16213e);
+        color: white;
+        padding: 20px;
+        border-radius: 20px;
+        margin-top: 20px;
+    }
+
+    .timer-display {
+        font-size: 48px;
+        font-weight: 800;
+        font-family: monospace;
+        color: #4cc9f0;
+    }
+
+    .timer-display.warning {
+        color: #f72585;
+        animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+        0%, 50%, 100% { opacity: 1; }
+        25%, 75% { opacity: 0.5; }
+    }
+
+    .payment-status {
+        display: none;
+        padding: 20px;
+        border-radius: 12px;
+        margin-top: 20px;
+        animation: slideIn 0.5s;
+    }
+
+    .payment-status.success {
+        background: #d4edda;
+        color: #155724;
+        display: block;
+    }
+
+    .payment-status.failed {
+        background: #f8d7da;
+        color: #721c24;
+        display: block;
+    }
+
+    .payment-status.pending {
+        background: #fff3cd;
+        color: #856404;
+        display: block;
+    }
+
+    @keyframes slideIn {
+        from {
+            transform: translateY(-20px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid var(--primary-color);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 20px auto;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .timer-expired {
+        background: linear-gradient(135deg, #f72585, #b5179e);
+        color: white;
+        padding: 30px;
+        border-radius: 20px;
+        text-align: center;
+        display: none;
+    }
+
+    .pay-btn {
+        background: linear-gradient(135deg, #28a745, #20c997);
+        color: white;
+        border: none;
+        border-radius: 16px;
+        padding: 18px 30px;
+        font-size: 20px;
+        font-weight: 600;
+        width: 100%;
+        margin-top: 20px;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .pay-btn:hover:not(:disabled) {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 30px rgba(40, 167, 69, 0.3);
+    }
+
+    .pay-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .demo-controls {
+        margin-top: 20px;
+        padding: 15px;
+        background: #e9ecef;
+        border-radius: 12px;
+    }
+
+    @media (max-width: 768px) {
+        .payment-container {
+            grid-template-columns: 1fr;
+        }
+        .step-label {
+            display: none;
+        }
+        .step-line {
+            width: 40px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1><i class="fas fa-credit-card me-3"></i>Payment Options</h1>
+        <p>Scan QR code to pay - Auto-detects payment</p>
+    </div>
+</div>
+
+<div class="container mb-5">
+    <div class="progress-steps">
+        <div class="step completed"><div class="step-circle">1</div><span class="step-label">Select Seats</span></div>
+        <div class="step-line"></div>
+        <div class="step completed"><div class="step-circle">2</div><span class="step-label">Passenger Details</span></div>
+        <div class="step-line"></div>
+        <div class="step active"><div class="step-circle">3</div><span class="step-label">Payment</span></div>
+        <div class="step-line"></div>
+        <div class="step"><div class="step-circle">4</div><span class="step-label">Confirmation</span></div>
+    </div>
+
+    <div class="payment-container">
+        <!-- Left Side - Payment Methods -->
+        <div class="payment-card">
+            <div class="payment-header">
+                <h3><i class="fas fa-lock me-2"></i>Secure Payment</h3>
+                <p>Your payment is encrypted and secure</p>
+            </div>
+            
+            <div class="payment-body">
+                {% if owner_bank %}
+                <div style="background: #fff3cd; padding: 15px; border-radius: 12px; margin-bottom: 20px;">
+                    <h6>Pay to:</h6>
+                    <p class="mb-1"><strong>{{ owner_bank.account_holder_name }}</strong></p>
+                    <p>UPI ID: <strong>{{ owner_bank.upi_id }}</strong></p>
+                </div>
+                {% endif %}
+
+                <form method="POST" action="{% url 'process_payment' booking.id %}" id="paymentForm">
+                    {% csrf_token %}
+                    
+                    <div class="mb-4">
+                        <div class="section-title"><i class="fas fa-mobile-alt"></i>UPI Apps</div>
+                        <div class="payment-grid">
+                            <label class="payment-option">
+                                <input type="radio" name="payment_method" value="googlepay" class="payment-radio">
+                                <div class="payment-box">
+                                    <div class="payment-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/f/f2/Google_Pay_Logo.svg" alt="Google Pay"></div>
+                                    <div>Google Pay</div>
+                                </div>
+                            </label>
+                            <label class="payment-option">
+                                <input type="radio" name="payment_method" value="phonepe" class="payment-radio">
+                                <div class="payment-box">
+                                    <div class="payment-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/c/cc/PhonePe_Logo.svg" alt="PhonePe"></div>
+                                    <div>PhonePe</div>
+                                </div>
+                            </label>
+                            <label class="payment-option">
+                                <input type="radio" name="payment_method" value="paytm" class="payment-radio">
+                                <div class="payment-box">
+                                    <div class="payment-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/2/24/Paytm_Logo_%28standalone%29.svg" alt="Paytm"></div>
+                                    <div>Paytm</div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <div class="section-title"><i class="fas fa-credit-card"></i>Cards</div>
+                        <div class="payment-grid">
+                            <label class="payment-option">
+                                <input type="radio" name="payment_method" value="credit_card" class="payment-radio">
+                                <div class="payment-box">
+                                    <div class="payment-icon"><i class="fas fa-credit-card fa-3x"></i></div>
+                                    <div>Credit Card</div>
+                                </div>
+                            </label>
+                            <label class="payment-option">
+                                <input type="radio" name="payment_method" value="debit_card" class="payment-radio">
+                                <div class="payment-box">
+                                    <div class="payment-icon"><i class="fas fa-credit-card fa-3x"></i></div>
+                                    <div>Debit Card</div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <input type="hidden" name="upi_id" value="{{ owner_bank.upi_id|default:'customer@okhdfcbank' }}">
+                    
+                    <button type="submit" class="pay-btn" id="payButton" disabled>
+                        <i class="fas fa-lock"></i> Pay ₹{{ total_amount|floatformat:2 }}
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Right Side - QR Code -->
+        <div class="qr-section" id="qrSection">
+            <div class="qr-header">
+                <h4><i class="fas fa-qrcode me-2"></i>Scan & Pay</h4>
+            </div>
+            
+            <div class="qr-body">
+                <!-- Timer -->
+                <div class="timer-box" id="timerBox">
+                    <div class="timer-title">Complete payment within</div>
+                    <div class="timer-display" id="timer">02:00</div>
+                </div>
+                
+                <!-- Expired Message -->
+                <div class="timer-expired" id="expiredMessage">
+                    <i class="fas fa-clock fa-3x mb-3"></i>
+                    <h4>Time Expired!</h4>
+                    <p>Your seats have been released.</p>
+                    <a href="{% url 'bus_details' route.id %}" class="btn btn-light mt-2">Select Seats Again</a>
+                </div>
+                
+                <!-- QR Code -->
+                <div class="qr-code-box" id="qrBox">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa={{ owner_bank.upi_id|default:'customer@okhdfcbank' }}&pn=EasyBook&am={{ total_amount|floatformat:0 }}&cu=INR" alt="QR Code">
+                    <div class="upi-id" onclick="copyUPI()">{{ owner_bank.upi_id|default:'customer@okhdfcbank' }}</div>
+                </div>
+                
+                <!-- Payment Status -->
+                <div class="payment-status" id="paymentStatus">
+                    <div class="spinner" id="statusSpinner"></div>
+                    <h4 id="statusTitle">Processing Payment...</h4>
+                    <p id="statusMessage">Please wait</p>
+                </div>
+                
+                <!-- Amount -->
+                <div style="font-size: 24px; font-weight: 700; color: var(--primary-color); margin: 15px 0;">
+                    ₹{{ total_amount|floatformat:2 }}
+                </div>
+                
+                <!-- Demo Button -->
+                <div class="demo-controls">
+                    <h6>Demo: Click to simulate payment</h6>
+                    <button class="btn btn-success btn-sm" onclick="simulatePayment()">✓ Payment Success</button>
+                    <button class="btn btn-danger btn-sm" onclick="simulateFailure()">✗ Payment Failed</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let timeLeft = 120;
+let timerInterval;
+let timeExpired = false;
+
+// Timer function
+function startTimer() {
+    timerInterval = setInterval(function() {
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            timerExpired();
+        } else {
+            timeLeft--;
+            updateTimer();
+        }
+    }, 1000);
+}
+
+function updateTimer() {
+    const minutes = Math.floor(timeLeft / 60);
+    const seconds = timeLeft % 60;
+    document.getElementById('timer').textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    
+    if (timeLeft < 30) {
+        document.getElementById('timer').classList.add('warning');
+    }
+}
+
+function timerExpired() {
+    timeExpired = true;
+    document.getElementById('timerBox').style.display = 'none';
+    document.getElementById('qrBox').style.display = 'none';
+    document.getElementById('expiredMessage').style.display = 'block';
+    document.getElementById('payButton').disabled = true;
+}
+
+// Payment simulation
+function simulatePayment() {
+    if (timeExpired) {
+        alert('Time expired! Please select seats again.');
+        return;
+    }
+    
+    clearInterval(timerInterval);
+    
+    // Show processing
+    const statusDiv = document.getElementById('paymentStatus');
+    statusDiv.className = 'payment-status pending';
+    document.getElementById('statusTitle').textContent = 'Payment Detected!';
+    document.getElementById('statusMessage').textContent = 'Processing your payment...';
+    document.getElementById('statusSpinner').style.display = 'block';
+    
+    // Auto-select a payment method if none selected
+    if (!document.querySelector('input[name="payment_method"]:checked')) {
+        document.querySelector('input[name="payment_method"][value="googlepay"]').checked = true;
+        document.getElementById('payButton').disabled = false;
+    }
+    
+    // Submit the form after 2 seconds
+    setTimeout(function() {
+        document.getElementById('paymentForm').submit();
+    }, 2000);
+}
+
+function simulateFailure() {
+    clearInterval(timerInterval);
+    
+    const statusDiv = document.getElementById('paymentStatus');
+    statusDiv.className = 'payment-status failed';
+    document.getElementById('statusTitle').textContent = 'Payment Failed!';
+    document.getElementById('statusMessage').textContent = 'Please try again.';
+    document.getElementById('statusSpinner').style.display = 'none';
+    
+    setTimeout(function() {
+        location.reload();
+    }, 3000);
+}
+
+// Copy UPI ID
+function copyUPI() {
+    const upiText = document.querySelector('.upi-id').innerText;
+    navigator.clipboard.writeText(upiText).then(() => {
+        alert('UPI ID copied!');
+    });
+}
+
+// Enable pay button when payment method selected
+document.querySelectorAll('.payment-radio').forEach(radio => {
+    radio.addEventListener('change', function() {
+        document.getElementById('payButton').disabled = false;
+    });
+});
+
+// Start timer on page load
+window.onload = function() {
+    startTimer();
+};
+</script>
+{% endblock %}

@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}EasyBook - India's Leading Bus Booking Platform{% endblock %}</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    
+    <style>
+        :root {
+            --primary: #1e2b4f;
+            --primary-dark: #0f1a2f;
+            --primary-light: #2a3b63;
+            --secondary: #2c3e6b;
+            --accent: #4a90e2;
+            --accent-light: #6ba6ff;
+            --accent-dark: #2a6bb0;
+            --dark: #0a0e1a;
+            --dark-800: #121a2a;
+            --dark-700: #1a2538;
+            --dark-600: #2a3650;
+            --light: #f0f4fa;
+            --light-200: #e1e8f0;
+            --light-300: #cbd5e0;
+            --gray: #6c757d;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            
+            --gradient-primary: linear-gradient(135deg, #0f1a2f, #1e2b4f);
+            --gradient-accent: linear-gradient(135deg, #4a90e2, #2a6bb0);
+            --gradient-dark: linear-gradient(135deg, #0a0e1a, #121a2a);
+            
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 8px rgba(0,0,0,0.15);
+            --shadow-lg: 0 10px 20px rgba(0,0,0,0.2);
+            --shadow-xl: 0 20px 30px rgba(0,0,0,0.25);
+            --shadow-2xl: 0 25px 40px rgba(0,0,0,0.3);
+            
+            --navbar-height: 80px;
+            --radius-sm: 0.375rem;
+            --radius-md: 0.5rem;
+            --radius-lg: 1rem;
+            --radius-xl: 1.5rem;
+            --radius-2xl: 2rem;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background: #f5f7fc;
+            padding-top: var(--navbar-height);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        main {
+            flex: 1;
+        }
+
+        /* ===== PROFESSIONAL BLACKISH-BLUE NAVBAR ===== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: var(--navbar-height);
+            z-index: 1000;
+            background: rgba(10, 14, 26, 0.98);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(74, 144, 226, 0.2);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            padding: 0;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .navbar.scrolled {
+            height: 70px;
+            background: rgba(10, 14, 26, 1);
+            box-shadow: var(--shadow-xl);
+            border-bottom: 1px solid rgba(74, 144, 226, 0.3);
+        }
+
+        .navbar .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            padding: 0 15px;
+        }
+
+        /* Logo Styles */
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            padding: 8px 0;
+            z-index: 1001;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--gradient-accent);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+        }
+
+        .logo-icon::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .navbar-brand:hover .logo-icon::before {
+            opacity: 1;
+        }
+
+        .logo-icon i {
+            font-size: 24px;
+            color: white;
+            position: relative;
+            z-index: 2;
+            transition: transform 0.3s ease;
+        }
+
+        .navbar-brand:hover .logo-icon i {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+        }
+
+        .logo-main {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: white;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-main span {
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo-tagline {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.6);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* Navigation Menu */
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .nav-item {
+            position: relative;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            padding: 0.5rem 1rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            background: none;
+            border: none;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .nav-link i {
+            font-size: 1rem;
+            color: var(--accent);
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: white;
+        }
+
+        .nav-link:hover i {
+            color: var(--accent-light);
+            transform: translateX(3px);
+        }
+
+        .nav-link.active {
+            color: white;
+            font-weight: 600;
+        }
+
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 1rem;
+            right: 1rem;
+            height: 2px;
+            background: var(--gradient-accent);
+            border-radius: 2px;
+        }
+
+        /* Mobile Toggle */
+        .mobile-toggle {
+            display: none;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: rgba(74, 144, 226, 0.1);
+            transition: all 0.3s ease;
+            z-index: 1001;
+        }
+
+        .mobile-toggle:hover {
+            background: rgba(74, 144, 226, 0.2);
+        }
+
+        /* Alert Messages */
+        .alert {
+            border-radius: 15px;
+            border: none;
+            box-shadow: var(--shadow-md);
+            animation: slideDown 0.5s ease;
+            margin: 1rem 15px;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* ===== PROFESSIONAL DARK FOOTER ===== */
+        .footer {
+            background: var(--dark);
+            color: #a0aec0;
+            position: relative;
+            overflow: hidden;
+            margin-top: 60px;
+            border-top: 1px solid rgba(74, 144, 226, 0.2);
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-accent);
+        }
+
+        .footer::after {
+            content: '';
+            position: absolute;
+            bottom: -100px;
+            right: -100px;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(74, 144, 226, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .footer-top {
+            padding: 70px 0 40px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .footer-logo i {
+            font-size: 2.5rem;
+            color: var(--accent);
+            background: rgba(74, 144, 226, 0.1);
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 15px;
+            transition: all 0.3s;
+        }
+
+        .footer-logo:hover i {
+            transform: rotate(360deg) scale(1.1);
+            background: var(--gradient-accent);
+            color: white;
+        }
+
+        .footer-logo span {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: white;
+        }
+
+        .footer-logo .text-primary {
+            color: var(--accent) !important;
+        }
+
+        .footer-about {
+            line-height: 1.8;
+            margin-bottom: 25px;
+            color: #a0aec0;
+            font-size: 0.95rem;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .social-link {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+            text-decoration: none;
+            border: 1px solid rgba(74, 144, 226, 0.2);
+        }
+
+        .social-link:hover {
+            background: var(--gradient-accent);
+            color: white;
+            transform: translateY(-5px) scale(1.1);
+            border-color: transparent;
+        }
+
+        .footer-badge {
+            display: inline-block;
+            background: rgba(74, 144, 226, 0.1);
+            color: var(--accent);
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: 1px solid rgba(74, 144, 226, 0.3);
+            margin-top: 15px;
+        }
+
+        .footer-title {
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        .footer-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: var(--gradient-accent);
+            border-radius: 3px;
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: #a0aec0;
+            text-decoration: none;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .footer-links a i {
+            font-size: 0.7rem;
+            color: var(--accent);
+            transition: all 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .footer-links a:hover i {
+            transform: translateX(3px);
+            color: var(--accent-light);
+        }
+
+        .contact-info {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 25px 0;
+        }
+
+        .contact-info li {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 15px;
+            color: #a0aec0;
+            transition: all 0.3s;
+        }
+
+        .contact-info li:hover {
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .contact-info li i {
+            width: 20px;
+            color: var(--accent);
+            font-size: 1.2rem;
+            margin-top: 3px;
+        }
+
+        .contact-info li span {
+            flex: 1;
+            line-height: 1.6;
+        }
+
+        .newsletter-form {
+            margin-top: 20px;
+        }
+
+        .newsletter-form h5 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        .newsletter-form .input-group {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 50px;
+            padding: 5px;
+            border: 1px solid rgba(74, 144, 226, 0.2);
+        }
+
+        .newsletter-form .form-control {
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 12px 20px;
+            font-size: 0.95rem;
+        }
+
+        .newsletter-form .form-control:focus {
+            box-shadow: none;
+            background: transparent;
+        }
+
+        .newsletter-form .form-control::placeholder {
+            color: #a0aec0;
+        }
+
+        .newsletter-form .btn {
+            background: var(--gradient-accent);
+            border: none;
+            border-radius: 50px !important;
+            padding: 10px 25px;
+            font-weight: 600;
+            transition: all 0.3s;
+            color: white;
+        }
+
+        .newsletter-form .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(74, 144, 226, 0.4);
+        }
+
+        .owner-cta {
+            background: linear-gradient(135deg, rgba(74, 144, 226, 0.05), rgba(10, 14, 26, 0.5));
+            border-radius: 20px;
+            padding: 40px;
+            border: 1px solid rgba(74, 144, 226, 0.2);
+            position: relative;
+            overflow: hidden;
+            margin-top: 30px;
+        }
+
+        .owner-cta::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(74, 144, 226, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .owner-cta h4 {
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .owner-cta p {
+            color: #a0aec0;
+        }
+
+        .owner-cta .btn {
+            background: var(--gradient-accent);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-weight: 600;
+            border-radius: 50px;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+        }
+
+        .owner-cta .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(74, 144, 226, 0.4);
+        }
+
+        .footer-bottom {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px 0;
+            border-top: 1px solid rgba(74, 144, 226, 0.1);
+            position: relative;
+            z-index: 2;
+        }
+
+        .footer-bottom-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .copyright {
+            color: #a0aec0;
+            font-size: 0.9rem;
+        }
+
+        .copyright strong {
+            color: white;
+            font-weight: 600;
+        }
+
+        .copyright i {
+            color: var(--danger);
+            animation: heartbeat 1.5s infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .footer-bottom-links {
+            display: flex;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+
+        .footer-bottom-links a {
+            color: #a0aec0;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .footer-bottom-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient-accent);
+            transition: width 0.3s;
+        }
+
+        .footer-bottom-links a:hover {
+            color: white;
+        }
+
+        .footer-bottom-links a:hover::after {
+            width: 100%;
+        }
+
+        /* ===== MOBILE RESPONSIVE FIXES ===== */
+        @media (max-width: 992px) {
+            .mobile-toggle {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .nav-menu {
+                position: fixed;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100vh;
+                background: var(--dark-800);
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                padding: 80px 20px 40px;
+                transition: left 0.3s ease;
+                gap: 1.5rem;
+                overflow-y: auto;
+                z-index: 999;
+            }
+
+            .nav-menu.active {
+                left: 0;
+            }
+
+            .nav-item {
+                width: 100%;
+                text-align: center;
+            }
+
+            .nav-link {
+                justify-content: center;
+                padding: 1rem;
+                font-size: 1.1rem;
+                white-space: normal;
+            }
+
+            .nav-link.active::after {
+                left: 20%;
+                right: 20%;
+                width: 60%;
+            }
+
+            .footer-bottom-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .footer-bottom-links {
+                justify-content: center;
+            }
+            
+            .owner-cta .text-md-end {
+                text-align: center !important;
+                margin-top: 20px;
+            }
+            
+            .owner-cta .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .logo-main {
+                font-size: 1.2rem;
+            }
+            
+            .logo-tagline {
+                display: none;
+            }
+            
+            .logo-icon {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .logo-icon i {
+                font-size: 20px;
+            }
+
+            .footer-logo span {
+                font-size: 1.5rem;
+            }
+            
+            .social-links {
+                justify-content: center;
+            }
+            
+            .footer-bottom-links {
+                gap: 15px;
+            }
+            
+            .contact-info li {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                gap: 5px;
+            }
+        }
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Professional Blackish-Blue Navbar -->
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <!-- Logo -->
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <div class="logo-icon">
+                    <i class="fas fa-bus"></i>
+                </div>
+                <div class="logo-text">
+                    <span class="logo-main">Easy<span>Book</span></span>
+                    <span class="logo-tagline">Travel Smarter</span>
+                </div>
+            </a>
+
+            <!-- Mobile Toggle -->
+            <button class="mobile-toggle" onclick="toggleMobileMenu()" aria-label="Toggle menu">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <!-- Navigation Menu -->
+            <ul class="nav-menu" id="navMenu">
+                <li class="nav-item">
+                    <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="{% url 'home' %}">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'support' %}">
+                        <i class="fas fa-headset"></i>
+                        <span>Support</span>
+                    </a>
+                </li>
+                
+                <!-- User Actions -->
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'dashboard' %}">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <!-- FIXED: Logout form with POST method -->
+                        <form method="POST" action="{% url 'logout' %}" style="display: inline; width: 100%;">
+                            {% csrf_token %}
+                            <button type="submit" class="nav-link" style="width: 100%;">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>Logout</span>
+                            </button>
+                        </form>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span>Login</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'signup' %}">
+                            <i class="fas fa-user-plus"></i>
+                            <span>Sign Up</span>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Messages -->
+    {% if messages %}
+        <div class="container">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    <i class="fas fa-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}exclamation-circle{% else %}info-circle{% endif %} me-2"></i>
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Professional Dark Footer -->
+    <footer class="footer">
+        <div class="footer-top">
+            <div class="container">
+                <div class="row g-4">
+                    <!-- Company Info -->
+                    <div class="col-lg-4 col-md-6">
+                        <div class="footer-logo">
+                            <i class="fas fa-bus"></i>
+                            <span>Easy<span class="text-primary">Book</span></span>
+                        </div>
+                        <p class="footer-about">India's most trusted bus booking platform. We provide safe, comfortable, and affordable travel options across the country with 5000+ buses and 1000+ routes.</p>
+                        
+                        <div class="social-links">
+                            <a href="#" class="social-link" title="Facebook">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <a href="#" class="social-link" title="Twitter">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="#" class="social-link" title="Instagram">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="#" class="social-link" title="LinkedIn">
+                                <i class="fab fa-linkedin-in"></i>
+                            </a>
+                            <a href="#" class="social-link" title="YouTube">
+                                <i class="fab fa-youtube"></i>
+                            </a>
+                        </div>
+
+                        <div class="footer-badge">
+                            <i class="fas fa-shield-alt me-2"></i>100% Secure Booking
+                        </div>
+                    </div>
+
+                    <!-- Quick Links -->
+                    <div class="col-lg-2 col-md-6">
+                        <h4 class="footer-title">Quick Links</h4>
+                        <ul class="footer-links">
+                            <li><a href="{% url 'home' %}"><i class="fas fa-chevron-right"></i> Home</a></li>
+                            <li><a href="#"><i class="fas fa-chevron-right"></i> About Us</a></li>
+                            <li><a href="{% url 'support' %}"><i class="fas fa-chevron-right"></i> Support</a></li>
+                            <li><a href="#"><i class="fas fa-chevron-right"></i> Terms & Conditions</a></li>
+                            <li><a href="#"><i class="fas fa-chevron-right"></i> Privacy Policy</a></li>
+                            <li><a href="#"><i class="fas fa-chevron-right"></i> FAQ</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Popular Routes -->
+                    <div class="col-lg-3 col-md-6">
+                        <h4 class="footer-title">Popular Routes</h4>
+                        <ul class="footer-links">
+                            <li><a href="{% url 'search_buses' %}?from=Mumbai&to=Pune"><i class="fas fa-chevron-right"></i> Mumbai to Pune</a></li>
+                            <li><a href="{% url 'search_buses' %}?from=Delhi&to=Jaipur"><i class="fas fa-chevron-right"></i> Delhi to Jaipur</a></li>
+                            <li><a href="{% url 'search_buses' %}?from=Bangalore&to=Mysore"><i class="fas fa-chevron-right"></i> Bangalore to Mysore</a></li>
+                            <li><a href="{% url 'search_buses' %}?from=Chennai&to=Pondicherry"><i class="fas fa-chevron-right"></i> Chennai to Pondicherry</a></li>
+                            <li><a href="{% url 'search_buses' %}?from=Hyderabad&to=Bangalore"><i class="fas fa-chevron-right"></i> Hyderabad to Bangalore</a></li>
+                            <li><a href="{% url 'search_buses' %}?from=Ahmedabad&to=Surat"><i class="fas fa-chevron-right"></i> Ahmedabad to Surat</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Contact & Newsletter -->
+                    <div class="col-lg-3 col-md-6">
+                        <h4 class="footer-title">Contact Us</h4>
+                        <ul class="contact-info">
+                            <li>
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>123 Business Park, MG Road, Bangalore - 560001</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-phone-alt"></i>
+                                <span>+91 98765 43210</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-envelope"></i>
+                                <span>support@easybook.com</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-clock"></i>
+                                <span>24/7 Customer Support</span>
+                            </li>
+                        </ul>
+
+                        <!-- Newsletter -->
+                        <div class="newsletter-form">
+                            <h5>Subscribe to Newsletter</h5>
+                            <div class="input-group">
+                                <input type="email" class="form-control" placeholder="Your email address">
+                                <button class="btn btn-primary" type="button">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bus Owner CTA -->
+                <div class="owner-cta">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h4 class="text-white mb-2">Want to list your buses on our platform?</h4>
+                            <p class="text-white-50 mb-md-0">Join as a bus owner and reach thousands of customers daily</p>
+                        </div>
+                        <div class="col-md-4 text-md-end">
+                            <a href="{% url 'bus_owner_registration' %}" class="btn btn-primary btn-lg">
+                                <i class="fas fa-bus me-2"></i>Register as Bus Owner
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Bottom -->
+        <div class="footer-bottom">
+            <div class="container">
+                <div class="footer-bottom-content">
+                    <div class="copyright">
+                        <p>&copy; 2026 <strong>EasyBook</strong>. All rights reserved. | Made with <i class="fas fa-heart text-danger"></i> in India</p>
+                    </div>
+                    <div class="footer-bottom-links">
+                        <a href="#">Sitemap</a>
+                        <a href="#">Careers</a>
+                        <a href="#">Press</a>
+                        <a href="#">Blog</a>
+                        <a href="#">Investors</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 100
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const navMenu = document.getElementById('navMenu');
+            const toggleBtn = document.querySelector('.mobile-toggle i');
+            
+            navMenu.classList.toggle('active');
+            
+            // Change icon
+            if (navMenu.classList.contains('active')) {
+                toggleBtn.className = 'fas fa-times';
+                document.body.style.overflow = 'hidden'; // Prevent scrolling when menu is open
+            } else {
+                toggleBtn.className = 'fas fa-bars';
+                document.body.style.overflow = ''; // Restore scrolling
+            }
+        }
+
+        // Close mobile menu when clicking a link
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function() {
+                const navMenu = document.getElementById('navMenu');
+                if (navMenu.classList.contains('active')) {
+                    navMenu.classList.remove('active');
+                    document.querySelector('.mobile-toggle i').className = 'fas fa-bars';
+                    document.body.style.overflow = '';
+                }
+            });
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const navMenu = document.getElementById('navMenu');
+            const toggleBtn = document.querySelector('.mobile-toggle');
+            
+            if (navMenu.classList.contains('active') && 
+                !toggleBtn.contains(event.target) && 
+                !navMenu.contains(event.target)) {
+                navMenu.classList.remove('active');
+                document.querySelector('.mobile-toggle i').className = 'fas fa-bars';
+                document.body.style.overflow = '';
+            }
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            const navMenu = document.getElementById('navMenu');
+            if (window.innerWidth > 992 && navMenu.classList.contains('active')) {
+                navMenu.classList.remove('active');
+                document.querySelector('.mobile-toggle i').className = 'fas fa-bars';
+                document.body.style.overflow = '';
+            }
+        });
+
+        // Set active nav link based on current path
+        const currentPath = window.location.pathname;
+        document.querySelectorAll('.nav-link').forEach(link => {
+            const href = link.getAttribute('href');
+            if (href === currentPath || (currentPath === '/' && href === '/')) {
+                link.classList.add('active');
+            }
+        });
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

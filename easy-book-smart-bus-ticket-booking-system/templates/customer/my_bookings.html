@@ -1,0 +1,1294 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Bookings - EasyBook{% endblock %}
+
+{% block extra_css %}
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<!-- AOS Animation Library -->
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+<style>
+    :root {
+        --primary: #4361ee;
+        --primary-dark: #3a56d4;
+        --primary-light: #6c8cff;
+        --secondary: #7209b7;
+        --accent: #f72585;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --info: #3b82f6;
+        --dark: #0f172a;
+        --dark-800: #1e293b;
+        --dark-700: #334155;
+        --dark-600: #475569;
+        --light: #f8fafc;
+        --light-200: #e2e8f0;
+        --light-300: #cbd5e1;
+        
+        --gradient-primary: linear-gradient(135deg, #4361ee, #7209b7);
+        --gradient-success: linear-gradient(135deg, #10b981, #059669);
+        --gradient-warning: linear-gradient(135deg, #f59e0b, #d97706);
+        --gradient-danger: linear-gradient(135deg, #ef4444, #dc2626);
+        --gradient-info: linear-gradient(135deg, #3b82f6, #2563eb);
+        --gradient-cancel: linear-gradient(135deg, #f72585, #b5179e);
+        --gradient-delete: linear-gradient(135deg, #dc3545, #a71d2a);
+        
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+        --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+        
+        --radius-sm: 0.375rem;
+        --radius-md: 0.5rem;
+        --radius-lg: 1rem;
+        --radius-xl: 1.5rem;
+        --radius-2xl: 2rem;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        color: var(--dark);
+        min-height: 100vh;
+    }
+
+    /* Page Header */
+    .page-header {
+        background: linear-gradient(135deg, #1a1a2e 0%, #2d2d44 100%);
+        padding: 40px 0;
+        margin-bottom: 40px;
+        border-radius: 0 0 50px 50px;
+        color: white;
+        position: relative;
+        overflow: hidden;
+        text-align: center;
+    }
+
+    .page-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        border-radius: 50%;
+    }
+
+    .page-header::after {
+        content: '';
+        position: absolute;
+        bottom: -30%;
+        left: -5%;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        border-radius: 50%;
+    }
+
+    .page-header h1 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 10px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .page-header p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        position: relative;
+        z-index: 2;
+    }
+
+    /* Stats Cards */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.5rem;
+        margin-bottom: 2.5rem;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: var(--radius-xl);
+        padding: 20px;
+        box-shadow: var(--shadow-md);
+        transition: all 0.3s ease;
+        border: 1px solid var(--light-200);
+        position: relative;
+        overflow: hidden;
+        text-align: center;
+    }
+
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: var(--gradient-primary);
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-xl);
+    }
+
+    .stat-icon {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, rgba(67, 97, 238, 0.1), rgba(114, 9, 183, 0.1));
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: var(--primary);
+        margin: 0 auto 12px;
+        transition: all 0.3s ease;
+    }
+
+    .stat-card:hover .stat-icon {
+        background: var(--gradient-primary);
+        color: white;
+        transform: scale(1.1) rotate(5deg);
+    }
+
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--dark);
+        margin-bottom: 5px;
+        line-height: 1;
+    }
+
+    .stat-label {
+        color: var(--dark-600);
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    /* Booking Cards Grid */
+    .bookings-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
+
+    .booking-card {
+        background: white;
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-lg);
+        overflow: hidden;
+        transition: all 0.3s ease;
+        border: 1px solid var(--light-200);
+        animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .booking-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-2xl);
+    }
+
+    /* Card Header */
+    .booking-header {
+        background: var(--gradient-primary);
+        padding: 18px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .booking-header.cancelled {
+        background: linear-gradient(135deg, #64748b, #475569);
+    }
+
+    .booking-ref {
+        font-weight: 700;
+        color: white;
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .booking-ref i {
+        font-size: 1.2rem;
+    }
+
+    .cancelled-badge {
+        background: rgba(255,255,255,0.2);
+        color: white;
+        padding: 4px 12px;
+        border-radius: 50px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .status-badge {
+        padding: 6px 15px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .status-badge.confirmed {
+        background: linear-gradient(135deg, #d4edda, #c3e6cb);
+        color: #155724;
+    }
+
+    .status-badge.pending {
+        background: linear-gradient(135deg, #fff3cd, #ffeeba);
+        color: #856404;
+    }
+
+    .status-badge.cancelled {
+        background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+        color: #721c24;
+    }
+
+    .status-badge.completed {
+        background: linear-gradient(135deg, #d1ecf1, #bee5eb);
+        color: #0c5460;
+    }
+
+    /* Card Body */
+    .booking-body {
+        padding: 20px;
+    }
+
+    /* Route Info */
+    .route-info {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: var(--light);
+        padding: 15px;
+        border-radius: var(--radius-lg);
+        margin-bottom: 15px;
+    }
+
+    .city {
+        text-align: center;
+        flex: 1;
+    }
+
+    .city .name {
+        font-weight: 700;
+        font-size: 1.2rem;
+        color: var(--dark);
+        margin-bottom: 3px;
+    }
+
+    .city .time {
+        color: var(--dark-600);
+        font-size: 0.9rem;
+    }
+
+    .route-arrow {
+        color: var(--primary);
+        font-size: 1.5rem;
+        margin: 0 15px;
+    }
+
+    /* Bus Info */
+    .bus-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 0;
+        border-top: 1px dashed var(--light-200);
+        border-bottom: 1px dashed var(--light-200);
+        color: var(--dark-700);
+        font-size: 0.95rem;
+    }
+
+    .bus-info i {
+        color: var(--primary);
+        width: 20px;
+    }
+
+    /* Seats */
+    .seats {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        margin: 15px 0;
+    }
+
+    .seat-badge {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        padding: 5px 12px;
+        border-radius: 30px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .seat-badge i {
+        font-size: 0.8rem;
+    }
+
+    /* Card Footer */
+    .booking-footer {
+        background: linear-gradient(135deg, var(--light), white);
+        padding: 15px 20px;
+        border-top: 1px solid var(--light-200);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .amount {
+        font-size: 1.3rem;
+        font-weight: 800;
+        color: var(--primary);
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .amount i {
+        font-size: 1rem;
+        color: var(--success);
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .action-btn {
+        padding: 8px 16px;
+        border-radius: 30px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .action-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .btn-view {
+        background: var(--info);
+        color: white;
+    }
+
+    .btn-view:hover {
+        background: #2563eb;
+    }
+
+    .btn-pdf {
+        background: var(--success);
+        color: white;
+    }
+
+    .btn-pdf:hover {
+        background: #059669;
+    }
+
+    .btn-cancel {
+        background: var(--gradient-cancel);
+        color: white;
+    }
+
+    .btn-delete {
+        background: var(--gradient-delete);
+        color: white;
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 80px 20px;
+        background: white;
+        border-radius: var(--radius-2xl);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .empty-state i {
+        font-size: 5rem;
+        color: var(--light-300);
+        margin-bottom: 20px;
+    }
+
+    .empty-state h3 {
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--dark);
+        margin-bottom: 10px;
+    }
+
+    .empty-state p {
+        color: var(--dark-600);
+        margin-bottom: 25px;
+    }
+
+    .btn-search {
+        background: var(--gradient-primary);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 14px 40px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        box-shadow: 0 8px 20px rgba(67, 97, 238, 0.3);
+    }
+
+    .btn-search:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 30px rgba(67, 97, 238, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    /* ===== MODAL STYLES ===== */
+    .app-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(5px);
+        z-index: 9999;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .app-modal.show {
+        display: flex;
+        animation: modalFadeIn 0.3s;
+    }
+
+    @keyframes modalFadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    .modal-box {
+        background: white;
+        border-radius: var(--radius-2xl);
+        max-width: 500px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+        animation: modalSlideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: var(--shadow-2xl);
+    }
+
+    @keyframes modalSlideUp {
+        from {
+            transform: translateY(50px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .modal-head {
+        padding: 30px;
+        border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+        text-align: center;
+        color: white;
+    }
+
+    .modal-head.cancel-head {
+        background: var(--gradient-cancel);
+    }
+
+    .modal-head.delete-head {
+        background: var(--gradient-delete);
+    }
+
+    .modal-head i {
+        font-size: 3.5rem;
+        margin-bottom: 15px;
+        display: block;
+    }
+
+    .modal-head h3 {
+        font-size: 1.8rem;
+        font-weight: 800;
+        margin-bottom: 5px;
+    }
+
+    .modal-head p {
+        opacity: 0.9;
+        margin: 0;
+    }
+
+    .modal-body {
+        padding: 30px;
+    }
+
+    .booking-summary {
+        background: var(--light);
+        border-radius: var(--radius-xl);
+        padding: 20px;
+        margin-bottom: 20px;
+        border: 1px solid var(--light-200);
+    }
+
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 12px;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--light-200);
+    }
+
+    .summary-item:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .summary-item span:first-child {
+        color: var(--dark-600);
+    }
+
+    .summary-item strong {
+        color: var(--dark);
+        font-size: 1rem;
+    }
+
+    .refund-box {
+        background: linear-gradient(135deg, #d4edda, #c3e6cb);
+        border-radius: var(--radius-xl);
+        padding: 20px;
+        text-align: center;
+        margin-bottom: 25px;
+        border: 1px solid #c3e6cb;
+    }
+
+    .refund-amount {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #155724;
+        line-height: 1;
+        margin: 10px 0;
+    }
+
+    .delete-warning-box {
+        background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+        border-radius: var(--radius-xl);
+        padding: 25px;
+        text-align: center;
+        margin-bottom: 20px;
+        border: 1px solid #f5c6cb;
+    }
+
+    .delete-warning-box i {
+        font-size: 3rem;
+        color: #721c24;
+        margin-bottom: 10px;
+        display: block;
+    }
+
+    .delete-warning-box p {
+        color: #721c24;
+        font-weight: 700;
+        margin-bottom: 5px;
+    }
+
+    .delete-warning-box small {
+        color: #721c24;
+        opacity: 0.9;
+    }
+
+    /* Reason Options */
+    .reason-option {
+        margin-bottom: 10px;
+        padding: 15px 20px;
+        border: 2px solid var(--light-200);
+        border-radius: var(--radius-lg);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .reason-option:hover {
+        border-color: var(--accent);
+        background: #fff5f8;
+        transform: translateX(5px);
+    }
+
+    .reason-option.selected {
+        border-color: var(--accent);
+        background: #fff5f8;
+    }
+
+    .reason-option input[type="radio"] {
+        width: 18px;
+        height: 18px;
+        accent-color: var(--accent);
+        margin: 0;
+    }
+
+    .reason-option label {
+        font-weight: 500;
+        color: var(--dark-700);
+        cursor: pointer;
+        flex: 1;
+    }
+
+    .custom-reason {
+        display: none;
+        margin-top: 15px;
+    }
+
+    .custom-reason.show {
+        display: block;
+        animation: slideDown 0.3s;
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .custom-reason textarea {
+        width: 100%;
+        padding: 15px;
+        border: 2px solid var(--light-200);
+        border-radius: var(--radius-lg);
+        font-family: 'Inter', sans-serif;
+        resize: none;
+        transition: all 0.3s;
+    }
+
+    .custom-reason textarea:focus {
+        border-color: var(--accent);
+        outline: none;
+        box-shadow: 0 0 0 4px rgba(247, 37, 133, 0.1);
+    }
+
+    .policy-warning {
+        background: #e7f3ff;
+        border-radius: var(--radius-lg);
+        padding: 15px;
+        margin: 20px 0;
+        color: #004085;
+        font-size: 0.95rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border-left: 4px solid var(--info);
+    }
+
+    .policy-warning i {
+        font-size: 1.2rem;
+    }
+
+    .modal-footer {
+        padding: 0 30px 30px;
+        display: flex;
+        gap: 15px;
+    }
+
+    .btn-modal {
+        flex: 1;
+        padding: 15px 20px;
+        border: none;
+        border-radius: var(--radius-lg);
+        font-weight: 700;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .btn-modal.close-btn {
+        background: var(--light-200);
+        color: var(--dark-600);
+    }
+
+    .btn-modal.close-btn:hover {
+        background: var(--light-300);
+        transform: translateY(-2px);
+    }
+
+    .btn-modal.confirm-cancel {
+        background: var(--gradient-cancel);
+        color: white;
+        box-shadow: 0 5px 15px rgba(247, 37, 133, 0.3);
+    }
+
+    .btn-modal.confirm-cancel:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(247, 37, 133, 0.4);
+    }
+
+    .btn-modal.confirm-delete {
+        background: var(--gradient-delete);
+        color: white;
+        box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+    }
+
+    .btn-modal.confirm-delete:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(220, 53, 69, 0.4);
+    }
+
+    .btn-modal:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none !important;
+        box-shadow: none !important;
+    }
+
+    .loading-spinner {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top-color: white;
+        animation: spin 1s ease-in-out infinite;
+        margin-right: 8px;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .bookings-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .page-header h1 {
+            font-size: 2rem;
+        }
+
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .booking-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .booking-footer {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .action-buttons {
+            width: 100%;
+        }
+
+        .action-btn {
+            flex: 1;
+            justify-content: center;
+        }
+
+        .modal-footer {
+            flex-direction: column;
+        }
+
+        .route-info {
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .route-arrow {
+            transform: rotate(90deg);
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header" data-aos="fade-down">
+    <div class="container">
+        <h1><i class="fas fa-ticket-alt me-3"></i>My Bookings</h1>
+        <p>View and manage all your bus bookings</p>
+    </div>
+</div>
+
+<div class="container mb-5">
+    <div class="row">
+        <div class="col-12">
+            <!-- Statistics Cards -->
+            {% if bookings %}
+            <div class="stats-grid" data-aos="fade-up">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-ticket-alt"></i></div>
+                    <div class="stat-value">{{ bookings|length }}</div>
+                    <div class="stat-label">Total Bookings</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                    <div class="stat-value">{{ bookings|dictsortreversed:"status"|dictsort:"status"|length }}</div>
+                    <div class="stat-label">Confirmed</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                    <div class="stat-value">{{ bookings|length }}</div>
+                    <div class="stat-label">Pending</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-times-circle"></i></div>
+                    <div class="stat-value">{{ bookings|length }}</div>
+                    <div class="stat-label">Cancelled</div>
+                </div>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="d-flex justify-content-between align-items-center mb-4" data-aos="fade-up">
+                <h5 class="fw-bold">Your Bookings</h5>
+                <div class="d-flex gap-3">
+                    <a href="{% url 'home' %}" class="btn btn-outline-primary">
+                        <i class="fas fa-search me-2"></i>Search New Buses
+                    </a>
+                </div>
+            </div>
+
+            <!-- Messages -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-3" role="alert" data-aos="fade-down">
+                        <i class="fas fa-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}exclamation-circle{% else %}info-circle{% endif %} me-2"></i>
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <!-- Bookings Grid -->
+            <div class="bookings-grid">
+                {% for booking in bookings %}
+                <div class="booking-card" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:50 }}">
+                    <!-- Header -->
+                    <div class="booking-header {% if booking.status == 'cancelled' %}cancelled{% endif %}">
+                        <div class="booking-ref">
+                            <i class="fas fa-ticket-alt"></i>
+                            {{ booking.booking_reference }}
+                            {% if booking.status == 'cancelled' %}
+                                <span class="cancelled-badge">Cancelled</span>
+                            {% endif %}
+                        </div>
+                        <span class="status-badge {{ booking.status }}">
+                            <i class="fas 
+                                {% if booking.status == 'confirmed' %}fa-check-circle
+                                {% elif booking.status == 'pending' %}fa-clock
+                                {% elif booking.status == 'cancelled' %}fa-times-circle
+                                {% else %}fa-check{% endif %}">
+                            </i>
+                            {{ booking.status|title }}
+                        </span>
+                    </div>
+
+                    <!-- Body -->
+                    <div class="booking-body">
+                        <div class="route-info">
+                            <div class="city">
+                                <div class="name">{{ booking.route.source }}</div>
+                                <div class="time">{{ booking.route.departure_time|date:"h:i A" }}</div>
+                            </div>
+                            <div class="route-arrow"><i class="fas fa-arrow-right"></i></div>
+                            <div class="city">
+                                <div class="name">{{ booking.route.destination }}</div>
+                                <div class="time">{{ booking.route.arrival_time|date:"h:i A" }}</div>
+                            </div>
+                        </div>
+
+                        <div class="bus-info">
+                            <span><i class="fas fa-bus me-2"></i>{{ booking.route.bus.bus_name }}</span>
+                            <span><i class="fas fa-calendar me-2"></i>{{ booking.journey_date|date:"d M Y" }}</span>
+                        </div>
+
+                        <div class="seats">
+                            {% for seat in booking.booked_seats.all %}
+                                <span class="seat-badge">
+                                    <i class="fas fa-chair"></i>{{ seat.seat.seat_number }}
+                                </span>
+                            {% empty %}
+                                <span class="text-muted">No seat information</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="booking-footer">
+                        <div class="amount">
+                            <i class="fas fa-rupee-sign"></i>
+                            {{ booking.total_amount }}
+                            {% if booking.payment_method %}
+                                <small class="text-muted">via {{ booking.payment_method }}</small>
+                            {% endif %}
+                        </div>
+                        <div class="action-buttons">
+                            <a href="{% url 'booking_confirmation' booking.id %}" class="action-btn btn-view">
+                                <i class="fas fa-eye"></i> View
+                            </a>
+                            <a href="{% url 'download_ticket' booking.id %}" class="action-btn btn-pdf">
+                                <i class="fas fa-download"></i> PDF
+                            </a>
+
+                            {% if booking.status == 'confirmed' or booking.status == 'pending' %}
+                            <button onclick="openCancelModal(
+                                {{ booking.id }},
+                                '{{ booking.booking_reference }}',
+                                '{{ booking.route.source }}',
+                                '{{ booking.route.destination }}',
+                                '{{ booking.journey_date|date:"d M Y" }}',
+                                {{ booking.total_amount }},
+                                '{% url "cancel_booking" booking.id %}'
+                            )" class="action-btn btn-cancel">
+                                <i class="fas fa-times"></i> Cancel
+                            </button>
+                            {% endif %}
+
+                            {% if booking.status == 'cancelled' %}
+                            <button onclick="openDeleteModal(
+                                {{ booking.id }},
+                                '{{ booking.booking_reference }}',
+                                '{{ booking.route.source }}',
+                                '{{ booking.route.destination }}',
+                                '{{ booking.journey_date|date:"d M Y" }}',
+                                '{% url "delete_booking" booking.id %}'
+                            )" class="action-btn btn-delete">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            {% else %}
+            <!-- Empty State -->
+            <div class="empty-state" data-aos="fade-up">
+                <i class="fas fa-ticket-alt"></i>
+                <h3>No Bookings Found</h3>
+                <p class="text-muted">You haven't made any bookings yet. Start your journey today!</p>
+                <a href="{% url 'home' %}" class="btn-search">
+                    <i class="fas fa-search me-2"></i>Search Buses
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- ===== CANCEL MODAL ===== -->
+<div id="cancelModal" class="app-modal">
+    <div class="modal-box">
+        <div class="modal-head cancel-head">
+            <i class="fas fa-exclamation-triangle"></i>
+            <h3>Cancel Booking</h3>
+            <p>Please select a reason for cancellation</p>
+        </div>
+        <div class="modal-body">
+            <div class="booking-summary" id="cancelSummary"></div>
+            <div class="refund-box" id="cancelRefundInfo"></div>
+
+            <h6 class="fw-bold mb-3">Select Cancellation Reason <span class="text-danger">*</span></h6>
+            
+            <div class="reason-option" onclick="selectReason(this, 'Change in travel plans')">
+                <input type="radio" name="reason" value="Change in travel plans">
+                <label>Change in travel plans</label>
+            </div>
+            <div class="reason-option" onclick="selectReason(this, 'Medical emergency')">
+                <input type="radio" name="reason" value="Medical emergency">
+                <label>Medical emergency</label>
+            </div>
+            <div class="reason-option" onclick="selectReason(this, 'Personal reasons')">
+                <input type="radio" name="reason" value="Personal reasons">
+                <label>Personal reasons</label>
+            </div>
+            <div class="reason-option" onclick="selectReason(this, 'Found better alternative')">
+                <input type="radio" name="reason" value="Found better alternative">
+                <label>Found better alternative</label>
+            </div>
+            <div class="reason-option" onclick="selectReason(this, 'Weather conditions')">
+                <input type="radio" name="reason" value="Weather conditions">
+                <label>Weather conditions</label>
+            </div>
+            <div class="reason-option" onclick="selectReason(this, 'Booking by mistake')">
+                <input type="radio" name="reason" value="Booking by mistake">
+                <label>Booking by mistake</label>
+            </div>
+            <div class="reason-option" onclick="selectReason(this, 'other')">
+                <input type="radio" name="reason" value="other">
+                <label>Other reason</label>
+            </div>
+
+            <div class="custom-reason" id="customReasonBox">
+                <textarea id="customReason" rows="3" placeholder="Please specify your reason..."></textarea>
+            </div>
+
+            <div class="policy-warning">
+                <i class="fas fa-info-circle"></i>
+                <div>
+                    <strong>Refund Policy:</strong> Full refund will be credited to your original payment method within 5–7 business days.
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-modal close-btn" onclick="closeCancelModal()">
+                <i class="fas fa-arrow-left"></i> Go Back
+            </button>
+            <button class="btn-modal confirm-cancel" id="confirmCancelBtn" onclick="submitCancellation()">
+                <span id="cancelBtnText"><i class="fas fa-check"></i> Confirm Cancellation</span>
+                <span id="cancelBtnLoader" style="display:none;">
+                    <span class="loading-spinner"></span>Processing...
+                </span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== DELETE MODAL ===== -->
+<div id="deleteModal" class="app-modal">
+    <div class="modal-box">
+        <div class="modal-head delete-head">
+            <i class="fas fa-trash-alt"></i>
+            <h3>Delete Booking</h3>
+            <p>This action cannot be undone</p>
+        </div>
+        <div class="modal-body">
+            <div class="booking-summary" id="deleteSummary"></div>
+            <div class="delete-warning-box">
+                <i class="fas fa-exclamation-circle"></i>
+                <p>Permanently delete this cancelled booking?</p>
+                <small>This will remove the booking record from your history forever.</small>
+            </div>
+            <div class="policy-warning">
+                <i class="fas fa-info-circle"></i>
+                <div>
+                    <strong>Note:</strong> Only cancelled bookings can be deleted.
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-modal close-btn" onclick="closeDeleteModal()">
+                <i class="fas fa-arrow-left"></i> Go Back
+            </button>
+            <button class="btn-modal confirm-delete" id="confirmDeleteBtn" onclick="submitDelete()">
+                <span id="deleteBtnText"><i class="fas fa-trash"></i> Yes, Delete It</span>
+                <span id="deleteBtnLoader" style="display:none;">
+                    <span class="loading-spinner"></span>Deleting...
+                </span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Hidden POST forms -->
+<form id="cancelForm" method="POST" style="display:none;">
+    {% csrf_token %}
+    <input type="hidden" name="reason_choice" id="formReasonChoice">
+    <input type="hidden" name="custom_reason" id="formCustomReason">
+</form>
+<form id="deleteForm" method="POST" style="display:none;">
+    {% csrf_token %}
+</form>
+
+<!-- AOS Animation Library -->
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+<script>
+// Initialize AOS
+AOS.init({
+    duration: 600,
+    once: true,
+    offset: 50
+});
+
+// ===== CANCEL MODAL =====
+let currentCancelUrl = null;
+
+function openCancelModal(bookingId, ref, source, dest, date, amount, cancelUrl) {
+    currentCancelUrl = cancelUrl;
+    document.getElementById('cancelSummary').innerHTML = `
+        <div class="summary-item"><span>Booking Reference</span><strong>#${ref}</strong></div>
+        <div class="summary-item"><span>Route</span><strong>${source} → ${dest}</strong></div>
+        <div class="summary-item"><span>Journey Date</span><strong>${date}</strong></div>
+        <div class="summary-item"><span>Amount Paid</span><strong>₹${amount}</strong></div>`;
+    
+    document.getElementById('cancelRefundInfo').innerHTML = `
+        <div class="refund-note">Refund Amount</div>
+        <div class="refund-amount">₹${amount}</div>
+        <div class="refund-note mt-1">Full refund to original payment method</div>
+        <div class="refund-note">⏱ Processed within 5–7 business days</div>`;
+    
+    resetCancelForm();
+    document.getElementById('cancelModal').classList.add('show');
+}
+
+function closeCancelModal() {
+    document.getElementById('cancelModal').classList.remove('show');
+    resetCancelForm();
+}
+
+function resetCancelForm() {
+    document.querySelectorAll('input[name="reason"]').forEach(r => r.checked = false);
+    document.querySelectorAll('.reason-option').forEach(o => o.classList.remove('selected'));
+    document.getElementById('customReasonBox').classList.remove('show');
+    document.getElementById('customReason').value = '';
+    document.getElementById('cancelBtnText').style.display = 'inline';
+    document.getElementById('cancelBtnLoader').style.display = 'none';
+    document.getElementById('confirmCancelBtn').disabled = false;
+}
+
+function selectReason(element, value) {
+    document.querySelectorAll('.reason-option').forEach(o => o.classList.remove('selected'));
+    element.classList.add('selected');
+    element.querySelector('input[type="radio"]').checked = true;
+    document.getElementById('customReasonBox').classList.toggle('show', value === 'other');
+}
+
+function submitCancellation() {
+    const selected = document.querySelector('input[name="reason"]:checked');
+    if (!selected) { 
+        alert('Please select a cancellation reason.'); 
+        return; 
+    }
+
+    let finalReason = selected.value;
+    let customReason = '';
+
+    if (selected.value === 'other') {
+        customReason = document.getElementById('customReason').value.trim();
+        if (!customReason) { 
+            alert('Please specify your reason.'); 
+            return; 
+        }
+        finalReason = 'other';
+    }
+
+    document.getElementById('cancelBtnText').style.display = 'none';
+    document.getElementById('cancelBtnLoader').style.display = 'inline-block';
+    document.getElementById('confirmCancelBtn').disabled = true;
+
+    const form = document.getElementById('cancelForm');
+    form.action = currentCancelUrl;
+    document.getElementById('formReasonChoice').value = finalReason;
+    document.getElementById('formCustomReason').value = customReason;
+    form.submit();
+}
+
+// ===== DELETE MODAL =====
+let currentDeleteUrl = null;
+
+function openDeleteModal(bookingId, ref, source, dest, date, deleteUrl) {
+    currentDeleteUrl = deleteUrl;
+    document.getElementById('deleteSummary').innerHTML = `
+        <div class="summary-item"><span>Booking Reference</span><strong>#${ref}</strong></div>
+        <div class="summary-item"><span>Route</span><strong>${source} → ${dest}</strong></div>
+        <div class="summary-item"><span>Journey Date</span><strong>${date}</strong></div>
+        <div class="summary-item"><span>Status</span><strong style="color:#721c24;">Cancelled</strong></div>`;
+    
+    document.getElementById('deleteBtnText').style.display = 'inline';
+    document.getElementById('deleteBtnLoader').style.display = 'none';
+    document.getElementById('confirmDeleteBtn').disabled = false;
+    document.getElementById('deleteModal').classList.add('show');
+}
+
+function closeDeleteModal() {
+    document.getElementById('deleteModal').classList.remove('show');
+}
+
+function submitDelete() {
+    document.getElementById('deleteBtnText').style.display = 'none';
+    document.getElementById('deleteBtnLoader').style.display = 'inline-block';
+    document.getElementById('confirmDeleteBtn').disabled = true;
+    const form = document.getElementById('deleteForm');
+    form.action = currentDeleteUrl;
+    form.submit();
+}
+
+// Close modals when clicking outside
+document.getElementById('cancelModal').addEventListener('click', function(e) {
+    if (e.target === this) closeCancelModal();
+});
+
+document.getElementById('deleteModal').addEventListener('click', function(e) {
+    if (e.target === this) closeDeleteModal();
+});
+
+// Close modals on Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeCancelModal();
+        closeDeleteModal();
+    }
+});
+</script>
+{% endblock %}
